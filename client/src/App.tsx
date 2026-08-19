@@ -1,24 +1,34 @@
 import { Route, Routes } from "react-router-dom";
-import { Grid } from "@mui/material";
+import { Box } from "@mui/material";
 import "./App.css";
 
 import Reports from "./pages/reports";
 import Schools from "./pages/schools";
-import Navbar from "./components/navbar";
+import SideBar from "./components/sideBar";
 
 function App() {
   return (
-    <Grid container>
-      <Grid size={3}>
-        <Navbar />
-      </Grid>
-      <Grid size={9}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "row",
+      }}
+    >
+      <Box
+        sx={{
+          maxWidth: "300px",
+          width: "15vw",
+        }}
+      >
+        <SideBar />
+      </Box>
+      <Box>
         <Routes>
           <Route path="/" element={<Reports />} />
           <Route path="/references/schools" element={<Schools />} />
         </Routes>
-      </Grid>
-    </Grid>
+      </Box>
+    </Box>
   );
 }
 
