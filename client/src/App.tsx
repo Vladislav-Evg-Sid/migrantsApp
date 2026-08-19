@@ -1,5 +1,5 @@
-import { Route, Routes } from "react-router";
-import { Box, Grid } from "@mui/material";
+import { Route, Routes } from "react-router-dom";
+import { Grid } from "@mui/material";
 import "./App.css";
 
 import Reports from "./pages/reports";
