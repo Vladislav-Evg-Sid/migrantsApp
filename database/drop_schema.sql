@@ -1,0 +1,9 @@
+DROP TABLE IF EXISTS test_results;
+DROP TABLE IF EXISTS participants;
+DROP TABLE IF EXISTS schools;
+DROP TABLE IF EXISTS test_dates;
+DROP TABLE IF EXISTS appeals;
+DROP TABLE IF EXISTS test_attempts;
+DROP TABLE IF EXISTS participant_statuses;
+DROP TABLE IF EXISTS nations;
+DROP TABLE IF EXISTS areas;
