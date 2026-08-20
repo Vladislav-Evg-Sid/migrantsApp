@@ -96,6 +96,7 @@ export default function SideBar() {
         <NavButton to="/exams" text="Экзамены" />
         <NavButton to="/participants" text="Люди" />
         <NavButton to="/references" text="Справочники" />
+        <NavButton to="/contacts" text="Контактные данные" />
       </Box>
     </Box>
   );
