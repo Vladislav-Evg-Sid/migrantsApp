@@ -1,11 +1,4 @@
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Typography,
-} from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Box, Typography } from "@mui/material";
 import { useNavigate, NavLink } from "react-router-dom";
 
 import logoCompany from "../assets/logo.png";

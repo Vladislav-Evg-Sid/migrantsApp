@@ -2,9 +2,9 @@ import { Route, Routes } from "react-router-dom";
 import { Box } from "@mui/material";
 import "./App.css";
 
-import Reports from "./pages/ReportsPage";
 import SideBar from "./components/SideBar";
-import References from "./pages/ReferencesPage";
+import ReferencesPage from "./pages/ReferencesPage";
+import ReportsPage from "./pages/ReportsPage";
 
 function App() {
   return (
@@ -24,8 +24,8 @@ function App() {
       </Box>
       <Box sx={{ flex: 1, minWidth: 0 }}>
         <Routes>
-          <Route path="/" element={<Reports />} />
-          <Route path="/references" element={<References />} />
+          <Route path="/" element={<ReportsPage />} />
+          <Route path="/references" element={<ReferencesPage />} />
         </Routes>
       </Box>
     </Box>

@@ -3,7 +3,7 @@ import { ToastContainer, Bounce } from "react-toastify";
 
 import ReferencesTable from "../components/ReferenceTable";
 
-export default function References() {
+export default function ReferencesPage() {
   return (
     <Box
       sx={{
