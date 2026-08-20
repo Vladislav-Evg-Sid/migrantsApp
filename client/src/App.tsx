@@ -5,6 +5,7 @@ import "./App.css";
 import SideBar from "./components/SideBar";
 import ReferencesPage from "./pages/ReferencesPage";
 import ReportsPage from "./pages/ReportsPage";
+import ExamDatePage from "./pages/ExamDatesPage";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Routes>
           <Route path="/" element={<ReportsPage />} />
           <Route path="/references" element={<ReferencesPage />} />
+          <Route path="/exams" element={<ExamDatePage />} />
         </Routes>
       </Box>
     </Box>
