@@ -95,48 +95,7 @@ export default function SideBar() {
         <NavButton to="/" text="Отчёты" />
         <NavButton to="/exams" text="Экзамены" />
         <NavButton to="/participants" text="Люди" />
-        <Accordion
-          disableGutters
-          elevation={0}
-          sx={{
-            width: "100%",
-            color: "#fff",
-            backgroundColor: "transparent",
-            "&::before": { display: "none" },
-          }}
-        >
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon sx={{ color: "#fff" }} />}
-            aria-controls="references-content"
-            id="references-header"
-            sx={{
-              minHeight: 48,
-              my: 0.5,
-              px: 2,
-              borderRadius: 2,
-              color: "rgba(255, 255, 255, 0.82)",
-              transition: "background-color 160ms ease, color 160ms ease",
-              "&:hover": {
-                color: "#fff",
-                backgroundColor: "rgba(255, 255, 255, 0.12)",
-              },
-              "&.Mui-expanded": { minHeight: 48 },
-              "& .MuiAccordionSummary-content": { my: 0 },
-              "& .MuiAccordionSummary-content.Mui-expanded": { my: 0 },
-            }}
-          >
-            <Typography sx={{ fontSize: "0.95rem", fontWeight: 600 }}>
-              Справочники
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails sx={{ p: 0, pl: 2 }}>
-            <NavButton to="/references/areas" text="Округа" />
-            <NavButton to="/references/schools" text="Школы" />
-            <NavButton to="/references/nations" text="Национальности" />
-            <NavButton to="/references/attempts" text="Кратность сдачи" />
-            <NavButton to="/references/statuses" text="Статусы" />
-          </AccordionDetails>
-        </Accordion>
+        <NavButton to="/references" text="Справочники" />
       </Box>
     </Box>
   );

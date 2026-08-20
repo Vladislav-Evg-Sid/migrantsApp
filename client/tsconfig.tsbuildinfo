@@ -1,1 +1,1 @@
-{"root":["./src/app.tsx","./src/main.tsx","./src/components/navbar.tsx","./src/pages/reports.tsx","./src/pages/schools.tsx"],"version":"6.0.3"}
+{"root":["./src/app.tsx","./src/main.tsx","./src/api/references.ts","./src/components/datatable.tsx","./src/components/sidebar.tsx","./src/pages/references.tsx","./src/pages/reports.tsx","./src/types/tables.ts"],"version":"6.0.3"}

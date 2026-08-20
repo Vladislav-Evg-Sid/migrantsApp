@@ -2,9 +2,9 @@ import { Route, Routes } from "react-router-dom";
 import { Box } from "@mui/material";
 import "./App.css";
 
-import Reports from "./pages/reports";
-import Schools from "./pages/schools";
-import SideBar from "./components/sideBar";
+import Reports from "./pages/Reports";
+import SideBar from "./components/SideBar";
+import References from "./pages/References";
 
 function App() {
   return (
@@ -22,10 +22,10 @@ function App() {
       >
         <SideBar />
       </Box>
-      <Box>
+      <Box sx={{ flex: 1, minWidth: 0 }}>
         <Routes>
           <Route path="/" element={<Reports />} />
-          <Route path="/references/schools" element={<Schools />} />
+          <Route path="/references" element={<References />} />
         </Routes>
       </Box>
     </Box>
