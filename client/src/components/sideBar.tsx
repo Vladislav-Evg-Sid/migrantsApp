@@ -59,6 +59,7 @@ export default function SideBar() {
   return (
     <Box
       sx={{
+        position: "fixed",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
