@@ -2,9 +2,9 @@ import { Route, Routes } from "react-router-dom";
 import { Box } from "@mui/material";
 import "./App.css";
 
-import Reports from "./pages/Reports";
+import Reports from "./pages/ReportsPage";
 import SideBar from "./components/SideBar";
-import References from "./pages/References";
+import References from "./pages/ReferencesPage";
 
 function App() {
   return (
