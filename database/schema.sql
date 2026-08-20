@@ -22,7 +22,7 @@ CREATE TABLE participant_statuses (
 );
 
 CREATE TABLE test_dates (
-    id INTEGER PRIMARY KEY,
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     day INTEGER NOT NULL,
     month INTEGER NOT NULL,
     year INTEGER NOT NULL
@@ -53,7 +53,7 @@ CREATE TABLE participants (
     nation_id INTEGER NOT NULL REFERENCES nations(id),
     confirmed_school_code INTEGER REFERENCES schools(code),
     is_special_category BOOLEAN NOT NULL DEFAULT FALSE,
-    status_id INTEGER NOT NULL REFERENCES participant_statuses(id),
+    status_id INTEGER REFERENCES participant_statuses(id),
     next_planned_date TEXT,
     comment TEXT,
     rcoi_note TEXT
@@ -66,7 +66,7 @@ CREATE TABLE test_results (
     is_passed BOOLEAN NOT NULL,
     class INTEGER NOT NULL,
     sending_school_code INTEGER NOT NULL REFERENCES schools(code),
-    test_attempt_id INTEGER REFERENCES test_attempts(id),
+    test_attempt_id INTEGER NOT NULL REFERENCES test_attempts(id),
     appeal_id INTEGER REFERENCES appeals(id),
     testing_center_ppt_code INTEGER NOT NULL REFERENCES schools(ppt_code)
 );
