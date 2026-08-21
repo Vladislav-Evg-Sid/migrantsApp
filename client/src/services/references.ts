@@ -26,7 +26,7 @@ export async function getReferenceTableData(
   tableName: RefTables,
 ): Promise<TableData> {
   const tableData = await getReferenceTable(tableName);
-  if (["participant-statuses", "test-attempts"].includes(tableName)) {
+  if (["participant-statuses", "nations"].includes(tableName)) {
     tableData.hideIdCol = true;
   }
   return tableData;

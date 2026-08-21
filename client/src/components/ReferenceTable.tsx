@@ -91,6 +91,7 @@ export default function ReferencesTable({ tableName }: ReferencesTableProps) {
       <DataTable
         head={table.head}
         body={table.body}
+        hideIdCol={table.hideIdCol ? true : false}
         onAdd={handleAddData}
         onDelete={handleDeleteData}
         onSaveChanges={handleSaveChanges}

@@ -14,10 +14,12 @@ import { DeleteForever, Edit } from "@mui/icons-material";
 import { type TableData, type TableCellData } from "../types/tables";
 import InserterReferenceData from "./InserterReferenceData";
 import { useState } from "react";
+import { tableColumnHider } from "./utils/tableColumnHider";
 
 interface DataTableProps extends TableData {
   width?: string | number;
   reference?: boolean;
+  hideIdCol: boolean;
   onAdd?: (data: TableCellData[]) => void;
   onDelete?: (id: TableCellData) => void;
   onSaveChanges?: (data: TableCellData[]) => void;
@@ -59,26 +61,27 @@ export default function DataTable({
       <Table size="small" sx={{ width: "100%", tableLayout: "fixed" }}>
         <TableHead>
           <TableRow key="header-row">
-            {head.map(
-              ({ cell }) =>
-                hideIdCol ?? (
-                  <TableCell
-                    align="center"
-                    sx={{
-                      border: `1px solid #000000`,
-                      fontWeight: 600,
-                      lineHeight: 1.35,
-                      textAlign: "center",
-                      verticalAlign: "middle",
-                      whiteSpace: "normal",
-                      overflowWrap: "anywhere",
-                    }}
-                  >
-                    {typeof cell === "number" || typeof cell === "string"
-                      ? cell
-                      : cell.name}
-                  </TableCell>
-                ),
+            {head.map(({ cell }, index) =>
+              tableColumnHider(
+                index,
+                hideIdCol,
+                <TableCell
+                  align="center"
+                  sx={{
+                    border: `1px solid #000000`,
+                    fontWeight: 600,
+                    lineHeight: 1.35,
+                    textAlign: "center",
+                    verticalAlign: "middle",
+                    whiteSpace: "normal",
+                    overflowWrap: "anywhere",
+                  }}
+                >
+                  {typeof cell === "number" || typeof cell === "string"
+                    ? cell
+                    : cell.name}
+                </TableCell>,
+              ),
             )}
             <TableCell
               key={`header-add`}
@@ -100,6 +103,7 @@ export default function DataTable({
         <TableBody>
           {reference ? (
             <InserterReferenceData
+              hideIdCol={hideIdCol}
               types={head.map(({ type }) => type)}
               onAdd={handleSaveData}
               editedData={editingData}
@@ -114,23 +118,27 @@ export default function DataTable({
                 },
               }}
             >
-              {row.row.map((cell, index) => (
-                <TableCell
-                  key={`body-cell-${row.row[0]}-${index}`}
-                  align={index === 0 ? "left" : "center"}
-                  sx={{
-                    border: `1px solid #000000`,
-                    lineHeight: 1.4,
-                    verticalAlign: "top",
-                    whiteSpace: "normal",
-                    overflowWrap: "anywhere",
-                  }}
-                >
-                  {(typeof cell === "number" || typeof cell === "string"
-                    ? cell
-                    : cell.name) ?? "-"}
-                </TableCell>
-              ))}
+              {row.row.map((cell, index) =>
+                tableColumnHider(
+                  index,
+                  hideIdCol,
+                  <TableCell
+                    key={`body-cell-${row.row[0]}-${index}`}
+                    align={index === 0 ? "left" : "center"}
+                    sx={{
+                      border: `1px solid #000000`,
+                      lineHeight: 1.4,
+                      verticalAlign: "top",
+                      whiteSpace: "normal",
+                      overflowWrap: "anywhere",
+                    }}
+                  >
+                    {(typeof cell === "number" || typeof cell === "string"
+                      ? cell
+                      : cell.name) ?? "-"}
+                  </TableCell>,
+                ),
+              )}
               <TableCell
                 key={`body-cell-${row.row[0]}-add`}
                 align="center"
