@@ -26,6 +26,7 @@ interface DataTableProps extends TableData {
 export default function DataTable({
   head,
   body,
+  hideIdCol,
   onAdd = (data: TableCellData[]) => {},
   onDelete = (id: TableCellData) => {},
   onSaveChanges = (data: TableCellData[]) => {},
@@ -58,24 +59,27 @@ export default function DataTable({
       <Table size="small" sx={{ width: "100%", tableLayout: "fixed" }}>
         <TableHead>
           <TableRow key="header-row">
-            {head.map(({ cell }) => (
-              <TableCell
-                align="center"
-                sx={{
-                  border: `1px solid #000000`,
-                  fontWeight: 600,
-                  lineHeight: 1.35,
-                  textAlign: "center",
-                  verticalAlign: "middle",
-                  whiteSpace: "normal",
-                  overflowWrap: "anywhere",
-                }}
-              >
-                {typeof cell === "number" || typeof cell === "string"
-                  ? cell
-                  : cell.name}
-              </TableCell>
-            ))}
+            {head.map(
+              ({ cell }) =>
+                hideIdCol ?? (
+                  <TableCell
+                    align="center"
+                    sx={{
+                      border: `1px solid #000000`,
+                      fontWeight: 600,
+                      lineHeight: 1.35,
+                      textAlign: "center",
+                      verticalAlign: "middle",
+                      whiteSpace: "normal",
+                      overflowWrap: "anywhere",
+                    }}
+                  >
+                    {typeof cell === "number" || typeof cell === "string"
+                      ? cell
+                      : cell.name}
+                  </TableCell>
+                ),
+            )}
             <TableCell
               key={`header-add`}
               align="center"

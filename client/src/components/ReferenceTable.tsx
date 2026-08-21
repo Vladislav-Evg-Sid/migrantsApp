@@ -39,7 +39,6 @@ export default function ReferencesTable({ tableName }: ReferencesTableProps) {
   const getData = () => {
     const fetchTable = async () => {
       const tableData = await getReferenceTableData(tableName);
-      console.log(tableData);
       setTable(tableData);
     };
     fetchTable();

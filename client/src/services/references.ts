@@ -25,5 +25,9 @@ export async function saveChanges(name: RefTables, data: TableCellData[]) {
 export async function getReferenceTableData(
   tableName: RefTables,
 ): Promise<TableData> {
-  return getReferenceTable(tableName);
+  const tableData = await getReferenceTable(tableName);
+  if (["participant-statuses", "test-attempts"].includes(tableName)) {
+    tableData.hideIdCol = true;
+  }
+  return tableData;
 }

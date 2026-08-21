@@ -26,4 +26,5 @@ interface TableBodyRowData {
 export interface TableData {
   head: TableHeadCellData[];
   body: TableBodyRowData[];
+  hideIdCol?: boolean;
 }
