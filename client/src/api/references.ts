@@ -4,6 +4,14 @@ import {
   type TableCellData,
 } from "../types/tables";
 import { baseApi } from "../env";
+import type {
+  CreateAreaInput,
+  CreateNationInput,
+  CreateParticipantStatusInput,
+  CreatePptInput,
+  CreateSchoolInput,
+  CreateTestAttemptInput,
+} from "../types/dto";
 
 const data = new Map<RefTables, TableData>();
 data.set("areas", {
@@ -100,7 +108,7 @@ data.set("nations", {
 export async function getReferenceTable(
   tableName: RefTables,
 ): Promise<TableData> {
-  const response = await fetch(`${baseApi}/api/${tableName}`);
+  const response = await fetch(`${baseApi}/${tableName}`);
   if (!response.ok) {
     throw new Error(`${response.status}`);
   }
@@ -110,10 +118,23 @@ export async function getReferenceTable(
 
 export async function addReferenceTableData(
   name: RefTables,
-  newData: TableCellData[],
+  newData:
+    | CreateAreaInput
+    | CreateSchoolInput
+    | CreateNationInput
+    | CreateParticipantStatusInput
+    | CreateTestAttemptInput,
 ) {
-  const tableBody = (data.get(name) ?? { head: [], body: [] }).body;
-  tableBody.push({ row: newData });
+  const response = await fetch(`${baseApi}/${name}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newData),
+  });
+  if (!response.ok) {
+    throw new Error(`${response.status}`);
+  }
 }
 
 export async function deleteReferenceTableData(

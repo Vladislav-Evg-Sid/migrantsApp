@@ -58,6 +58,9 @@ export default function InserterReferenceData({
     for (const index in values) {
       const curVal = values[index];
       if (curVal === undefined || curVal === "") {
+        if (index === "0" && hideIdCol) {
+          continue;
+        }
         toast.error("Все данные должны быть заполнены", {
           position: "top-right",
           autoClose: 5000,
@@ -105,6 +108,10 @@ export default function InserterReferenceData({
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
+                  value={values[index] ?? ""}
+                  onChange={(event) =>
+                    setValue(index, event.target.value as string)
+                  }
                 >
                   {(type ?? [[-1, "Ошибка"]]).map((variant) => (
                     <MenuItem value={variant.code}>{variant.name}</MenuItem>

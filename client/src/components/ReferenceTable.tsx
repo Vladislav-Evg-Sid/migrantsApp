@@ -49,7 +49,6 @@ export default function ReferencesTable({ tableName }: ReferencesTableProps) {
   const handleAddData = useCallback(
     async (data: TableCellData[]) => {
       await addReference(tableName, data);
-      setTable({ head: [], body: [] }); // TODO Удалить после появления бэка
       getData();
     },
     [tableName],
@@ -61,7 +60,6 @@ export default function ReferencesTable({ tableName }: ReferencesTableProps) {
         tableName,
         typeof id === "number" || typeof id === "string" ? id : id.code,
       );
-      setTable({ head: [], body: [] }); // TODO Удалить после появления бэка
       getData();
     },
     [tableName],
@@ -70,7 +68,6 @@ export default function ReferencesTable({ tableName }: ReferencesTableProps) {
   const handleSaveChanges = useCallback(
     async (data: TableCellData[]) => {
       await saveChanges(tableName, data);
-      setTable({ head: [], body: [] }); // TODO Удалить после появления бэка
       getData();
     },
     [tableName],
