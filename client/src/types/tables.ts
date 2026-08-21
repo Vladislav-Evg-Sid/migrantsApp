@@ -1,16 +1,16 @@
 export type RefTables =
   | "areas"
   | "schools"
-  | "testAttempts"
-  | "participantStatuses"
+  | "test-attempts"
+  | "participant-statuses"
   | "nations";
-
-export type ColumnTypes = "string" | "number" | string[];
 
 interface ForeignKey {
   code: number;
   name: string;
 }
+
+export type ColumnTypes = "string" | "number" | ForeignKey[];
 
 export type TableCellData = string | number | ForeignKey;
 
@@ -26,4 +26,5 @@ interface TableBodyRowData {
 export interface TableData {
   head: TableHeadCellData[];
   body: TableBodyRowData[];
+  hideIdCol?: boolean;
 }

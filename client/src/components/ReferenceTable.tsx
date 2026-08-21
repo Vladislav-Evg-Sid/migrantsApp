@@ -24,9 +24,9 @@ function handleTableName(name: RefTables): string {
       return "Округа";
     case "schools":
       return "Школы";
-    case "testAttempts":
+    case "test-attempts":
       return "Кратность участия в тестировании";
-    case "participantStatuses":
+    case "participant-statuses":
       return "Статусы участников";
     case "nations":
       return "Национальности";
@@ -39,7 +39,6 @@ export default function ReferencesTable({ tableName }: ReferencesTableProps) {
   const getData = () => {
     const fetchTable = async () => {
       const tableData = await getReferenceTableData(tableName);
-      console.log(tableData);
       setTable(tableData);
     };
     fetchTable();
@@ -50,7 +49,6 @@ export default function ReferencesTable({ tableName }: ReferencesTableProps) {
   const handleAddData = useCallback(
     async (data: TableCellData[]) => {
       await addReference(tableName, data);
-      setTable({ head: [], body: [] }); // TODO Удалить после появления бэка
       getData();
     },
     [tableName],
@@ -62,7 +60,6 @@ export default function ReferencesTable({ tableName }: ReferencesTableProps) {
         tableName,
         typeof id === "number" || typeof id === "string" ? id : id.code,
       );
-      setTable({ head: [], body: [] }); // TODO Удалить после появления бэка
       getData();
     },
     [tableName],
@@ -71,7 +68,6 @@ export default function ReferencesTable({ tableName }: ReferencesTableProps) {
   const handleSaveChanges = useCallback(
     async (data: TableCellData[]) => {
       await saveChanges(tableName, data);
-      setTable({ head: [], body: [] }); // TODO Удалить после появления бэка
       getData();
     },
     [tableName],
@@ -92,6 +88,7 @@ export default function ReferencesTable({ tableName }: ReferencesTableProps) {
       <DataTable
         head={table.head}
         body={table.body}
+        hideIdCol={table.hideIdCol ? true : false}
         onAdd={handleAddData}
         onDelete={handleDeleteData}
         onSaveChanges={handleSaveChanges}

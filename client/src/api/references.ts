@@ -3,8 +3,15 @@ import {
   type RefTables,
   type TableCellData,
 } from "../types/tables";
-import { type Area } from "../types/dto";
 import { baseApi } from "../env";
+import type {
+  CreateAreaInput,
+  CreateNationInput,
+  CreateParticipantStatusInput,
+  CreatePptInput,
+  CreateSchoolInput,
+  CreateTestAttemptInput,
+} from "../types/dto";
 
 const data = new Map<RefTables, TableData>();
 data.set("areas", {
@@ -31,7 +38,7 @@ data.set("schools", {
     },
   ],
 });
-data.set("testAttempts", {
+data.set("test-attempts", {
   head: [
     { cell: "Число", type: "number" },
     { cell: "Псевдоним", type: "string" },
@@ -63,7 +70,7 @@ data.set("testAttempts", {
     },
   ],
 });
-data.set("participantStatuses", {
+data.set("participant-statuses", {
   head: [
     { cell: "id", type: "number" },
     { cell: "Описание", type: "string" },
@@ -98,9 +105,10 @@ data.set("nations", {
   ],
 });
 
-export async function getAreas(): Promise<Area[]> {
-  console.log(`${baseApi}:/api/areas`);
-  const response = await fetch(`${baseApi}/api/areas`);
+export async function getReferenceTable(
+  tableName: RefTables,
+): Promise<TableData> {
+  const response = await fetch(`${baseApi}/${tableName}`);
   if (!response.ok) {
     throw new Error(`${response.status}`);
   }
@@ -110,26 +118,35 @@ export async function getAreas(): Promise<Area[]> {
 
 export async function addReferenceTableData(
   name: RefTables,
-  newData: TableCellData[],
+  newData:
+    | CreateAreaInput
+    | CreateSchoolInput
+    | CreateNationInput
+    | CreateParticipantStatusInput
+    | CreateTestAttemptInput,
 ) {
-  const tableBody = (data.get(name) ?? { head: [], body: [] }).body;
-  tableBody.push({ row: newData });
+  const response = await fetch(`${baseApi}/${name}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newData),
+  });
+  if (!response.ok) {
+    throw new Error(`${response.status}`);
+  }
 }
 
 export async function deleteReferenceTableData(
   name: RefTables,
   id: number | string,
 ) {
-  const table = data.get(name);
-
-  if (!table) {
-    return;
-  }
-
-  data.set(name, {
-    ...table,
-    body: table.body.filter((row) => String(row.row[0]) !== String(id)),
+  const response = await fetch(`${baseApi}/${name}/${id}`, {
+    method: "DELETE",
   });
+  if (!response.ok) {
+    throw new Error(`${response.status}`);
+  }
 }
 
 export async function saveChangesTableData(

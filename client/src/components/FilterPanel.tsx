@@ -27,7 +27,6 @@ export default function FilterPanel({ filters }: FilterPanelProps) {
         backgroundColor: "#D9D9D9",
         borderRadius: 10,
         p: 2,
-        height: "40vh",
       }}
     >
       <TableContainer
@@ -42,9 +41,10 @@ export default function FilterPanel({ filters }: FilterPanelProps) {
       >
         <Table size="small" sx={{ width: "100%", tableLayout: "fixed" }}>
           <TableHead>
-            <TableRow key="header-row">
-              {filters.map(({ name }) => (
+            <TableRow>
+              {filters.map(({ name }, index) => (
                 <TableCell
+                  key={index}
                   align="center"
                   sx={{
                     border: `1px solid #000000`,
@@ -69,8 +69,9 @@ export default function FilterPanel({ filters }: FilterPanelProps) {
                 },
               }}
             >
-              {filters.map(({ type, variants }) => (
+              {filters.map(({ type, variants }, index) => (
                 <TableCell
+                  key={index}
                   align="center"
                   sx={{
                     border: `1px solid #000000`,
@@ -86,9 +87,6 @@ export default function FilterPanel({ filters }: FilterPanelProps) {
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        // value={variants}
-                        // label="Age"
-                        // onChange={handleChange}
                       >
                         {(variants ?? [[-1, "Ошибка"]]).map((variant) => (
                           <MenuItem value={variant[0]}>{variant[1]}</MenuItem>

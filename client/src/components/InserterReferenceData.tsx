@@ -1,10 +1,21 @@
 import { useEffect, useState } from "react";
-import { TableRow, TableCell, TextField, Button, Alert } from "@mui/material";
+import {
+  TableRow,
+  TableCell,
+  TextField,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
 import { Bounce, toast } from "react-toastify";
 
 import { type ColumnTypes, type TableCellData } from "../types/tables";
+import { tableColumnHider } from "./utils/tableColumnHider";
 
 interface InserterProps {
+  hideIdCol: boolean;
   types: ColumnTypes[];
   onAdd: (data: TableCellData[]) => void;
   editedData: string[] | null;
@@ -14,6 +25,7 @@ export default function InserterReferenceData({
   types,
   onAdd,
   editedData: editingData,
+  hideIdCol,
 }: InserterProps) {
   const [values, setValues] = useState<string[]>(Array(types.length).fill(""));
 
@@ -46,6 +58,9 @@ export default function InserterReferenceData({
     for (const index in values) {
       const curVal = values[index];
       if (curVal === undefined || curVal === "") {
+        if (index === "0" && hideIdCol) {
+          continue;
+        }
         toast.error("Все данные должны быть заполнены", {
           position: "top-right",
           autoClose: 5000,
@@ -62,33 +77,51 @@ export default function InserterReferenceData({
 
   return (
     <TableRow key="header-row">
-      {types.map((type, index) => (
-        <TableCell
-          key={`inserter-${index}`}
-          align="center"
-          sx={{
-            border: `1px solid #000000`,
-            fontWeight: 600,
-            lineHeight: 1.35,
-            textAlign: "center",
-            verticalAlign: "middle",
-            whiteSpace: "normal",
-            overflowWrap: "anywhere",
-          }}
-        >
-          {typeof type === "string" ? (
-            <TextField
-              value={values[index] ?? ""}
-              onChange={(event) => setValue(index, event.target.value)}
-              inputMode={type === "number" ? "numeric" : "text"}
-              fullWidth
-              disabled={index === 0 && editMode}
-            />
-          ) : (
-            <></>
-          )}
-        </TableCell>
-      ))}
+      {types.map((type, index) =>
+        tableColumnHider(
+          index,
+          hideIdCol,
+          <TableCell
+            key={`inserter-${index}`}
+            align="center"
+            sx={{
+              border: `1px solid #000000`,
+              fontWeight: 600,
+              lineHeight: 1.35,
+              textAlign: "center",
+              verticalAlign: "middle",
+              whiteSpace: "normal",
+              overflowWrap: "anywhere",
+            }}
+          >
+            {typeof type === "string" ? (
+              <TextField
+                value={values[index] ?? ""}
+                onChange={(event) => setValue(index, event.target.value)}
+                inputMode={type === "number" ? "numeric" : "text"}
+                fullWidth
+                disabled={index === 0 && editMode}
+              />
+            ) : (
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label"></InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={values[index] ?? ""}
+                  onChange={(event) =>
+                    setValue(index, event.target.value as string)
+                  }
+                >
+                  {(type ?? [[-1, "Ошибка"]]).map((variant) => (
+                    <MenuItem value={variant.code}>{variant.name}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+          </TableCell>,
+        ),
+      )}
       <TableCell
         key={`inserter-add`}
         align="center"

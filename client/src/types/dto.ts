@@ -1,48 +1,56 @@
-export type Area = {
+import { type TableCellData, type ColumnTypes } from "./tables";
+
+export type TableData = {
+  head: {
+    cell: string;
+    type: ColumnTypes;
+  }[];
+  body: {
+    row: TableCellData[];
+  }[];
+};
+
+export type CreateAreaInput = {
   code: number;
   name: string;
 };
 
-export type School = {
+export type CreateSchoolInput = {
   code: number;
   name: string;
   address: string;
-  area: Area;
+  areaCode: number;
 };
 
-export type Ppt = {
+export type CreatePptInput = {
   code: number;
+  schoolCode: number;
   responsibleName: string;
   responsiblePhone: string;
-  school: Pick<School, "code" | "name">;
 };
 
-export type AreaResponsible = {
-  id: number;
+export type CreateAreaResponsibleInput = {
+  areaCode: number;
   name: string;
   phone: string;
   mail: string;
-  area: Area;
 };
 
-export type Nation = {
-  id: number;
+export type CreateNationInput = {
   name: string;
 };
 
-export type ParticipantStatus = {
-  id: number;
+export type CreateParticipantStatusInput = {
   name: string;
 };
 
-export type TestDate = {
-  id: number;
+export type CreateTestDateInput = {
   day: number;
   month: number;
   year: number;
 };
 
-export type TestAttempt = {
-  id: number;
+export type CreateTestAttemptInput = {
+  number: number;
   name: string;
 };
