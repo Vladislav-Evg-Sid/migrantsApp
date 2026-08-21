@@ -7,8 +7,23 @@ CREATE TABLE areas (
 CREATE TABLE schools (
     code INTEGER PRIMARY KEY,
     name VARCHAR(127) NOT NULL,
-    ppt_code INTEGER UNIQUE,
+    address TEXT NOT NULL,
     area_code INTEGER NOT NULL REFERENCES areas(code)
+);
+
+CREATE TABLE ppts (
+    code INTEGER PRIMARY KEY,
+    school_code INTEGER NOT NULL REFERENCES schools(code),
+    responsible_name VARCHAR(127) NOT NULL,
+    responsible_phone VARCHAR(11) NOT NULL
+);
+
+CREATE TABLE area_responsibles (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    area_code INTEGER NOT NULL REFERENCES areas(code),
+    name VARCHAR(127) NOT NULL,
+    phone VARCHAR(11) NOT NULL,
+    mail VARCHAR(127) NOT NULL
 );
 
 CREATE TABLE nations (
@@ -68,5 +83,5 @@ CREATE TABLE test_results (
     sending_school_code INTEGER NOT NULL REFERENCES schools(code),
     test_attempt_id INTEGER NOT NULL REFERENCES test_attempts(id),
     appeal_id INTEGER REFERENCES appeals(id),
-    testing_center_ppt_code INTEGER NOT NULL REFERENCES schools(ppt_code)
+    testing_center_ppt_code INTEGER NOT NULL REFERENCES ppts(code)
 );

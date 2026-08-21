@@ -1,6 +1,8 @@
 DROP TABLE IF EXISTS test_results;
 DROP TABLE IF EXISTS participants;
+DROP TABLE IF EXISTS ppts;
 DROP TABLE IF EXISTS schools;
+DROP TABLE IF EXISTS area_responsibles;
 DROP TABLE IF EXISTS test_dates;
 DROP TABLE IF EXISTS appeals;
 DROP TABLE IF EXISTS test_attempts;
