@@ -57,8 +57,8 @@ export default function InserterReferenceData({
     const newData: TableCellData[] = [];
     for (const index in values) {
       const curVal = values[index];
-      if ((curVal === undefined || curVal === "") && editingData !== null) {
-        if (index === "0" && hideIdCol) {
+      if (curVal === undefined || curVal === "") {
+        if (index === "0" && hideIdCol && editingData === null) {
           continue;
         }
         toast.error("Все данные должны быть заполнены", {
