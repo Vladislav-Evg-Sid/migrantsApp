@@ -8,9 +8,13 @@ import type {
   CreateAreaInput,
   CreateNationInput,
   CreateParticipantStatusInput,
-  CreatePptInput,
   CreateSchoolInput,
   CreateTestAttemptInput,
+  UpdateAreaInput,
+  UpdateSchoolInput,
+  UpdateNationInput,
+  UpdateParticipantStatusInput,
+  UpdateTestAttemptInput,
 } from "../types/dto";
 
 const data = new Map<RefTables, TableData>();
@@ -149,22 +153,24 @@ export async function deleteReferenceTableData(
   }
 }
 
-export async function saveChangesTableData(
+export async function updateReferenceTableData(
   name: RefTables,
-  updatedData: TableCellData[],
+  id: number,
+  updatedData:
+    | UpdateAreaInput
+    | UpdateSchoolInput
+    | UpdateNationInput
+    | UpdateParticipantStatusInput
+    | UpdateTestAttemptInput,
 ) {
-  const table = data.get(name);
-
-  if (!table) {
-    return;
-  }
-
-  data.set(name, {
-    ...table,
-    body: table.body.map((row) =>
-      String(row.row[0]) === String(updatedData[0])
-        ? { ...row, row: updatedData }
-        : row,
-    ),
+  const response = await fetch(`${baseApi}/${name}/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updatedData),
   });
+  if (!response.ok) {
+    throw new Error(`${response.status}`);
+  }
 }

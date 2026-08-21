@@ -54,3 +54,19 @@ export type CreateTestAttemptInput = {
   number: number;
   name: string;
 };
+
+export type UpdateAreaInput = Omit<CreateAreaInput, "code">;
+
+export type UpdateSchoolInput = Omit<CreateSchoolInput, "code">;
+
+export type UpdatePptInput = Omit<CreatePptInput, "code">;
+
+export type UpdateAreaResponsibleInput = CreateAreaResponsibleInput;
+
+export type UpdateNationInput = CreateNationInput;
+
+export type UpdateParticipantStatusInput = CreateParticipantStatusInput;
+
+export type UpdateTestDateInput = CreateTestDateInput;
+
+export type UpdateTestAttemptInput = Omit<CreateTestAttemptInput, "number">;
