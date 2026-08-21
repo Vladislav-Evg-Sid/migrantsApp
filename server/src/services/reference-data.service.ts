@@ -7,6 +7,14 @@ import {
   findAllSchools,
   findAllTestAttempts,
   findAllTestDates,
+  deleteAreaByCode,
+  deleteAreaResponsibleById,
+  deleteNationById,
+  deleteParticipantStatusById,
+  deletePptByCode,
+  deleteSchoolByCode,
+  deleteTestAttemptByNumber,
+  deleteTestDateById,
   insertArea,
   insertAreaResponsible,
   insertNation,
@@ -194,4 +202,36 @@ export async function createTestDate(input: CreateTestDateInput) {
 
 export async function createTestAttempt(input: CreateTestAttemptInput) {
   await insertTestAttempt(input.number, input.name);
+}
+
+export async function deleteArea(code: number) {
+  await deleteAreaByCode(code);
+}
+
+export async function deleteSchool(code: number) {
+  await deleteSchoolByCode(code);
+}
+
+export async function deletePpt(code: number) {
+  await deletePptByCode(code);
+}
+
+export async function deleteAreaResponsible(id: number) {
+  await deleteAreaResponsibleById(id);
+}
+
+export async function deleteNation(id: number) {
+  await deleteNationById(id);
+}
+
+export async function deleteParticipantStatus(id: number) {
+  await deleteParticipantStatusById(id);
+}
+
+export async function deleteTestDate(id: number) {
+  await deleteTestDateById(id);
+}
+
+export async function deleteTestAttempt(number: number) {
+  await deleteTestAttemptByNumber(number);
 }
