@@ -141,16 +141,12 @@ export async function deleteReferenceTableData(
   name: RefTables,
   id: number | string,
 ) {
-  const table = data.get(name);
-
-  if (!table) {
-    return;
-  }
-
-  data.set(name, {
-    ...table,
-    body: table.body.filter((row) => String(row.row[0]) !== String(id)),
+  const response = await fetch(`${baseApi}/${name}/${id}`, {
+    method: "DELETE",
   });
+  if (!response.ok) {
+    throw new Error(`${response.status}`);
+  }
 }
 
 export async function saveChangesTableData(
