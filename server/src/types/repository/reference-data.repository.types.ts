@@ -46,6 +46,6 @@ export type TestDateRow = {
 };
 
 export type TestAttemptRow = {
-  id: number;
+  number: number;
   name: string;
 };

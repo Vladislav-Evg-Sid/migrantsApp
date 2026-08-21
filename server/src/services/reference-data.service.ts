@@ -7,8 +7,26 @@ import {
   findAllSchools,
   findAllTestAttempts,
   findAllTestDates,
+  insertArea,
+  insertAreaResponsible,
+  insertNation,
+  insertParticipantStatus,
+  insertPpt,
+  insertSchool,
+  insertTestAttempt,
+  insertTestDate,
 } from "../repositories/reference-data.repository.js";
-import type { TableData } from "../types/reference-data.js";
+import type {
+  CreateAreaInput,
+  CreateAreaResponsibleInput,
+  CreateNationInput,
+  CreateParticipantStatusInput,
+  CreatePptInput,
+  CreateSchoolInput,
+  CreateTestAttemptInput,
+  CreateTestDateInput,
+  TableData,
+} from "../types/reference-data.js";
 
 export async function getAreas(): Promise<TableData> {
   const rows = await findAllAreas();
@@ -30,7 +48,10 @@ export async function getSchools(): Promise<TableData> {
       { cell: "Код", type: "number" },
       { cell: "Название", type: "string" },
       { cell: "Адрес", type: "string" },
-      { cell: "МО", type: areas.map((area) => area.name) },
+      {
+        cell: "МО",
+        type: areas.map((area) => ({ code: area.code, name: area.name })),
+      },
     ],
     body: rows.map((row) => ({
       row: [
@@ -51,7 +72,10 @@ export async function getPpts(): Promise<TableData> {
       { cell: "Код", type: "number" },
       { cell: "Ответственный", type: "string" },
       { cell: "Телефон", type: "string" },
-      { cell: "Школа", type: schools.map((school) => school.name) },
+      {
+        cell: "Школа",
+        type: schools.map((school) => ({ code: school.code, name: school.name })),
+      },
     ],
     body: rows.map((row) => ({
       row: [
@@ -73,7 +97,10 @@ export async function getAreaResponsibles(): Promise<TableData> {
       { cell: "Ответственный", type: "string" },
       { cell: "Телефон", type: "string" },
       { cell: "Электронная почта", type: "string" },
-      { cell: "МО", type: areas.map((area) => area.name) },
+      {
+        cell: "МО",
+        type: areas.map((area) => ({ code: area.code, name: area.name })),
+      },
     ],
     body: rows.map((row) => ({
       row: [
@@ -130,9 +157,41 @@ export async function getTestAttempts(): Promise<TableData> {
 
   return {
     head: [
-      { cell: "ID", type: "number" },
+      { cell: "Номер попытки", type: "number" },
       { cell: "Название", type: "string" },
     ],
-    body: rows.map((row) => ({ row: [row.id, row.name] })),
+    body: rows.map((row) => ({ row: [row.number, row.name] })),
   };
+}
+
+export async function createArea(input: CreateAreaInput) {
+  await insertArea(input.code, input.name);
+}
+
+export async function createSchool(input: CreateSchoolInput) {
+  await insertSchool(input.code, input.name, input.address, input.areaCode);
+}
+
+export async function createPpt(input: CreatePptInput) {
+  await insertPpt(input.code, input.schoolCode, input.responsibleName, input.responsiblePhone);
+}
+
+export async function createAreaResponsible(input: CreateAreaResponsibleInput) {
+  await insertAreaResponsible(input.areaCode, input.name, input.phone, input.mail);
+}
+
+export async function createNation(input: CreateNationInput) {
+  await insertNation(input.name);
+}
+
+export async function createParticipantStatus(input: CreateParticipantStatusInput) {
+  await insertParticipantStatus(input.name);
+}
+
+export async function createTestDate(input: CreateTestDateInput) {
+  await insertTestDate(input.day, input.month, input.year);
+}
+
+export async function createTestAttempt(input: CreateTestAttemptInput) {
+  await insertTestAttempt(input.number, input.name);
 }
