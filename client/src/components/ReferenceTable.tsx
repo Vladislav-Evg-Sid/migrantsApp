@@ -7,7 +7,7 @@ import {
   type RefTables,
   type TableCellData,
 } from "../types/tables";
-import { getReferenceTableData } from "../api/references";
+import { getReferenceTableData } from "../services/references";
 import {
   addReference,
   deleteReference,
@@ -24,9 +24,9 @@ function handleTableName(name: RefTables): string {
       return "Округа";
     case "schools":
       return "Школы";
-    case "attempts":
+    case "testAttempts":
       return "Кратность участия в тестировании";
-    case "statuses":
+    case "participantStatuses":
       return "Статусы участников";
     case "nations":
       return "Национальности";
@@ -39,6 +39,7 @@ export default function ReferencesTable({ tableName }: ReferencesTableProps) {
   const getData = () => {
     const fetchTable = async () => {
       const tableData = await getReferenceTableData(tableName);
+      console.log(tableData);
       setTable(tableData);
     };
     fetchTable();
@@ -56,8 +57,11 @@ export default function ReferencesTable({ tableName }: ReferencesTableProps) {
   );
 
   const handleDeleteData = useCallback(
-    async (id: string | number) => {
-      await deleteReference(tableName, id);
+    async (id: TableCellData) => {
+      await deleteReference(
+        tableName,
+        typeof id === "number" || typeof id === "string" ? id : id.code,
+      );
       setTable({ head: [], body: [] }); // TODO Удалить после появления бэка
       getData();
     },

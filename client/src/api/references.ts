@@ -3,6 +3,8 @@ import {
   type RefTables,
   type TableCellData,
 } from "../types/tables";
+import { type Area } from "../types/dto";
+import { baseApi } from "../env";
 
 const data = new Map<RefTables, TableData>();
 data.set("areas", {
@@ -29,7 +31,7 @@ data.set("schools", {
     },
   ],
 });
-data.set("attempts", {
+data.set("testAttempts", {
   head: [
     { cell: "Число", type: "number" },
     { cell: "Псевдоним", type: "string" },
@@ -61,7 +63,7 @@ data.set("attempts", {
     },
   ],
 });
-data.set("statuses", {
+data.set("participantStatuses", {
   head: [
     { cell: "id", type: "number" },
     { cell: "Описание", type: "string" },
@@ -96,10 +98,14 @@ data.set("nations", {
   ],
 });
 
-export async function getReferenceTableData(
-  tableName: RefTables,
-): Promise<TableData> {
-  return data.get(tableName) ?? { head: [], body: [] };
+export async function getAreas(): Promise<Area[]> {
+  console.log(`${baseApi}:/api/areas`);
+  const response = await fetch(`${baseApi}/api/areas`);
+  if (!response.ok) {
+    throw new Error(`${response.status}`);
+  }
+  const data = await response.json();
+  return data;
 }
 
 export async function addReferenceTableData(
