@@ -16,6 +16,8 @@ import {
 
 interface ReferencesTableProps {
   tableName: RefTables;
+  rerenderSignal?: boolean;
+  rerenderDependencies?: () => void;
 }
 
 function handleTableName(name: RefTables): string {
@@ -33,7 +35,11 @@ function handleTableName(name: RefTables): string {
   }
 }
 
-export default function ReferencesTable({ tableName }: ReferencesTableProps) {
+export default function ReferencesTable({
+  tableName,
+  rerenderSignal = false,
+  rerenderDependencies = () => {},
+}: ReferencesTableProps) {
   const [table, setTable] = useState<TableData>({ head: [], body: [] });
 
   const getData = () => {
@@ -44,12 +50,13 @@ export default function ReferencesTable({ tableName }: ReferencesTableProps) {
     fetchTable();
   };
 
-  useEffect(getData, []);
+  useEffect(getData, [rerenderSignal]);
 
   const handleAddData = useCallback(
     async (data: TableCellData[]) => {
       await addReference(tableName, data);
       getData();
+      rerenderDependencies();
     },
     [tableName],
   );
@@ -61,6 +68,7 @@ export default function ReferencesTable({ tableName }: ReferencesTableProps) {
         typeof id === "number" || typeof id === "string" ? id : id.code,
       );
       getData();
+      rerenderDependencies();
     },
     [tableName],
   );
@@ -69,6 +77,7 @@ export default function ReferencesTable({ tableName }: ReferencesTableProps) {
     async (data: TableCellData[]) => {
       await updateReference(tableName, data);
       getData();
+      rerenderDependencies();
     },
     [tableName],
   );
