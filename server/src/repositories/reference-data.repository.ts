@@ -86,7 +86,92 @@ export async function findAllTestDates(): Promise<TestDateRow[]> {
 
 export async function findAllTestAttempts(): Promise<TestAttemptRow[]> {
   const result = await pool.query<TestAttemptRow>(
-    "SELECT id, name FROM test_attempts ORDER BY id",
+    "SELECT number, name FROM test_attempts ORDER BY number",
   );
   return result.rows;
+}
+
+export async function insertArea(code: number, name: string): Promise<void> {
+  await pool.query(
+    `INSERT INTO areas (code, name)
+     VALUES ($1, $2)`,
+    [code, name]);
+}
+
+export async function insertSchool(
+  code: number,
+  name: string,
+  address: string,
+  areaCode: number,
+): Promise<void> {
+  await pool.query(
+    `INSERT INTO schools (code, name, address, area_code)
+     VALUES ($1, $2, $3, $4)`,
+    [code, name, address, areaCode],
+  );
+}
+
+export async function insertPpt(
+  code: number,
+  schoolCode: number,
+  responsibleName: string,
+  responsiblePhone: string,
+): Promise<void> {
+  await pool.query(
+    `INSERT INTO ppts (code, school_code, responsible_name, responsible_phone)
+     VALUES ($1, $2, $3, $4)`,
+    [code, schoolCode, responsibleName, responsiblePhone],
+  );
+}
+
+export async function insertAreaResponsible(
+  areaCode: number,
+  name: string,
+  phone: string,
+  mail: string,
+): Promise<void> {
+  await pool.query(
+    `INSERT INTO area_responsibles (area_code, name, phone, mail)
+     VALUES ($1, $2, $3, $4)`,
+    [areaCode, name, phone, mail],
+  );
+}
+
+export async function insertNation(name: string): Promise<void> {
+  await pool.query(
+    `INSERT INTO nations (name)
+     VALUES ($1)`,
+    [name]);
+}
+
+export async function insertParticipantStatus(
+  name: string,
+): Promise<void> {
+  await pool.query(
+    `INSERT INTO participant_statuses (name)
+     VALUES ($1)`,
+    [name]);
+}
+
+export async function insertTestDate(
+  day: number,
+  month: number,
+  year: number,
+): Promise<void> {
+  await pool.query(
+    `INSERT INTO test_dates (day, month, year)
+     VALUES ($1, $2, $3)`,
+    [day, month, year],
+  );
+}
+
+export async function insertTestAttempt(
+  number: number,
+  name: string,
+): Promise<void> {
+  await pool.query(
+    `INSERT INTO test_attempts (number, name)
+     VALUES ($1, $2)`,
+    [number, name],
+  );
 }
