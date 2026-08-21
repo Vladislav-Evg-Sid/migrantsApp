@@ -23,6 +23,14 @@ import {
   insertSchool,
   insertTestAttempt,
   insertTestDate,
+  updateAreaByCode,
+  updateAreaResponsibleById,
+  updateNationById,
+  updateParticipantStatusById,
+  updatePptByCode,
+  updateSchoolByCode,
+  updateTestAttemptByNumber,
+  updateTestDateById,
 } from "../repositories/reference-data.repository.js";
 import type {
   CreateAreaInput,
@@ -34,6 +42,14 @@ import type {
   CreateTestAttemptInput,
   CreateTestDateInput,
   TableData,
+  UpdateAreaInput,
+  UpdateAreaResponsibleInput,
+  UpdateNationInput,
+  UpdateParticipantStatusInput,
+  UpdatePptInput,
+  UpdateSchoolInput,
+  UpdateTestAttemptInput,
+  UpdateTestDateInput,
 } from "../types/reference-data.js";
 
 export async function getAreas(): Promise<TableData> {
@@ -234,4 +250,47 @@ export async function deleteTestDate(id: number) {
 
 export async function deleteTestAttempt(number: number) {
   await deleteTestAttemptByNumber(number);
+}
+
+export async function updateArea(code: number, input: UpdateAreaInput) {
+  await updateAreaByCode(code, input.name);
+}
+
+export async function updateSchool(code: number, input: UpdateSchoolInput) {
+  await updateSchoolByCode(code, input.name, input.address, input.areaCode);
+}
+
+export async function updatePpt(code: number, input: UpdatePptInput) {
+  await updatePptByCode(
+    code,
+    input.schoolCode,
+    input.responsibleName,
+    input.responsiblePhone,
+  );
+}
+
+export async function updateAreaResponsible(id: number, input: UpdateAreaResponsibleInput) {
+  await updateAreaResponsibleById(
+    id,
+    input.areaCode,
+    input.name,
+    input.phone,
+    input.mail,
+  );
+}
+
+export async function updateNation(id: number, input: UpdateNationInput) {
+  await updateNationById(id, input.name);
+}
+
+export async function updateParticipantStatus(id: number, input: UpdateParticipantStatusInput) {
+  await updateParticipantStatusById(id, input.name);
+}
+
+export async function updateTestDate(id: number, input: UpdateTestDateInput) {
+  await updateTestDateById(id, input.day, input.month, input.year);
+}
+
+export async function updateTestAttempt(number: number, input: UpdateTestAttemptInput) {
+  await updateTestAttemptByNumber(number, input.name);
 }
