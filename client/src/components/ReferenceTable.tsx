@@ -11,7 +11,7 @@ import { getReferenceTableData } from "../services/references";
 import {
   addReference,
   deleteReference,
-  saveChanges,
+  updateReference,
 } from "../services/references";
 
 interface ReferencesTableProps {
@@ -67,7 +67,7 @@ export default function ReferencesTable({ tableName }: ReferencesTableProps) {
 
   const handleSaveChanges = useCallback(
     async (data: TableCellData[]) => {
-      await saveChanges(tableName, data);
+      await updateReference(tableName, data);
       getData();
     },
     [tableName],
