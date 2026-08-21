@@ -175,3 +175,35 @@ export async function insertTestAttempt(
     [number, name],
   );
 }
+
+export async function deleteAreaByCode(code: number): Promise<void> {
+  await pool.query("DELETE FROM areas WHERE code = $1", [code]);
+}
+
+export async function deleteSchoolByCode(code: number): Promise<void> {
+  await pool.query("DELETE FROM schools WHERE code = $1", [code]);
+}
+
+export async function deletePptByCode(code: number): Promise<void> {
+  await pool.query("DELETE FROM ppts WHERE code = $1", [code]);
+}
+
+export async function deleteAreaResponsibleById(id: number): Promise<void> {
+  await pool.query("DELETE FROM area_responsibles WHERE id = $1", [id]);
+}
+
+export async function deleteNationById(id: number): Promise<void> {
+  await pool.query("DELETE FROM nations WHERE id = $1", [id]);
+}
+
+export async function deleteParticipantStatusById(id: number): Promise<void> {
+  await pool.query("DELETE FROM participant_statuses WHERE id = $1", [id]);
+}
+
+export async function deleteTestDateById(id: number): Promise<void> {
+  await pool.query("DELETE FROM test_dates WHERE id = $1", [id]);
+}
+
+export async function deleteTestAttemptByNumber(number: number): Promise<void> {
+  await pool.query("DELETE FROM test_attempts WHERE number = $1", [number]);
+}
