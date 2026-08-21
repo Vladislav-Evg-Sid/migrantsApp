@@ -95,7 +95,8 @@ export async function insertArea(code: number, name: string): Promise<void> {
   await pool.query(
     `INSERT INTO areas (code, name)
      VALUES ($1, $2)`,
-    [code, name]);
+    [code, name]
+  );
 }
 
 export async function insertSchool(
@@ -141,23 +142,19 @@ export async function insertNation(name: string): Promise<void> {
   await pool.query(
     `INSERT INTO nations (name)
      VALUES ($1)`,
-    [name]);
+    [name]
+  );
 }
 
-export async function insertParticipantStatus(
-  name: string,
-): Promise<void> {
+export async function insertParticipantStatus(name: string): Promise<void> {
   await pool.query(
     `INSERT INTO participant_statuses (name)
      VALUES ($1)`,
-    [name]);
+    [name]
+  );
 }
 
-export async function insertTestDate(
-  day: number,
-  month: number,
-  year: number,
-): Promise<void> {
+export async function insertTestDate(day: number, month: number, year: number): Promise<void> {
   await pool.query(
     `INSERT INTO test_dates (day, month, year)
      VALUES ($1, $2, $3)`,
@@ -165,10 +162,7 @@ export async function insertTestDate(
   );
 }
 
-export async function insertTestAttempt(
-  number: number,
-  name: string,
-): Promise<void> {
+export async function insertTestAttempt(number: number, name: string): Promise<void> {
   await pool.query(
     `INSERT INTO test_attempts (number, name)
      VALUES ($1, $2)`,
@@ -206,4 +200,97 @@ export async function deleteTestDateById(id: number): Promise<void> {
 
 export async function deleteTestAttemptByNumber(number: number): Promise<void> {
   await pool.query("DELETE FROM test_attempts WHERE number = $1", [number]);
+}
+
+export async function updateAreaByCode(code: number, name: string): Promise<void> {
+  await pool.query(
+    `UPDATE areas
+     SET name = $1
+     WHERE code = $2`, 
+    [name, code]
+  );
+}
+
+export async function updateSchoolByCode(
+  code: number,
+  name: string,
+  address: string,
+  areaCode: number,
+): Promise<void> {
+  await pool.query(
+    `UPDATE schools
+     SET name = $1, address = $2, area_code = $3
+     WHERE code = $4`,
+    [name, address, areaCode, code],
+  );
+}
+
+export async function updatePptByCode(
+  code: number,
+  schoolCode: number,
+  responsibleName: string,
+  responsiblePhone: string,
+): Promise<void> {
+  await pool.query(
+    `UPDATE ppts
+     SET school_code = $1, responsible_name = $2, responsible_phone = $3
+     WHERE code = $4`,
+    [schoolCode, responsibleName, responsiblePhone, code],
+  );
+}
+
+export async function updateAreaResponsibleById(
+  id: number,
+  areaCode: number,
+  name: string,
+  phone: string,
+  mail: string,
+): Promise<void> {
+  await pool.query(
+    `UPDATE area_responsibles
+     SET area_code = $1, name = $2, phone = $3, mail = $4
+     WHERE id = $5`,
+    [areaCode, name, phone, mail, id],
+  );
+}
+
+export async function updateNationById(id: number, name: string): Promise<void> {
+  await pool.query(
+    `UPDATE nations
+     SET name = $1
+     WHERE id = $2`,
+    [name, id]
+  );
+}
+
+export async function updateParticipantStatusById(id: number, name: string): Promise<void> {
+  await pool.query(
+    `UPDATE participant_statuses
+     SET name = $1
+     WHERE id = $2`,
+    [name, id]
+  );
+}
+
+export async function updateTestDateById(
+  id: number,
+  day: number,
+  month: number,
+  year: number,
+): Promise<void> {
+  await pool.query(
+    `UPDATE test_dates
+     SET day = $1, month = $2, year = $3
+     WHERE id = $4`,
+    [day, month, year, id],
+  );
+}
+
+export async function updateTestAttemptByNumber(number: number, name: string): Promise<void> {
+  await pool.query(
+    `UPDATE test_attempts
+     SET name = $1
+     WHERE number = $2`,
+    [name, number]
+  );
 }

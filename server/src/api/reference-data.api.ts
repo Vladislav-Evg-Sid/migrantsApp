@@ -25,6 +25,14 @@ import {
   getSchools,
   getTestAttempts,
   getTestDates,
+  updateArea,
+  updateAreaResponsible,
+  updateNation,
+  updateParticipantStatus,
+  updatePpt,
+  updateSchool,
+  updateTestAttempt,
+  updateTestDate,
 } from "../services/reference-data.service.js";
 
 export const referenceDataRouter = Router();
@@ -43,6 +51,11 @@ referenceDataRouter.delete("/areas/:code", async (request, response) => {
   response.status(204).send();
 });
 
+referenceDataRouter.put("/areas/:code", async (request, response) => {
+  await updateArea(Number(request.params.code), request.body);
+  response.status(204).send();
+});
+
 referenceDataRouter.get("/schools", async (_request, response) => {
   response.json(await getSchools());
 });
@@ -54,6 +67,11 @@ referenceDataRouter.post("/schools", async (request, response) => {
 
 referenceDataRouter.delete("/schools/:code", async (request, response) => {
   await deleteSchool(Number(request.params.code));
+  response.status(204).send();
+});
+
+referenceDataRouter.put("/schools/:code", async (request, response) => {
+  await updateSchool(Number(request.params.code), request.body);
   response.status(204).send();
 });
 
@@ -71,6 +89,11 @@ referenceDataRouter.delete("/ppts/:code", async (request, response) => {
   response.status(204).send();
 });
 
+referenceDataRouter.put("/ppts/:code", async (request, response) => {
+  await updatePpt(Number(request.params.code), request.body);
+  response.status(204).send();
+});
+
 referenceDataRouter.get("/area-responsibles", async (_request, response) => {
   response.json(await getAreaResponsibles());
 });
@@ -82,6 +105,11 @@ referenceDataRouter.post("/area-responsibles", async (request, response) => {
 
 referenceDataRouter.delete("/area-responsibles/:id", async (request, response) => {
   await deleteAreaResponsible(Number(request.params.id));
+  response.status(204).send();
+});
+
+referenceDataRouter.put("/area-responsibles/:id", async (request, response) => {
+  await updateAreaResponsible(Number(request.params.id), request.body);
   response.status(204).send();
 });
 
@@ -99,6 +127,11 @@ referenceDataRouter.delete("/nations/:id", async (request, response) => {
   response.status(204).send();
 });
 
+referenceDataRouter.put("/nations/:id", async (request, response) => {
+  await updateNation(Number(request.params.id), request.body);
+  response.status(204).send();
+});
+
 referenceDataRouter.get("/participant-statuses", async (_request, response) => {
   response.json(await getParticipantStatuses());
 });
@@ -110,6 +143,11 @@ referenceDataRouter.post("/participant-statuses", async (request, response) => {
 
 referenceDataRouter.delete("/participant-statuses/:id", async (request, response) => {
   await deleteParticipantStatus(Number(request.params.id));
+  response.status(204).send();
+});
+
+referenceDataRouter.put("/participant-statuses/:id", async (request, response) => {
+  await updateParticipantStatus(Number(request.params.id), request.body);
   response.status(204).send();
 });
 
@@ -127,6 +165,11 @@ referenceDataRouter.delete("/test-dates/:id", async (request, response) => {
   response.status(204).send();
 });
 
+referenceDataRouter.put("/test-dates/:id", async (request, response) => {
+  await updateTestDate(Number(request.params.id), request.body);
+  response.status(204).send();
+});
+
 referenceDataRouter.get("/test-attempts", async (_request, response) => {
   response.json(await getTestAttempts());
 });
@@ -138,5 +181,10 @@ referenceDataRouter.post("/test-attempts", async (request, response) => {
 
 referenceDataRouter.delete("/test-attempts/:number", async (request, response) => {
   await deleteTestAttempt(Number(request.params.number));
+  response.status(204).send();
+});
+
+referenceDataRouter.put("/test-attempts/:number", async (request, response) => {
+  await updateTestAttempt(Number(request.params.number), request.body);
   response.status(204).send();
 });
