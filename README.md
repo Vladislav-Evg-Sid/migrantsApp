@@ -22,8 +22,6 @@
    npm run dev
    ```
 
-4. Проверьте подключение к базе данных: `GET http://localhost:3000/api/health`.
-
 ## База данных
 
 При первом создании Docker volume PostgreSQL автоматически выполняет:
@@ -32,12 +30,6 @@
 2. `database/reference_data.sql` — первоначальное заполнение справочников.
 
 При последующих запусках контейнера эти скрипты повторно не выполняются, поэтому изменения справочников, сделанные через приложение, сохраняются.
-
-Если база уже была создана до добавления файла со справочниками, применить его однократно после `docker compose up -d` можно так:
-
-```bash
-docker compose exec postgres psql -U migrants -d migrants_db -f /docker-entrypoint-initdb.d/02-reference-data.sql
-```
 
 ## Структура
 

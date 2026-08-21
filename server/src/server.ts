@@ -2,22 +2,18 @@ import "dotenv/config";
 import cors from "cors";
 import express from "express";
 
-import { pool } from "./db.js";
+import { referenceDataRouter } from "./api/reference-data.api.js";
 
 const app = express();
 const port = Number(process.env.PORT ?? 3000);
 
 app.use(cors({ origin: process.env.CLIENT_ORIGIN }));
 app.use(express.json());
+app.use("/api", referenceDataRouter);
 
-app.get("/api/health", async (_request, response) => {
-  try {
-    await pool.query("SELECT 1");
-    response.json({ status: "ok", database: "connected" });
-  } catch (error) {
-    console.error(error);
-    response.status(500).json({ status: "error", database: "unavailable" });
-  }
+app.use((error: unknown, _request: express.Request, response: express.Response, _next: express.NextFunction) => {
+  console.error(error);
+  response.status(500).json({ error: "Internal server error" });
 });
 
 app.listen(port, () => {
