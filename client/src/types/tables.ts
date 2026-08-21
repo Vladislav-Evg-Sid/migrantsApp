@@ -1,8 +1,8 @@
 export type RefTables =
   | "areas"
   | "schools"
-  | "testAttempts"
-  | "participantStatuses"
+  | "test-attempts"
+  | "participant-statuses"
   | "nations";
 
 export type ColumnTypes = "string" | "number" | string[];

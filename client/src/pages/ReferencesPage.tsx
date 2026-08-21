@@ -31,10 +31,10 @@ export default function ReferencesPage() {
           <ReferencesTable tableName="schools" />
         </Grid>
         <Grid size={4}>
-          <ReferencesTable tableName="testAttempts" />
+          <ReferencesTable tableName="test-attempts" />
         </Grid>
         <Grid size={4}>
-          <ReferencesTable tableName="participantStatuses" />
+          <ReferencesTable tableName="participant-statuses" />
         </Grid>
         <Grid size={4}>
           <ReferencesTable tableName="nations" />

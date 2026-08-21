@@ -24,9 +24,9 @@ function handleTableName(name: RefTables): string {
       return "Округа";
     case "schools":
       return "Школы";
-    case "testAttempts":
+    case "test-attempts":
       return "Кратность участия в тестировании";
-    case "participantStatuses":
+    case "participant-statuses":
       return "Статусы участников";
     case "nations":
       return "Национальности";
