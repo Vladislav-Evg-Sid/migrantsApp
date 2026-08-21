@@ -8,7 +8,6 @@ export type RefTables =
 export type ColumnTypes = "string" | "number" | string[];
 
 export interface TableCellData {
-  id: number;
   data: string | number;
 }
 
@@ -18,7 +17,6 @@ interface TableHeadCellData {
 }
 
 interface TableBodyRowData {
-  id: number;
   row: TableCellData[];
 }
 

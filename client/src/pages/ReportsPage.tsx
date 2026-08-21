@@ -26,7 +26,7 @@ export default function ReportsPage() {
       sx={{
         display: "flex",
         flexDirection: "row",
-        m: 2,
+        m: "2%",
       }}
     >
       {reports.map((report) => (

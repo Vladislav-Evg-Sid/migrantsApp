@@ -60,7 +60,6 @@ export default function DataTable({
           <TableRow key="header-row">
             {head.map(({ cell }) => (
               <TableCell
-                key={`header-${cell.id}`}
                 align="center"
                 sx={{
                   border: `1px solid #000000`,
@@ -102,17 +101,17 @@ export default function DataTable({
           ) : null}
           {body.map((row) => (
             <TableRow
-              key={`row-${row.id}`}
+              key={`row-${(row.row[0] ?? { data: -1 }).data}`}
               sx={{
                 "&:nth-of-type(even)": {
                   backgroundColor: "#FAFBFC",
                 },
               }}
             >
-              {row.row.map((cell) => (
+              {row.row.map((cell, index) => (
                 <TableCell
-                  key={`body-cell-${row.id}-${cell.id}`}
-                  align={cell.id === 0 ? "left" : "center"}
+                  key={`body-cell-${(row.row[0] ?? { data: -1 }).data}-${index}`}
+                  align={index === 0 ? "left" : "center"}
                   sx={{
                     border: `1px solid #000000`,
                     lineHeight: 1.4,
@@ -125,7 +124,7 @@ export default function DataTable({
                 </TableCell>
               ))}
               <TableCell
-                key={`body-cell-${row.id}-add`}
+                key={`body-cell-${(row.row[0] ?? { data: -1 }).data}-add`}
                 align="center"
                 sx={{
                   border: `1px solid #000000`,

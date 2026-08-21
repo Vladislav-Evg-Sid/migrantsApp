@@ -7,157 +7,96 @@ import {
 const data = new Map<RefTables, TableData>();
 data.set("areas", {
   head: [
-    { cell: { id: 1, data: "Код" }, type: "number" },
-    { cell: { id: 2, data: "Округ" }, type: "string" },
+    { cell: { data: "Код" }, type: "number" },
+    { cell: { data: "Округ" }, type: "string" },
   ],
   body: [
     {
-      id: 1,
-      row: [
-        { id: 1, data: 123 },
-        { id: 2, data: "г. Тюмень" },
-      ],
+      row: [{ data: 123 }, { data: "г. Тюмень" }],
     },
   ],
 });
 data.set("schools", {
   head: [
-    { cell: { id: 1, data: "Код" }, type: "number" },
-    { cell: { id: 2, data: "Название" }, type: "string" },
-    { cell: { id: 3, data: "Округ" }, type: "string" },
-    { cell: { id: 4, data: "Код ППТ" }, type: "number" },
+    { cell: { data: "Код" }, type: "number" },
+    { cell: { data: "Название" }, type: "string" },
+    { cell: { data: "Округ" }, type: "string" },
+    { cell: { data: "Код ППТ" }, type: "number" },
   ],
   body: [
     {
-      id: 1,
       row: [
-        { id: 1, data: 123 },
-        { id: 2, data: "МАОУ СОШ №1 г. Тюмени" },
-        { id: 3, data: "г. Тюмень" },
-        { id: 4, data: 321 },
+        { data: 123 },
+        { data: "МАОУ СОШ №1 г. Тюмени" },
+        { data: "г. Тюмень" },
+        { data: 321 },
       ],
     },
   ],
 });
 data.set("attempts", {
   head: [
-    { cell: { id: 1, data: "Число" }, type: "number" },
-    { cell: { id: 2, data: "Псевдоним" }, type: "string" },
+    { cell: { data: "Число" }, type: "number" },
+    { cell: { data: "Псевдоним" }, type: "string" },
   ],
   body: [
     {
-      id: 1,
-      row: [
-        { id: 1, data: 1 },
-        { id: 2, data: "первый" },
-      ],
+      row: [{ data: 1 }, { data: "первый" }],
     },
     {
-      id: 2,
-      row: [
-        { id: 1, data: 2 },
-        { id: 2, data: "второй" },
-      ],
+      row: [{ data: 2 }, { data: "второй" }],
     },
     {
-      id: 3,
-      row: [
-        { id: 1, data: 3 },
-        { id: 2, data: "третий" },
-      ],
+      row: [{ data: 3 }, { data: "третий" }],
     },
     {
-      id: 4,
-      row: [
-        { id: 1, data: 4 },
-        { id: 2, data: "четвёртый" },
-      ],
+      row: [{ data: 4 }, { data: "четвёртый" }],
     },
     {
-      id: 5,
-      row: [
-        { id: 1, data: 5 },
-        { id: 2, data: "пятый" },
-      ],
+      row: [{ data: 5 }, { data: "пятый" }],
     },
     {
-      id: 6,
-      row: [
-        { id: 1, data: 6 },
-        { id: 2, data: "шестой" },
-      ],
+      row: [{ data: 6 }, { data: "шестой" }],
     },
     {
-      id: 7,
-      row: [
-        { id: 1, data: 7 },
-        { id: 2, data: "седьмой" },
-      ],
+      row: [{ data: 7 }, { data: "седьмой" }],
     },
     {
-      id: 8,
-      row: [
-        { id: 1, data: 8 },
-        { id: 2, data: "восьмой" },
-      ],
+      row: [{ data: 8 }, { data: "восьмой" }],
     },
   ],
 });
 data.set("statuses", {
   head: [
-    { cell: { id: 1, data: "id" }, type: "number" },
-    { cell: { id: 2, data: "Описание" }, type: "string" },
+    { cell: { data: "id" }, type: "number" },
+    { cell: { data: "Описание" }, type: "string" },
   ],
   body: [
     {
-      id: 1,
-      row: [
-        { id: 1, data: 1 },
-        { id: 2, data: "Сдал" },
-      ],
+      row: [{ data: 1 }, { data: "Сдал" }],
     },
     {
-      id: 2,
-      row: [
-        { id: 1, data: 2 },
-        { id: 2, data: "Остался в детском доме" },
-      ],
+      row: [{ data: 2 }, { data: "Остался в детском доме" }],
     },
     {
-      id: 3,
-      row: [
-        { id: 1, data: 3 },
-        { id: 2, data: "Уехал за пределы РФ" },
-      ],
+      row: [{ data: 3 }, { data: "Уехал за пределы РФ" }],
     },
   ],
 });
 data.set("nations", {
   head: [
-    { cell: { id: 1, data: "id" }, type: "number" },
-    { cell: { id: 2, data: "Описание" }, type: "string" },
+    { cell: { data: "id" }, type: "number" },
+    { cell: { data: "Описание" }, type: "string" },
   ],
   body: [
     {
-      id: 1,
-      row: [
-        { id: 1, data: 1 },
-        { id: 2, data: "Китай" },
-      ],
+      row: [{ data: 1 }, { data: "Китай" }],
     },
     {
-      id: 2,
-      row: [
-        { id: 1, data: 2 },
-        { id: 2, data: "Армения" },
-      ],
+      row: [{ data: 2 }, { data: "Армения" }],
     },
     {
-      id: 3,
-      row: [
-        { id: 1, data: 3 },
-        { id: 2, data: "США" },
-      ],
+      row: [{ data: 3 }, { data: "США" }],
     },
   ],
 });
@@ -173,8 +112,7 @@ export async function addReferenceTableData(
   newData: TableCellData[],
 ) {
   const tableBody = (data.get(name) ?? { head: [], body: [] }).body;
-  const lastId = (tableBody[tableBody.length - 1] ?? { id: 0 }).id;
-  tableBody.push({ id: lastId + 1, row: newData });
+  tableBody.push({ row: newData });
 }
 
 export async function deleteReferenceTableData(

@@ -6,6 +6,7 @@ import SideBar from "./components/SideBar";
 import ReferencesPage from "./pages/ReferencesPage";
 import ReportsPage from "./pages/ReportsPage";
 import ExamDatePage from "./pages/ExamDatesPage";
+import ParticipantsPage from "./pages/ParticipantsPage";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/" element={<ReportsPage />} />
           <Route path="/references" element={<ReferencesPage />} />
           <Route path="/exams" element={<ExamDatePage />} />
+          <Route path="/participants" element={<ParticipantsPage />} />
         </Routes>
       </Box>
     </Box>
