@@ -66,6 +66,7 @@ export default function DataTable({
                 index,
                 hideIdCol,
                 <TableCell
+                  key={index}
                   align="center"
                   sx={{
                     border: `1px solid #000000`,

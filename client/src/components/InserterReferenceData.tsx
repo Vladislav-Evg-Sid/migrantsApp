@@ -1,5 +1,14 @@
 import { useEffect, useState } from "react";
-import { TableRow, TableCell, TextField, Button, Alert } from "@mui/material";
+import {
+  TableRow,
+  TableCell,
+  TextField,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
 import { Bounce, toast } from "react-toastify";
 
 import { type ColumnTypes, type TableCellData } from "../types/tables";
@@ -91,7 +100,17 @@ export default function InserterReferenceData({
                 disabled={index === 0 && editMode}
               />
             ) : (
-              <></>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label"></InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                >
+                  {(type ?? [[-1, "Ошибка"]]).map((variant) => (
+                    <MenuItem value={variant.code}>{variant.name}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             )}
           </TableCell>,
         ),

@@ -87,9 +87,6 @@ export default function FilterPanel({ filters }: FilterPanelProps) {
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        // value={variants}
-                        // label="Age"
-                        // onChange={handleChange}
                       >
                         {(variants ?? [[-1, "Ошибка"]]).map((variant) => (
                           <MenuItem value={variant[0]}>{variant[1]}</MenuItem>

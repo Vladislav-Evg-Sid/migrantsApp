@@ -5,12 +5,12 @@ export type RefTables =
   | "participant-statuses"
   | "nations";
 
-export type ColumnTypes = "string" | "number" | string[];
-
 interface ForeignKey {
   code: number;
   name: string;
 }
+
+export type ColumnTypes = "string" | "number" | ForeignKey[];
 
 export type TableCellData = string | number | ForeignKey;
 
