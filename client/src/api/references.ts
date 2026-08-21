@@ -7,96 +7,91 @@ import {
 const data = new Map<RefTables, TableData>();
 data.set("areas", {
   head: [
-    { cell: { data: "Код" }, type: "number" },
-    { cell: { data: "Округ" }, type: "string" },
+    { cell: "Код", type: "number" },
+    { cell: "Округ", type: "string" },
   ],
   body: [
     {
-      row: [{ data: 123 }, { data: "г. Тюмень" }],
+      row: [123, "г. Тюмень"],
     },
   ],
 });
 data.set("schools", {
   head: [
-    { cell: { data: "Код" }, type: "number" },
-    { cell: { data: "Название" }, type: "string" },
-    { cell: { data: "Округ" }, type: "string" },
-    { cell: { data: "Код ППТ" }, type: "number" },
+    { cell: "Код", type: "number" },
+    { cell: "Название", type: "string" },
+    { cell: "Округ", type: "string" },
+    { cell: "Код ППТ", type: "number" },
   ],
   body: [
     {
-      row: [
-        { data: 123 },
-        { data: "МАОУ СОШ №1 г. Тюмени" },
-        { data: "г. Тюмень" },
-        { data: 321 },
-      ],
+      row: [123, "МАОУ СОШ №1 г. Тюмени", "г. Тюмень", 321],
     },
   ],
 });
 data.set("attempts", {
   head: [
-    { cell: { data: "Число" }, type: "number" },
-    { cell: { data: "Псевдоним" }, type: "string" },
+    { cell: "Число", type: "number" },
+    { cell: "Псевдоним", type: "string" },
   ],
   body: [
     {
-      row: [{ data: 1 }, { data: "первый" }],
+      row: [1, "первый"],
     },
     {
-      row: [{ data: 2 }, { data: "второй" }],
+      row: [2, "второй"],
     },
     {
-      row: [{ data: 3 }, { data: "третий" }],
+      row: [3, "третий"],
     },
     {
-      row: [{ data: 4 }, { data: "четвёртый" }],
+      row: [4, "четвёртый"],
     },
     {
-      row: [{ data: 5 }, { data: "пятый" }],
+      row: [5, "пятый"],
     },
     {
-      row: [{ data: 6 }, { data: "шестой" }],
+      row: [6, "шестой"],
     },
     {
-      row: [{ data: 7 }, { data: "седьмой" }],
+      row: [7, "седьмой"],
     },
     {
-      row: [{ data: 8 }, { data: "восьмой" }],
+      row: [8, "восьмой"],
     },
   ],
 });
 data.set("statuses", {
   head: [
-    { cell: { data: "id" }, type: "number" },
-    { cell: { data: "Описание" }, type: "string" },
+    { cell: "id", type: "number" },
+    { cell: "Описание", type: "string" },
   ],
   body: [
     {
-      row: [{ data: 1 }, { data: "Сдал" }],
+      row: [1, "Сдал"],
     },
     {
-      row: [{ data: 2 }, { data: "Остался в детском доме" }],
+      row: [2, "Остался в детском доме"],
     },
     {
-      row: [{ data: 3 }, { data: "Уехал за пределы РФ" }],
+      row: [3, "Уехал за пределы РФ"],
     },
   ],
 });
 data.set("nations", {
   head: [
-    { cell: { data: "id" }, type: "number" },
-    { cell: { data: "Описание" }, type: "string" },
+    { cell: "id", type: "number" },
+    { cell: "Описание", type: "string" },
   ],
   body: [
     {
-      row: [{ data: 1 }, { data: "Китай" }],
+      row: [1, "Китай"],
     },
     {
-      row: [{ data: 2 }, { data: "Армения" }],
+      row: [2, "Армения"],
     },
     {
-      row: [{ data: 3 }, { data: "США" }],
+      row: [3, "США"],
     },
   ],
 });
@@ -127,9 +122,7 @@ export async function deleteReferenceTableData(
 
   data.set(name, {
     ...table,
-    body: table.body.filter(
-      (row) => String((row.row[0] ?? { data: -1 }).data) !== String(id),
-    ),
+    body: table.body.filter((row) => String(row.row[0]) !== String(id)),
   });
 }
 
@@ -146,8 +139,7 @@ export async function saveChangesTableData(
   data.set(name, {
     ...table,
     body: table.body.map((row) =>
-      String((row.row[0] ?? { data: -1 }).data) ===
-      String((updatedData[0] ?? { data: -1 }).data)
+      String(row.row[0]) === String(updatedData[0])
         ? { ...row, row: updatedData }
         : row,
     ),

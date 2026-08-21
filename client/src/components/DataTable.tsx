@@ -19,7 +19,7 @@ interface DataTableProps extends TableData {
   width?: string | number;
   reference?: boolean;
   onAdd?: (data: TableCellData[]) => void;
-  onDelete?: (id: string | number) => void;
+  onDelete?: (id: TableCellData) => void;
   onSaveChanges?: (data: TableCellData[]) => void;
 }
 
@@ -27,7 +27,7 @@ export default function DataTable({
   head,
   body,
   onAdd = (data: TableCellData[]) => {},
-  onDelete = (id: string | number) => {},
+  onDelete = (id: TableCellData) => {},
   onSaveChanges = (data: TableCellData[]) => {},
   width = "100%",
   reference = false,
@@ -71,7 +71,9 @@ export default function DataTable({
                   overflowWrap: "anywhere",
                 }}
               >
-                {cell.data}
+                {typeof cell === "number" || typeof cell === "string"
+                  ? cell
+                  : cell.name}
               </TableCell>
             ))}
             <TableCell
@@ -101,7 +103,7 @@ export default function DataTable({
           ) : null}
           {body.map((row) => (
             <TableRow
-              key={`row-${(row.row[0] ?? { data: -1 }).data}`}
+              key={`row-${row.row[0]}`}
               sx={{
                 "&:nth-of-type(even)": {
                   backgroundColor: "#FAFBFC",
@@ -110,7 +112,7 @@ export default function DataTable({
             >
               {row.row.map((cell, index) => (
                 <TableCell
-                  key={`body-cell-${(row.row[0] ?? { data: -1 }).data}-${index}`}
+                  key={`body-cell-${row.row[0]}-${index}`}
                   align={index === 0 ? "left" : "center"}
                   sx={{
                     border: `1px solid #000000`,
@@ -120,11 +122,13 @@ export default function DataTable({
                     overflowWrap: "anywhere",
                   }}
                 >
-                  {cell.data ?? "-"}
+                  {(typeof cell === "number" || typeof cell === "string"
+                    ? cell
+                    : cell.name) ?? "-"}
                 </TableCell>
               ))}
               <TableCell
-                key={`body-cell-${(row.row[0] ?? { data: -1 }).data}-add`}
+                key={`body-cell-${row.row[0]}-add`}
                 align="center"
                 sx={{
                   border: `1px solid #000000`,
@@ -136,7 +140,7 @@ export default function DataTable({
               >
                 <Button
                   onClick={() =>
-                    setEditingData(row.row.map((cell) => String(cell.data)))
+                    setEditingData(row.row.map((cell) => String(cell)))
                   }
                   sx={{
                     minWidth: "48px",
@@ -145,7 +149,7 @@ export default function DataTable({
                   <Edit />
                 </Button>
                 <Button
-                  onClick={() => onDelete((row.row[0] ?? { data: -1 }).data)}
+                  onClick={() => onDelete(row.row[0] ?? -1)}
                   sx={{
                     minWidth: "48px",
                   }}

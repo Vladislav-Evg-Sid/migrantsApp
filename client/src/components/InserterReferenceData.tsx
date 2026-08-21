@@ -54,7 +54,7 @@ export default function InserterReferenceData({
         });
         return;
       }
-      newData.push({ id: +index + 1, data: values[index] ?? "" });
+      newData.push(values[index] ?? "");
     }
     onAdd(newData);
     setValues(Array(types.length).fill(""));

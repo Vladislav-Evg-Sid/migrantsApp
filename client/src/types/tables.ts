@@ -7,9 +7,12 @@ export type RefTables =
 
 export type ColumnTypes = "string" | "number" | string[];
 
-export interface TableCellData {
-  data: string | number;
+interface ForeignKey {
+  code: number;
+  name: string;
 }
+
+export type TableCellData = string | number | ForeignKey;
 
 interface TableHeadCellData {
   type: ColumnTypes;
