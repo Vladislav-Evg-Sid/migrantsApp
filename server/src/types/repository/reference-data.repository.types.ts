@@ -1,3 +1,8 @@
+export type AreaRow = {
+  code: number;
+  name: string;
+};
+
 export type SchoolRow = {
   code: number;
   name: string;
@@ -21,4 +26,26 @@ export type AreaResponsibleRow = {
   mail: string;
   area_code: number;
   area_name: string;
+};
+
+export type NationRow = {
+  id: number;
+  name: string;
+};
+
+export type ParticipantStatusRow = {
+  id: number;
+  name: string;
+};
+
+export type TestDateRow = {
+  id: number;
+  day: number;
+  month: number;
+  year: number;
+};
+
+export type TestAttemptRow = {
+  id: number;
+  name: string;
 };

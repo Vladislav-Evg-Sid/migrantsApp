@@ -8,57 +8,131 @@ import {
   findAllTestAttempts,
   findAllTestDates,
 } from "../repositories/reference-data.repository.js";
-import type { AreaResponsible, Ppt, School } from "../types/reference-data.js";
+import type { TableData } from "../types/reference-data.js";
 
-export const getAreas = () => findAllAreas();
+export async function getAreas(): Promise<TableData> {
+  const rows = await findAllAreas();
 
-export async function getSchools(): Promise<School[]> {
-  const rows = await findAllSchools();
-
-  return rows.map((row) => ({
-    code: row.code,
-    name: row.name,
-    address: row.address,
-    area: {
-      code: row.area_code,
-      name: row.area_name,
-    },
-  }));
+  return {
+    head: [
+      { cell: "Код", type: "number" },
+      { cell: "МО", type: "string" },
+    ],
+    body: rows.map((row) => ({ row: [row.code, row.name] })),
+  };
 }
 
-export async function getPpts(): Promise<Ppt[]> {
-  const rows = await findAllPpts();
+export async function getSchools(): Promise<TableData> {
+  const [rows, areas] = await Promise.all([findAllSchools(), findAllAreas()]);
 
-  return rows.map((row) => ({
-    code: row.code,
-    responsibleName: row.responsible_name,
-    responsiblePhone: row.responsible_phone,
-    school: {
-      code: row.school_code,
-      name: row.school_name,
-    },
-  }));
+  return {
+    head: [
+      { cell: "Код", type: "number" },
+      { cell: "Название", type: "string" },
+      { cell: "Адрес", type: "string" },
+      { cell: "МО", type: areas.map((area) => area.name) },
+    ],
+    body: rows.map((row) => ({
+      row: [
+        row.code,
+        row.name,
+        row.address,
+        { code: row.area_code, name: row.area_name },
+      ],
+    })),
+  };
 }
 
-export async function getAreaResponsibles(): Promise<AreaResponsible[]> {
-  const rows = await findAllAreaResponsibles();
+export async function getPpts(): Promise<TableData> {
+  const [rows, schools] = await Promise.all([findAllPpts(), findAllSchools()]);
 
-  return rows.map((row) => ({
-    id: row.id,
-    name: row.name,
-    phone: row.phone,
-    mail: row.mail,
-    area: {
-      code: row.area_code,
-      name: row.area_name,
-    },
-  }));
+  return {
+    head: [
+      { cell: "Код", type: "number" },
+      { cell: "Ответственный", type: "string" },
+      { cell: "Телефон", type: "string" },
+      { cell: "Школа", type: schools.map((school) => school.name) },
+    ],
+    body: rows.map((row) => ({
+      row: [
+        row.code,
+        row.responsible_name,
+        row.responsible_phone,
+        { code: row.school_code, name: row.school_name },
+      ],
+    })),
+  };
 }
 
-export const getNations = () => findAllNations();
+export async function getAreaResponsibles(): Promise<TableData> {
+  const [rows, areas] = await Promise.all([findAllAreaResponsibles(), findAllAreas()]);
 
-export const getParticipantStatuses = () => findAllParticipantStatuses();
+  return {
+    head: [
+      { cell: "ID", type: "number" },
+      { cell: "Ответственный", type: "string" },
+      { cell: "Телефон", type: "string" },
+      { cell: "Электронная почта", type: "string" },
+      { cell: "МО", type: areas.map((area) => area.name) },
+    ],
+    body: rows.map((row) => ({
+      row: [
+        row.id,
+        row.name,
+        row.phone,
+        row.mail,
+        { code: row.area_code, name: row.area_name },
+      ],
+    })),
+  };
+}
 
-export const getTestDates = () => findAllTestDates();
+export async function getNations(): Promise<TableData> {
+  const rows = await findAllNations();
 
-export const getTestAttempts = () => findAllTestAttempts();
+  return {
+    head: [
+      { cell: "ID", type: "number" },
+      { cell: "Национальность", type: "string" },
+    ],
+    body: rows.map((row) => ({ row: [row.id, row.name] })),
+  };
+}
+
+export async function getParticipantStatuses(): Promise<TableData> {
+  const rows = await findAllParticipantStatuses();
+
+  return {
+    head: [
+      { cell: "ID", type: "number" },
+      { cell: "Статус", type: "string" },
+    ],
+    body: rows.map((row) => ({ row: [row.id, row.name] })),
+  };
+}
+
+export async function getTestDates(): Promise<TableData> {
+  const rows = await findAllTestDates();
+
+  return {
+    head: [
+      { cell: "ID", type: "number" },
+      { cell: "День", type: "number" },
+      { cell: "Месяц", type: "number" },
+      { cell: "Год", type: "number" },
+    ],
+    body: rows.map((row) => ({ row: [row.id, row.day, row.month, row.year] })),
+  };
+}
+
+export async function getTestAttempts(): Promise<TableData> {
+  const rows = await findAllTestAttempts();
+
+  return {
+    head: [
+      { cell: "ID", type: "number" },
+      { cell: "Название", type: "string" },
+    ],
+    body: rows.map((row) => ({ row: [row.id, row.name] })),
+  };
+}

@@ -1,19 +1,19 @@
 import { pool } from "../db.js";
 import type {
-  Area,
-  Nation,
-  ParticipantStatus,
-  TestAttempt,
-  TestDate,
-} from "../types/reference-data.js";
-import type {
+  AreaRow,
   AreaResponsibleRow,
+  NationRow,
+  ParticipantStatusRow,
   PptRow,
   SchoolRow,
+  TestAttemptRow,
+  TestDateRow,
 } from "../types/repository/reference-data.repository.types.js";
 
-export async function findAllAreas(): Promise<Area[]> {
-  const result = await pool.query<Area>("SELECT code, name FROM areas ORDER BY code");
+export async function findAllAreas(): Promise<AreaRow[]> {
+  const result = await pool.query<AreaRow>(
+    "SELECT code, name FROM areas ORDER BY code"
+  );
   return result.rows;
 }
 
@@ -63,27 +63,29 @@ export async function findAllAreaResponsibles(): Promise<AreaResponsibleRow[]> {
   return result.rows;
 }
 
-export async function findAllNations(): Promise<Nation[]> {
-  const result = await pool.query<Nation>("SELECT id, name FROM nations ORDER BY name");
+export async function findAllNations(): Promise<NationRow[]> {
+  const result = await pool.query<NationRow>(
+    "SELECT id, name FROM nations ORDER BY name"
+  );
   return result.rows;
 }
 
-export async function findAllParticipantStatuses(): Promise<ParticipantStatus[]> {
-  const result = await pool.query<ParticipantStatus>(
+export async function findAllParticipantStatuses(): Promise<ParticipantStatusRow[]> {
+  const result = await pool.query<ParticipantStatusRow>(
     "SELECT id, name FROM participant_statuses ORDER BY name",
   );
   return result.rows;
 }
 
-export async function findAllTestDates(): Promise<TestDate[]> {
-  const result = await pool.query<TestDate>(
+export async function findAllTestDates(): Promise<TestDateRow[]> {
+  const result = await pool.query<TestDateRow>(
     "SELECT id, day, month, year FROM test_dates ORDER BY year, month, day",
   );
   return result.rows;
 }
 
-export async function findAllTestAttempts(): Promise<TestAttempt[]> {
-  const result = await pool.query<TestAttempt>(
+export async function findAllTestAttempts(): Promise<TestAttemptRow[]> {
+  const result = await pool.query<TestAttemptRow>(
     "SELECT id, name FROM test_attempts ORDER BY id",
   );
   return result.rows;
