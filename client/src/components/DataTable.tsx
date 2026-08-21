@@ -150,6 +150,7 @@ export default function DataTable({
                 </Button>
                 <Button
                   onClick={() => onDelete(row.row[0] ?? -1)}
+                  disabled={editingData !== null}
                   sx={{
                     minWidth: "48px",
                   }}
