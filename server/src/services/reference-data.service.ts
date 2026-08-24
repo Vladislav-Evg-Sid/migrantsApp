@@ -95,7 +95,7 @@ export async function getPpts(): Promise<TableData> {
     head: [
       { cell: "Код", type: "number" },
       { cell: "Ответственный", type: "string" },
-      { cell: "Телефон", type: "string" },
+      { cell: "Телефон", type: "phone" },
       {
         cell: "Школа",
         type: schools.map((school) => ({ code: school.code, name: school.name })),
@@ -119,7 +119,7 @@ export async function getAreaResponsibles(): Promise<TableData> {
     head: [
       { cell: "ID", type: "number" },
       { cell: "Ответственный", type: "string" },
-      { cell: "Телефон", type: "string" },
+      { cell: "Телефон", type: "phone" },
       { cell: "Электронная почта", type: "string" },
       {
         cell: "МО",

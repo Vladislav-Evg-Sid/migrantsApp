@@ -15,14 +15,14 @@ CREATE TABLE ppts (
     code INTEGER PRIMARY KEY,
     school_code INTEGER NOT NULL REFERENCES schools(code),
     responsible_name VARCHAR(127) NOT NULL,
-    responsible_phone VARCHAR(11) NOT NULL
+    responsible_phone VARCHAR(11) NOT NULL CHECK (responsible_phone ~ '^[0-9]{11}$')
 );
 
 CREATE TABLE area_responsibles (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     area_code INTEGER NOT NULL REFERENCES areas(code),
     name VARCHAR(127) NOT NULL,
-    phone VARCHAR(11) NOT NULL,
+    phone VARCHAR(11) NOT NULL CHECK (phone ~ '^[0-9]{11}$'),
     mail VARCHAR(127) NOT NULL
 );
 

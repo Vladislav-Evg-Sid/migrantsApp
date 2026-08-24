@@ -45,6 +45,9 @@ export default function InserterReferenceData({
           return;
         }
       }
+      if (types[ind] === "phone" && !/^\d{0,11}$/.test(value)) {
+        return;
+      }
     }
     setValues((prev) => {
       const newValues = [...prev];
@@ -62,6 +65,15 @@ export default function InserterReferenceData({
           continue;
         }
         toast.error("Все данные должны быть заполнены", {
+          position: "top-right",
+          autoClose: 5000,
+          theme: "light",
+          transition: Bounce,
+        });
+        return;
+      }
+      if (types[index] === "phone" && !/^\d{11}$/.test(curVal ?? "")) {
+        toast.error("Телефон должен содержать ровно 11 цифр", {
           position: "top-right",
           autoClose: 5000,
           theme: "light",
@@ -98,7 +110,13 @@ export default function InserterReferenceData({
               <TextField
                 value={values[index] ?? ""}
                 onChange={(event) => setValue(index, event.target.value)}
-                inputMode={type === "number" ? "numeric" : "text"}
+                type={type === "phone" ? "tel" : "text"}
+                inputMode={type === "number" || type === "phone" ? "numeric" : "text"}
+                slotProps={
+                  type === "phone"
+                    ? { htmlInput: { maxLength: 11, pattern: "[0-9]{11}" } }
+                    : undefined
+                }
                 fullWidth
                 disabled={index === 0 && editMode}
               />

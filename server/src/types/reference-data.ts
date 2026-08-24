@@ -3,7 +3,7 @@ export type ForeignKey = {
   name: string;
 };
 
-export type ColumnType = "string" | "number" | ForeignKey[];
+export type ColumnType = "string" | "number" | "phone" | ForeignKey[];
 
 export type TableCellData = string | number | ForeignKey;
 
