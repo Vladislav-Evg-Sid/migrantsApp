@@ -52,6 +52,7 @@ export default function ParticipantsPage() {
           body={participantsData.body}
           head={participantsData.head}
           hideIdCol={false}
+          name="participants"
           actionColumn="detail"
         />
       </Box>
