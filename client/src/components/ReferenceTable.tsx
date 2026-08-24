@@ -88,7 +88,7 @@ export default function ReferencesTable({
         backgroundColor: "#D9D9D9",
         borderRadius: 10,
         p: 2,
-        height: "40vh",
+        height: "45vh",
       }}
     >
       <Typography variant="h6" sx={{ color: "black" }}>

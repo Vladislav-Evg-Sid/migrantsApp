@@ -20,7 +20,7 @@ export default function ReferencesPage() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        margin: "2%",
+        margin: "0.5%",
       }}
     >
       <ToastContainer

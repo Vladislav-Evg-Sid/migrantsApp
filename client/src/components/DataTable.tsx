@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   Paper,
   TableContainer,
@@ -7,14 +8,17 @@ import {
   TableCell,
   TableBody,
   Button,
-  Box,
 } from "@mui/material";
 import { DeleteForever, Edit } from "@mui/icons-material";
 
-import { type TableData, type TableCellData } from "../types/tables";
+import {
+  type TableData,
+  type TableCellData,
+  type TableBodyRowData,
+} from "../types/tables";
 import InserterReferenceData from "./InserterReferenceData";
-import { useState } from "react";
 import { tableColumnHider } from "./utils/tableColumnHider";
+import FilterRow from "./FilterRow";
 
 interface DataTableProps extends TableData {
   width?: string | number;
@@ -36,6 +40,9 @@ export default function DataTable({
   reference = false,
 }: DataTableProps) {
   const [editingData, setEditingData] = useState<string[] | null>(null);
+  const [viewTable, setViewTable] = useState<TableBodyRowData[]>(body);
+
+  useEffect(() => setViewTable(body), [body]);
 
   const handleSaveData = (data: TableCellData[]) => {
     if (editingData === null) {
@@ -44,6 +51,22 @@ export default function DataTable({
     }
     onSaveChanges(data);
     setEditingData(null);
+  };
+
+  const handleFilterData = (filters: string[]) => {
+    const cell2string = (cell: TableCellData): string => {
+      if (typeof cell === "object") {
+        return cell.name;
+      }
+      return String(cell);
+    };
+    let intermediateFilteredData = [...body];
+    for (let i = 0; i < filters.length; i++) {
+      intermediateFilteredData = intermediateFilteredData.filter(({ row }) =>
+        cell2string(row[i] ?? "").includes(filters[i] ?? ""),
+      );
+    }
+    setViewTable(intermediateFilteredData);
   };
 
   return (
@@ -60,6 +83,11 @@ export default function DataTable({
     >
       <Table size="small" sx={{ width: "100%", tableLayout: "fixed" }}>
         <TableHead>
+          <FilterRow
+            hideIdCol={hideIdCol}
+            filters={head.map(({ type }) => type)}
+            onFilter={handleFilterData}
+          />
           <TableRow key="header-row">
             {head.map(({ cell }, index) =>
               tableColumnHider(
@@ -110,7 +138,7 @@ export default function DataTable({
               editedData={editingData}
             />
           ) : null}
-          {body.map((row) => (
+          {viewTable.map((row) => (
             <TableRow
               key={`row-${row.row[0]}`}
               sx={{

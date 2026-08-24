@@ -19,7 +19,7 @@ interface TableHeadCellData {
   cell: TableCellData;
 }
 
-interface TableBodyRowData {
+export interface TableBodyRowData {
   row: TableCellData[];
 }
 
