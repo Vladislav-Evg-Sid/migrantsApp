@@ -95,19 +95,12 @@ export default function FilterRow({
         }}
       >
         <Button
-          variant="contained"
-          color="success"
           onClick={() => onFilter(values)}
-          sx={{ textTransform: "none", m: 0.5 }}
+          sx={{ minWidth: "48px", m: 0.5 }}
         >
           <FilterAlt />
         </Button>
-        <Button
-          variant="contained"
-          color="success"
-          onClick={handleClearFilters}
-          sx={{ textTransform: "none", m: 0.5 }}
-        >
+        <Button onClick={handleClearFilters} sx={{ minWidth: "48px", m: 0.5 }}>
           <FilterAltOff />
         </Button>
       </TableCell>

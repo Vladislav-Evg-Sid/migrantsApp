@@ -75,7 +75,7 @@ export default function DataTable({
       sx={{
         width,
         maxWidth: "100%",
-        maxHeight: "90%",
+        maxHeight: "93%",
         mb: 4,
         overflowY: "auto",
         overflowX: "hidden",
