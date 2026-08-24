@@ -38,7 +38,7 @@ export default function InserterReferenceData({
   const setValue = (ind: number, value: string) => {
     if (typeof types[ind] === "string") {
       if (types[ind] === "number") {
-        if (!/^-?\d*$/.test(value)) {
+        if (!/^\d*$/.test(value)) {
           return;
         }
       }
@@ -78,6 +78,18 @@ export default function InserterReferenceData({
         });
         return;
       }
+      if (
+        types[index] === "email" &&
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(curVal ?? "")
+      ) {
+        toast.error("Введите корректный адрес электронной почты", {
+          position: "top-right",
+          autoClose: 5000,
+          theme: "light",
+          transition: Bounce,
+        });
+        return;
+      }
       newData.push(values[index] ?? "");
     }
     onAdd(newData);
@@ -107,12 +119,20 @@ export default function InserterReferenceData({
               <TextField
                 value={values[index] ?? ""}
                 onChange={(event) => setValue(index, event.target.value)}
-                type={type === "phone" ? "tel" : "text"}
-                inputMode={type === "number" || type === "phone" ? "numeric" : "text"}
+                type={type === "phone" ? "tel" : type === "email" ? "email" : "text"}
+                inputMode={
+                  type === "number" || type === "phone"
+                    ? "numeric"
+                    : type === "email"
+                      ? "email"
+                      : "text"
+                }
                 slotProps={
                   type === "phone"
                     ? { htmlInput: { maxLength: 11, pattern: "[0-9]{11}" } }
-                    : undefined
+                    : type === "email"
+                      ? { htmlInput: { maxLength: 127 } }
+                      : undefined
                 }
                 fullWidth
                 disabled={index === 0 && editMode}

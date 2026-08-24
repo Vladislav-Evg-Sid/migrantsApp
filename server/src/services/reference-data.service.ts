@@ -120,7 +120,7 @@ export async function getAreaResponsibles(): Promise<TableData> {
       { cell: "ID", type: "number" },
       { cell: "Ответственный", type: "string" },
       { cell: "Телефон", type: "phone" },
-      { cell: "Электронная почта", type: "string" },
+      { cell: "Электронная почта", type: "email" },
       {
         cell: "МО",
         type: areas.map((area) => ({ code: area.code, name: area.name })),

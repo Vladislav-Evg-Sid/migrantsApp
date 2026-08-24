@@ -23,7 +23,7 @@ CREATE TABLE area_responsibles (
     area_code INTEGER NOT NULL REFERENCES areas(code),
     name VARCHAR(127) NOT NULL,
     phone VARCHAR(11) NOT NULL CHECK (phone ~ '^[0-9]{11}$'),
-    mail VARCHAR(127) NOT NULL
+    mail VARCHAR(127) NOT NULL CHECK (mail ~ '^[^[:space:]@]+@[^[:space:]@]+[.][^[:space:]@]+$')
 );
 
 CREATE TABLE nations (

@@ -12,7 +12,7 @@ interface ForeignKey {
   name: string;
 }
 
-export type ColumnTypes = "string" | "number" | "phone" | ForeignKey[];
+export type ColumnTypes = "string" | "number" | "phone" | "email" | ForeignKey[];
 
 export type TableCellData = string | number | ForeignKey;
 
