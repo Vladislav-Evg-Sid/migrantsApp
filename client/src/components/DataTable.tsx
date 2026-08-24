@@ -181,7 +181,11 @@ export default function DataTable({
               >
                 <Button
                   onClick={() =>
-                    setEditingData(row.row.map((cell) => String(cell)))
+                    setEditingData(
+                      row.row.map((cell) =>
+                        String(typeof cell === "object" ? cell.code : cell),
+                      ),
+                    )
                   }
                   sx={{
                     minWidth: "48px",

@@ -119,7 +119,9 @@ export default function InserterReferenceData({
               <TextField
                 value={values[index] ?? ""}
                 onChange={(event) => setValue(index, event.target.value)}
-                type={type === "phone" ? "tel" : type === "email" ? "email" : "text"}
+                type={
+                  type === "phone" ? "tel" : type === "email" ? "email" : "text"
+                }
                 inputMode={
                   type === "number" || type === "phone"
                     ? "numeric"

@@ -176,7 +176,6 @@ export async function updateReference(name: RefTables, data: TableCellData[]) {
       ) {
         throw new Error("No data input");
       }
-      console.log(data);
       await updateReferenceTableData(name, +data[0], {
         schoolCode: +data[3],
         responsiblePhone: String(data[2]),
