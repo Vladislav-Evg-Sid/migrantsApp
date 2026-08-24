@@ -8,6 +8,7 @@ import ReportsPage from "./pages/ReportsPage";
 import ExamDatePage from "./pages/ExamDatesPage";
 import ParticipantsPage from "./pages/ParticipantsPage";
 import ResponsiblesPage from "./pages/ResponsiblesPage";
+import ParticipantDetailsPage from "./pages/ParticipantDetailsPage";
 
 function App() {
   return (
@@ -32,6 +33,10 @@ function App() {
           <Route path="/exams" element={<ExamDatePage />} />
           <Route path="/participants" element={<ParticipantsPage />} />
           <Route path="/contacts" element={<ResponsiblesPage />} />
+          <Route
+            path="/participants/details/:id"
+            element={<ParticipantDetailsPage />}
+          />
         </Routes>
       </Box>
     </Box>

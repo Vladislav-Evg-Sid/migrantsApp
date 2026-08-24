@@ -9,7 +9,7 @@ import {
   TableBody,
   Button,
 } from "@mui/material";
-import { DeleteForever, Edit } from "@mui/icons-material";
+import { DeleteForever, Edit, More } from "@mui/icons-material";
 
 import {
   type TableData,
@@ -19,6 +19,7 @@ import {
 import InserterReferenceData from "./InserterReferenceData";
 import { tableColumnHider } from "./utils/tableColumnHider";
 import FilterRow from "./FilterRow";
+import { useNavigate } from "react-router-dom";
 
 interface DataTableProps extends TableData {
   width?: string | number;
@@ -27,6 +28,7 @@ interface DataTableProps extends TableData {
   onAdd?: (data: TableCellData[]) => void;
   onDelete?: (id: TableCellData) => void;
   onSaveChanges?: (data: TableCellData[]) => void;
+  actionColumn?: "edit-delete" | "detail";
 }
 
 export default function DataTable({
@@ -38,11 +40,14 @@ export default function DataTable({
   onSaveChanges = (data: TableCellData[]) => {},
   width = "100%",
   reference = false,
+  actionColumn = "edit-delete",
 }: DataTableProps) {
   const [editingData, setEditingData] = useState<string[] | null>(null);
   const [viewTable, setViewTable] = useState<TableBodyRowData[]>(body);
 
   useEffect(() => setViewTable(body), [body]);
+
+  const navigate = useNavigate();
 
   const handleSaveData = (data: TableCellData[]) => {
     if (editingData === null) {
@@ -179,29 +184,44 @@ export default function DataTable({
                   overflowWrap: "anywhere",
                 }}
               >
-                <Button
-                  onClick={() =>
-                    setEditingData(
-                      row.row.map((cell) =>
-                        String(typeof cell === "object" ? cell.code : cell),
-                      ),
-                    )
-                  }
-                  sx={{
-                    minWidth: "48px",
-                  }}
-                >
-                  <Edit />
-                </Button>
-                <Button
-                  onClick={() => onDelete(row.row[0] ?? -1)}
-                  disabled={editingData !== null}
-                  sx={{
-                    minWidth: "48px",
-                  }}
-                >
-                  <DeleteForever />
-                </Button>
+                {actionColumn === "edit-delete" ? (
+                  <>
+                    <Button
+                      onClick={() =>
+                        setEditingData(
+                          row.row.map((cell) =>
+                            String(typeof cell === "object" ? cell.code : cell),
+                          ),
+                        )
+                      }
+                      sx={{
+                        minWidth: "48px",
+                      }}
+                    >
+                      <Edit />
+                    </Button>
+                    <Button
+                      onClick={() => onDelete(row.row[0] ?? -1)}
+                      disabled={editingData !== null}
+                      sx={{
+                        minWidth: "48px",
+                      }}
+                    >
+                      <DeleteForever />
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    onClick={() =>
+                      navigate(`/participants/details/${row.row[0]}`)
+                    }
+                    sx={{
+                      minWidth: "48px",
+                    }}
+                  >
+                    <More />
+                  </Button>
+                )}
               </TableCell>
             </TableRow>
           ))}
