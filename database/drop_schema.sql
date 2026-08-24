@@ -9,3 +9,4 @@ DROP TABLE IF EXISTS test_attempts;
 DROP TABLE IF EXISTS participant_statuses;
 DROP TABLE IF EXISTS nations;
 DROP TABLE IF EXISTS areas;
+DROP TYPE IF EXISTS test_result;
