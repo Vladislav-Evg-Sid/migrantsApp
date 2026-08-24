@@ -16,98 +16,7 @@ import type {
   UpdateParticipantStatusInput,
   UpdateTestAttemptInput,
 } from "../types/dto";
-
-const data = new Map<RefTables, TableData>();
-data.set("areas", {
-  head: [
-    { cell: "Код", type: "number" },
-    { cell: "Округ", type: "string" },
-  ],
-  body: [
-    {
-      row: [123, "г. Тюмень"],
-    },
-  ],
-});
-data.set("schools", {
-  head: [
-    { cell: "Код", type: "number" },
-    { cell: "Название", type: "string" },
-    { cell: "Округ", type: "string" },
-    { cell: "Код ППТ", type: "number" },
-  ],
-  body: [
-    {
-      row: [123, "МАОУ СОШ №1 г. Тюмени", "г. Тюмень", 321],
-    },
-  ],
-});
-data.set("test-attempts", {
-  head: [
-    { cell: "Число", type: "number" },
-    { cell: "Псевдоним", type: "string" },
-  ],
-  body: [
-    {
-      row: [1, "первый"],
-    },
-    {
-      row: [2, "второй"],
-    },
-    {
-      row: [3, "третий"],
-    },
-    {
-      row: [4, "четвёртый"],
-    },
-    {
-      row: [5, "пятый"],
-    },
-    {
-      row: [6, "шестой"],
-    },
-    {
-      row: [7, "седьмой"],
-    },
-    {
-      row: [8, "восьмой"],
-    },
-  ],
-});
-data.set("participant-statuses", {
-  head: [
-    { cell: "id", type: "number" },
-    { cell: "Описание", type: "string" },
-  ],
-  body: [
-    {
-      row: [1, "Сдал"],
-    },
-    {
-      row: [2, "Остался в детском доме"],
-    },
-    {
-      row: [3, "Уехал за пределы РФ"],
-    },
-  ],
-});
-data.set("nations", {
-  head: [
-    { cell: "id", type: "number" },
-    { cell: "Описание", type: "string" },
-  ],
-  body: [
-    {
-      row: [1, "Китай"],
-    },
-    {
-      row: [2, "Армения"],
-    },
-    {
-      row: [3, "США"],
-    },
-  ],
-});
+import { Bounce, toast } from "react-toastify";
 
 export async function getReferenceTable(
   tableName: RefTables,
@@ -137,8 +46,23 @@ export async function addReferenceTableData(
     body: JSON.stringify(newData),
   });
   if (!response.ok) {
+    if (response.status === 409) {
+      toast.error("Код не может повторяться", {
+        position: "top-right",
+        autoClose: 5000,
+        theme: "light",
+        transition: Bounce,
+      });
+      return;
+    }
     throw new Error(`${response.status}`);
   }
+  toast.success("Запись добавлена", {
+    position: "top-right",
+    autoClose: 5000,
+    theme: "light",
+    transition: Bounce,
+  });
 }
 
 export async function deleteReferenceTableData(
@@ -149,8 +73,23 @@ export async function deleteReferenceTableData(
     method: "DELETE",
   });
   if (!response.ok) {
+    if (response.status === 409) {
+      toast.error("Невозможно удалить запись, от которой зависят другие", {
+        position: "top-right",
+        autoClose: 5000,
+        theme: "light",
+        transition: Bounce,
+      });
+      return;
+    }
     throw new Error(`${response.status}`);
   }
+  toast.success("Запись удалена", {
+    position: "top-right",
+    autoClose: 5000,
+    theme: "light",
+    transition: Bounce,
+  });
 }
 
 export async function updateReferenceTableData(
@@ -173,4 +112,10 @@ export async function updateReferenceTableData(
   if (!response.ok) {
     throw new Error(`${response.status}`);
   }
+  toast.success("Запись обновлена", {
+    position: "top-right",
+    autoClose: 5000,
+    theme: "light",
+    transition: Bounce,
+  });
 }

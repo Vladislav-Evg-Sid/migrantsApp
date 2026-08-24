@@ -7,6 +7,7 @@ import ReferencesPage from "./pages/ReferencesPage";
 import ReportsPage from "./pages/ReportsPage";
 import ExamDatePage from "./pages/ExamDatesPage";
 import ParticipantsPage from "./pages/ParticipantsPage";
+import ResponsiblesPage from "./pages/ResponsiblesPage";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="/references" element={<ReferencesPage />} />
           <Route path="/exams" element={<ExamDatePage />} />
           <Route path="/participants" element={<ParticipantsPage />} />
+          <Route path="/contacts" element={<ResponsiblesPage />} />
         </Routes>
       </Box>
     </Box>

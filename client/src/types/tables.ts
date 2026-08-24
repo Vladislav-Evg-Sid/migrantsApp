@@ -3,7 +3,9 @@ export type RefTables =
   | "schools"
   | "test-attempts"
   | "participant-statuses"
-  | "nations";
+  | "nations"
+  | "area-responsibles"
+  | "ppts";
 
 interface ForeignKey {
   code: number;
@@ -19,7 +21,7 @@ interface TableHeadCellData {
   cell: TableCellData;
 }
 
-interface TableBodyRowData {
+export interface TableBodyRowData {
   row: TableCellData[];
 }
 

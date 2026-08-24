@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import FilterPanel from "../components/FilterPanel";
+import FilterRow from "../components/FilterRow";
 import { getParticipantsFilters } from "../services/filters";
 import { useEffect, useState } from "react";
 import { type CellFilter } from "../types/filters";
@@ -19,7 +19,7 @@ export default function ParticipantsPage() {
         m: "2%",
       }}
     >
-      <FilterPanel filters={filterValues} />
+      <FilterRow filters={filterValues} />
     </Box>
   );
 }

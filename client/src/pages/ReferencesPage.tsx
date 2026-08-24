@@ -2,8 +2,16 @@ import { Box, Grid } from "@mui/material";
 import { ToastContainer, Bounce } from "react-toastify";
 
 import ReferencesTable from "../components/ReferenceTable";
+import { useState } from "react";
 
 export default function ReferencesPage() {
+  const [rerenderSchoolSignal, setRerenderSchoolSignal] =
+    useState<boolean>(false);
+
+  const handleRerenderSchoolSignal = () => {
+    setRerenderSchoolSignal((prev) => !prev);
+  };
+
   return (
     <Box
       sx={{
@@ -12,7 +20,7 @@ export default function ReferencesPage() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        margin: "2%",
+        margin: "0.5%",
       }}
     >
       <ToastContainer
@@ -25,10 +33,16 @@ export default function ReferencesPage() {
       />
       <Grid container spacing={2}>
         <Grid size={5}>
-          <ReferencesTable tableName="areas" />
+          <ReferencesTable
+            tableName="areas"
+            rerenderDependencies={handleRerenderSchoolSignal}
+          />
         </Grid>
         <Grid size={7}>
-          <ReferencesTable tableName="schools" />
+          <ReferencesTable
+            tableName="schools"
+            rerenderSignal={rerenderSchoolSignal}
+          />
         </Grid>
         <Grid size={4}>
           <ReferencesTable tableName="test-attempts" />

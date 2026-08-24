@@ -16,6 +16,9 @@ import {
 
 interface ReferencesTableProps {
   tableName: RefTables;
+  rerenderSignal?: boolean;
+  rerenderDependencies?: () => void;
+  height?: string;
 }
 
 function handleTableName(name: RefTables): string {
@@ -30,10 +33,19 @@ function handleTableName(name: RefTables): string {
       return "Статусы участников";
     case "nations":
       return "Национальности";
+    case "area-responsibles":
+      return "Контактные данные по МО";
+    case "ppts":
+      return "Контактные данные по ППТ";
   }
 }
 
-export default function ReferencesTable({ tableName }: ReferencesTableProps) {
+export default function ReferencesTable({
+  tableName,
+  rerenderSignal = false,
+  rerenderDependencies = () => {},
+  height = "45vh",
+}: ReferencesTableProps) {
   const [table, setTable] = useState<TableData>({ head: [], body: [] });
 
   const getData = () => {
@@ -44,12 +56,13 @@ export default function ReferencesTable({ tableName }: ReferencesTableProps) {
     fetchTable();
   };
 
-  useEffect(getData, []);
+  useEffect(getData, [rerenderSignal]);
 
   const handleAddData = useCallback(
     async (data: TableCellData[]) => {
       await addReference(tableName, data);
       getData();
+      rerenderDependencies();
     },
     [tableName],
   );
@@ -61,6 +74,7 @@ export default function ReferencesTable({ tableName }: ReferencesTableProps) {
         typeof id === "number" || typeof id === "string" ? id : id.code,
       );
       getData();
+      rerenderDependencies();
     },
     [tableName],
   );
@@ -69,6 +83,7 @@ export default function ReferencesTable({ tableName }: ReferencesTableProps) {
     async (data: TableCellData[]) => {
       await updateReference(tableName, data);
       getData();
+      rerenderDependencies();
     },
     [tableName],
   );
@@ -79,7 +94,7 @@ export default function ReferencesTable({ tableName }: ReferencesTableProps) {
         backgroundColor: "#D9D9D9",
         borderRadius: 10,
         p: 2,
-        height: "40vh",
+        height: { height },
       }}
     >
       <Typography variant="h6" sx={{ color: "black" }}>

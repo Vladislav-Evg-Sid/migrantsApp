@@ -4,10 +4,7 @@ import {
   TableCell,
   TextField,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
+  Autocomplete,
 } from "@mui/material";
 import { Bounce, toast } from "react-toastify";
 
@@ -60,8 +57,8 @@ export default function InserterReferenceData({
     const newData: TableCellData[] = [];
     for (const index in values) {
       const curVal = values[index];
-      if ((curVal === undefined || curVal === "") && editingData !== null) {
-        if (index === "0" && hideIdCol) {
+      if (curVal === undefined || curVal === "") {
+        if (index === "0" && hideIdCol && editingData === null) {
           continue;
         }
         toast.error("Все данные должны быть заполнены", {
@@ -121,21 +118,23 @@ export default function InserterReferenceData({
                 disabled={index === 0 && editMode}
               />
             ) : (
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label"></InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={values[index] ?? ""}
-                  onChange={(event) =>
-                    setValue(index, event.target.value as string)
-                  }
-                >
-                  {(type ?? [[-1, "Ошибка"]]).map((variant) => (
-                    <MenuItem value={variant.code}>{variant.name}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <Autocomplete
+                fullWidth
+                options={type ?? [{ code: -1, name: "Ошибка" }]}
+                getOptionLabel={(option) => option.name}
+                value={
+                  (type ?? []).find(
+                    (variant) => String(variant.code) === values[index],
+                  ) ?? null
+                }
+                onChange={(_, newValue) => {
+                  setValue(
+                    index,
+                    String((newValue ?? { code: "" }).code) ?? "",
+                  );
+                }}
+                renderInput={(params) => <TextField {...params} label="" />}
+              />
             )}
           </TableCell>,
         ),
