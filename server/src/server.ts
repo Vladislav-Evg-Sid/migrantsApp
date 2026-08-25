@@ -2,6 +2,7 @@ import "dotenv/config";
 import cors from "cors";
 import express from "express";
 
+import { participantsRouter } from "./api/participants.api.js";
 import { referenceDataRouter } from "./api/reference-data.api.js";
 
 const app = express();
@@ -10,6 +11,7 @@ const port = Number(process.env.PORT ?? 3000);
 app.use(cors({ origin: process.env.CLIENT_ORIGIN }));
 app.use(express.json());
 app.use("/api", referenceDataRouter);
+app.use("/api", participantsRouter);
 
 function hasPostgresCode(error: unknown, code: string): boolean {
   return (
