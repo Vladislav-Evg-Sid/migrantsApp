@@ -7,7 +7,7 @@ export type RefTables =
   | "area-responsibles"
   | "ppts";
 
-interface ForeignKey {
+export interface ForeignKey {
   code: number;
   name: string;
 }

@@ -1,3 +1,4 @@
+import type { ParticipantData } from "../types/participants";
 import type { TableData } from "../types/tables";
 
 export async function getParticipants(): Promise<TableData> {
@@ -24,5 +25,18 @@ export async function getParticipants(): Promise<TableData> {
         ],
       },
     ],
+  };
+}
+
+export async function getParticipantDetails(
+  id: number,
+): Promise<ParticipantData> {
+  return {
+    id: 7200010101,
+    surname: "Эмгыр",
+    firstname: "Вар Эмрейс",
+    birthday: "01.01.2012",
+    nation: { code: 1, name: "Нильфгаард" },
+    exams: [],
   };
 }
