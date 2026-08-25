@@ -3,9 +3,9 @@ export type ForeignKey = {
   name: string;
 };
 
-export type ColumnType = "string" | "number" | "phone" | "email" | ForeignKey[];
+export type ColumnType = "string" | "number" | "phone" | "email" | "date" | "boolean" | ForeignKey[];
 
-export type TableCellData = string | number | ForeignKey;
+export type TableCellData = string | number | boolean | null | ForeignKey;
 
 export type TableData = {
   head: {
