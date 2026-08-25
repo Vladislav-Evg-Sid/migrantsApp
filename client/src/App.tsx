@@ -20,8 +20,8 @@ function App() {
     >
       <Box
         sx={{
-          maxWidth: "300px",
-          width: "15vw",
+          width: "clamp(220px, 20vw, 300px)",
+          flexShrink: 0,
         }}
       >
         <SideBar />

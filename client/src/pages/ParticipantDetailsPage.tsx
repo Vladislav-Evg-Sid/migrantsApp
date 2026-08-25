@@ -31,7 +31,8 @@ export default function ParticipantDetailsPage() {
         display: "flex",
         flexDirection: "column",
         alignItems: "left",
-        width: "100%",
+        minWidth: 0,
+        boxSizing: "border-box",
       }}
     >
       <Button
