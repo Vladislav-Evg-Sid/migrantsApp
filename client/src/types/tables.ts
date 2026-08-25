@@ -18,6 +18,7 @@ export type ColumnTypes =
   | "phone"
   | "email"
   | "date"
+  | "boolean"
   | ForeignKey[];
 
 export type TableCellData = string | number | ForeignKey;

@@ -17,6 +17,7 @@ export default function ParticipantDetails({
         backgroundColor: "#D9D9D9",
         borderRadius: 10,
         p: 2,
+        height: "28vh",
       }}
     >
       <Box

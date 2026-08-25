@@ -4,6 +4,7 @@ import { getParticipantDetails } from "../api/participants";
 import { Box, Button } from "@mui/material";
 import ParticipantDetails from "../components/ParticipantDetails";
 import { type ParticipantData } from "../types/participants";
+import ParticipantExams from "../components/ParticipantExams";
 
 export default function ParticipantDetailsPage() {
   const { id } = useParams();
@@ -13,7 +14,7 @@ export default function ParticipantDetailsPage() {
     firstname: "",
     birthday: "",
     nation: { code: 0, name: "" },
-    exams: [],
+    exams: { head: [], body: [] },
   });
   const navigate = useNavigate();
 
@@ -43,6 +44,7 @@ export default function ParticipantDetailsPage() {
         Назад
       </Button>
       <ParticipantDetails participant={participant} />
+      <ParticipantExams table={participant.exams} />
     </Box>
   );
 }

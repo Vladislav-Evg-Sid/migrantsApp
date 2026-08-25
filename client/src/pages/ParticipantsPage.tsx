@@ -57,7 +57,7 @@ export default function ParticipantsPage() {
         />
       </Box>
       <Button
-        // onClick={handleAdd}
+        onClick={() => alert("Пока функция не готова")}
         variant="contained"
         color="success"
         sx={{ textTransform: "none" }}

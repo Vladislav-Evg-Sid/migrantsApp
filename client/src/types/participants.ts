@@ -1,16 +1,4 @@
-import type { ForeignKey } from "./tables";
-
-interface ParticipantExams {
-  attempt: number;
-  date: string;
-  school: ForeignKey;
-  ppt: ForeignKey;
-  grade: number;
-  isDone: boolean;
-  appealDate?: string;
-  appealGranted?: boolean;
-  participantPresents?: boolean;
-}
+import type { ForeignKey, TableData } from "./tables";
 
 export interface ParticipantData {
   id: number;
@@ -23,5 +11,5 @@ export interface ParticipantData {
   nextExamDate?: string;
   comment?: string;
   rcoiNote?: string;
-  exams: ParticipantExams[];
+  exams: TableData;
 }

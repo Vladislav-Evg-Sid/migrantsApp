@@ -37,6 +37,21 @@ export async function getParticipantDetails(
     firstname: "Вар Эмрейс",
     birthday: "01.01.2012",
     nation: { code: 1, name: "Нильфгаард" },
-    exams: [],
+    exams: {
+      head: [
+        { type: "number", cell: "Попытка" },
+        { type: "date", cell: "Дата тестирования" },
+        { type: [], cell: "Школа, направившая" },
+        { type: [], cell: "ППТ" },
+        { type: "number", cell: "Класс" },
+        { type: "boolean", cell: "Сдал" },
+        { type: [], cell: "Статус" },
+        { type: "boolean", cell: "Специальная категория" },
+        { type: "date", cell: "Дата аппеляции" },
+        { type: "boolean", cell: "Аппеляция удовлетворена" },
+        { type: "boolean", cell: "Участник присутствовал" },
+      ],
+      body: [],
+    },
   };
 }
