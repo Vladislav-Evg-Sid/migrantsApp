@@ -7,12 +7,19 @@ export type RefTables =
   | "area-responsibles"
   | "ppts";
 
-interface ForeignKey {
+export interface ForeignKey {
   code: number;
   name: string;
 }
 
-export type ColumnTypes = "string" | "number" | "phone" | "email" | ForeignKey[];
+export type ColumnTypes =
+  | "string"
+  | "number"
+  | "phone"
+  | "email"
+  | "date"
+  | "boolean"
+  | ForeignKey[];
 
 export type TableCellData = string | number | ForeignKey;
 

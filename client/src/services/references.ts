@@ -62,6 +62,38 @@ export async function addReference(name: RefTables, data: TableCellData[]) {
         name: String(data[0]),
       });
       break;
+    case "area-responsibles":
+      if (
+        data[0] === undefined ||
+        data[1] === undefined ||
+        data[2] === undefined ||
+        data[3] === undefined
+      ) {
+        throw new Error("No data input");
+      }
+      await addReferenceTableData(name, {
+        areaCode: +data[3],
+        name: String(data[0]),
+        phone: String(data[1]),
+        mail: String(data[2]),
+      });
+      break;
+    case "ppts":
+      if (
+        data[0] === undefined ||
+        data[1] === undefined ||
+        data[2] === undefined ||
+        data[3] === undefined
+      ) {
+        throw new Error("No data input");
+      }
+      await addReferenceTableData(name, {
+        code: +data[0],
+        schoolCode: +data[3],
+        responsiblePhone: String(data[2]),
+        responsibleName: String(data[1]),
+      });
+      break;
   }
 }
 
@@ -116,6 +148,38 @@ export async function updateReference(name: RefTables, data: TableCellData[]) {
       }
       await updateReferenceTableData(name, +data[0], {
         name: String(data[1]),
+      });
+      break;
+    case "area-responsibles":
+      if (
+        data[0] === undefined ||
+        data[1] === undefined ||
+        data[2] === undefined ||
+        data[3] === undefined ||
+        data[4] === undefined
+      ) {
+        throw new Error("No data input");
+      }
+      await updateReferenceTableData(name, +data[0], {
+        areaCode: +data[4],
+        name: String(data[1]),
+        phone: String(data[2]),
+        mail: String(data[3]),
+      });
+      break;
+    case "ppts":
+      if (
+        data[0] === undefined ||
+        data[1] === undefined ||
+        data[2] === undefined ||
+        data[3] === undefined
+      ) {
+        throw new Error("No data input");
+      }
+      await updateReferenceTableData(name, +data[0], {
+        schoolCode: +data[3],
+        responsiblePhone: String(data[2]),
+        responsibleName: String(data[1]),
       });
       break;
   }

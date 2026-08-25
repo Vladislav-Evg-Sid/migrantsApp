@@ -10,11 +10,15 @@ import type {
   CreateParticipantStatusInput,
   CreateSchoolInput,
   CreateTestAttemptInput,
+  CreatePptInput,
+  CreateAreaResponsibleInput,
   UpdateAreaInput,
   UpdateSchoolInput,
   UpdateNationInput,
   UpdateParticipantStatusInput,
   UpdateTestAttemptInput,
+  UpdatePptInput,
+  UpdateAreaResponsibleInput,
 } from "../types/dto";
 import { Bounce, toast } from "react-toastify";
 
@@ -36,7 +40,9 @@ export async function addReferenceTableData(
     | CreateSchoolInput
     | CreateNationInput
     | CreateParticipantStatusInput
-    | CreateTestAttemptInput,
+    | CreateTestAttemptInput
+    | CreatePptInput
+    | CreateAreaResponsibleInput,
 ) {
   const response = await fetch(`${baseApi}/${name}`, {
     method: "POST",
@@ -100,7 +106,9 @@ export async function updateReferenceTableData(
     | UpdateSchoolInput
     | UpdateNationInput
     | UpdateParticipantStatusInput
-    | UpdateTestAttemptInput,
+    | UpdateTestAttemptInput
+    | UpdatePptInput
+    | UpdateAreaResponsibleInput,
 ) {
   const response = await fetch(`${baseApi}/${name}/${id}`, {
     method: "PUT",

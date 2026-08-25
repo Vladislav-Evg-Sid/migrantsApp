@@ -104,6 +104,7 @@ export default function ReferencesTable({
         head={table.head}
         body={table.body}
         hideIdCol={table.hideIdCol ? true : false}
+        name={tableName}
         onAdd={handleAddData}
         onDelete={handleDeleteData}
         onSaveChanges={handleSaveChanges}
