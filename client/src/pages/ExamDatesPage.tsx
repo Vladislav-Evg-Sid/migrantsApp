@@ -1,18 +1,25 @@
-import { Container, Typography } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 import ExamDateList from "../components/ExamDateList";
+import AddExamDatesDialog from "../components/AddExamDatesDialog";
 
 export default function ExamDatePage() {
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
-      <Typography
-        variant="h4"
+      <Box
         sx={{
-          fontWeight: 700,
           mb: 3,
+          display: "flex",
+          alignItems: { xs: "stretch", sm: "center" },
+          justifyContent: "space-between",
+          flexDirection: { xs: "column", sm: "row" },
+          gap: 2,
         }}
       >
-        Даты экзаменов
-      </Typography>
+        <Typography variant="h4" sx={{ fontWeight: 700 }}>
+          Даты экзаменов
+        </Typography>
+        <AddExamDatesDialog />
+      </Box>
       <ExamDateList />
     </Container>
   );
