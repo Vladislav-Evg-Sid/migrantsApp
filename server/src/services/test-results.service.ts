@@ -1,6 +1,6 @@
-import { findAllTestResults } from "../repositories/test-results.repository.js";
-import type { TestResultRow } from "../types/repository/test-results.repository.types.js";
+import { insertTestResult } from "../repositories/test-results.repository.js";
+import type { CreateTestResultInput } from "../types/test-results.js";
 
-export async function getTestResults(): Promise<TestResultRow[]> {
-  return findAllTestResults();
+export async function createTestResult(input: CreateTestResultInput): Promise<void> {
+  await insertTestResult(input);
 }

@@ -112,6 +112,21 @@ export const openApiDocument = {
           500: { description: "Внутренняя ошибка", content: jsonContent(schemaRef("ErrorResponse")) },
         },
       },
+      post: {
+        tags: ["Участники"],
+        summary: "Создать участника вместе с первым экзаменом",
+        description: "Backend генерирует ID по коду ППТ, классу и порядковому номеру. Участник и первый экзамен создаются одной транзакцией.",
+        requestBody: {
+          required: true,
+          content: jsonContent(schemaRef("CreateParticipant")),
+        },
+        responses: {
+          201: { description: "Участник и первый экзамен созданы", content: jsonContent(schemaRef("CreatedParticipant")) },
+          400: { description: "Некорректный класс или код ППТ отсутствует в справочнике", content: jsonContent(schemaRef("ErrorResponse")) },
+          409: { description: "Для сочетания ППТ и класса закончились порядковые номера", content: jsonContent(schemaRef("ErrorResponse")) },
+          500: { description: "Внутренняя ошибка", content: jsonContent(schemaRef("ErrorResponse")) },
+        },
+      },
     },
     "/participants/{id}": {
       get: {
@@ -133,14 +148,16 @@ export const openApiDocument = {
       },
     },
     "/test-results": {
-      get: {
+      post: {
         tags: ["Результаты"],
-        summary: "Получить все строки таблицы результатов",
+        summary: "Создать экзаменационную попытку участника",
+        description: "ID результата генерируется PostgreSQL. Тело успешного ответа пустое.",
+        requestBody: {
+          required: true,
+          content: jsonContent(schemaRef("CreateTestResult")),
+        },
         responses: {
-          200: {
-            description: "Массив результатов",
-            content: jsonContent({ type: "array", items: schemaRef("TestResult") }),
-          },
+          201: { description: "Результат создан, тело ответа пустое" },
           500: { description: "Внутренняя ошибка", content: jsonContent(schemaRef("ErrorResponse")) },
         },
       },
@@ -218,21 +235,60 @@ export const openApiDocument = {
           exams: schemaRef("TableData"),
         },
       },
-      TestResult: {
+      CreateParticipant: {
         type: "object",
-        required: ["id", "participant_id", "is_special_category", "status_id", "test_date_id", "result", "class", "sending_school_code", "test_attempt_number", "appeal_id", "testing_center_ppt_code"],
+        required: ["surname", "name", "patronymic", "birthDay", "birthMonth", "birthYear", "nationId", "confirmedSchoolCode", "nextPlannedDate", "comment", "rcoiNote", "firstExam"],
         properties: {
-          id: { type: "integer" },
-          participant_id: { type: "integer", format: "int64" },
-          is_special_category: { type: "boolean" },
-          status_id: { type: "integer", nullable: true },
-          test_date_id: { type: "integer" },
+          surname: { type: "string", maxLength: 127 },
+          name: { type: "string", maxLength: 127 },
+          patronymic: { type: "string", maxLength: 127, nullable: true },
+          birthDay: { type: "integer", minimum: 1, maximum: 31 },
+          birthMonth: { type: "integer", minimum: 1, maximum: 12 },
+          birthYear: { type: "integer", minimum: 1900 },
+          nationId: { type: "integer" },
+          confirmedSchoolCode: { type: "integer", nullable: true },
+          nextPlannedDate: { type: "string", nullable: true },
+          comment: { type: "string", nullable: true },
+          rcoiNote: { type: "string", nullable: true },
+          firstExam: schemaRef("CreateFirstTestResult"),
+        },
+      },
+      CreateFirstTestResult: {
+        type: "object",
+        required: ["isSpecialCategory", "statusId", "testDateId", "result", "class", "sendingSchoolCode", "testAttemptNumber", "appealId", "testingCenterPptCode"],
+        properties: {
+          isSpecialCategory: { type: "boolean" },
+          statusId: { type: "integer", nullable: true },
+          testDateId: { type: "integer" },
           result: { type: "string", enum: ["Да", "Нет", "Неявка"], nullable: true },
           class: { type: "integer", minimum: 1, maximum: 11 },
-          sending_school_code: { type: "integer" },
-          test_attempt_number: { type: "integer" },
-          appeal_id: { type: "integer", nullable: true },
-          testing_center_ppt_code: { type: "integer" },
+          sendingSchoolCode: { type: "integer" },
+          testAttemptNumber: { type: "integer", minimum: 1 },
+          appealId: { type: "integer", nullable: true },
+          testingCenterPptCode: { type: "integer", minimum: 1, maximum: 9999 },
+        },
+      },
+      CreateTestResult: {
+        type: "object",
+        required: ["participantId", "isSpecialCategory", "statusId", "testDateId", "result", "class", "sendingSchoolCode", "testAttemptNumber", "appealId", "testingCenterPptCode"],
+        properties: {
+          participantId: { type: "integer", format: "int64" },
+          isSpecialCategory: { type: "boolean" },
+          statusId: { type: "integer", nullable: true },
+          testDateId: { type: "integer" },
+          result: { type: "string", enum: ["Да", "Нет", "Неявка"], nullable: true },
+          class: { type: "integer", minimum: 1, maximum: 11 },
+          sendingSchoolCode: { type: "integer" },
+          testAttemptNumber: { type: "integer", minimum: 1 },
+          appealId: { type: "integer", nullable: true },
+          testingCenterPptCode: { type: "integer" },
+        },
+      },
+      CreatedParticipant: {
+        type: "object",
+        required: ["id"],
+        properties: {
+          id: { type: "integer", format: "int64", example: 7204130301 },
         },
       },
       ErrorResponse: {

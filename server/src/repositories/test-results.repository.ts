@@ -1,10 +1,9 @@
 import { pool } from "../db.js";
-import type { TestResultRow } from "../types/repository/test-results.repository.types.js";
+import type { CreateTestResultInput } from "../types/test-results.js";
 
-export async function findAllTestResults(): Promise<TestResultRow[]> {
-  const result = await pool.query<TestResultRow>(
-    `SELECT
-       id,
+export async function insertTestResult(input: CreateTestResultInput): Promise<void> {
+  await pool.query(
+    `INSERT INTO test_results (
        participant_id,
        is_special_category,
        status_id,
@@ -15,9 +14,18 @@ export async function findAllTestResults(): Promise<TestResultRow[]> {
        test_attempt_number,
        appeal_id,
        testing_center_ppt_code
-     FROM test_results
-     ORDER BY id`,
+     ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+    [
+      input.participantId,
+      input.isSpecialCategory,
+      input.statusId,
+      input.testDateId,
+      input.result,
+      input.class,
+      input.sendingSchoolCode,
+      input.testAttemptNumber,
+      input.appealId,
+      input.testingCenterPptCode,
+    ],
   );
-
-  return result.rows;
 }

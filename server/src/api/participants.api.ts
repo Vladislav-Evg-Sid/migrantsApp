@@ -1,11 +1,20 @@
 import { Router } from "express";
 
-import { getParticipantDetails, getParticipants } from "../services/participants.service.js";
+import {
+  createParticipant,
+  getParticipantDetails,
+  getParticipants,
+} from "../services/participants.service.js";
 
 export const participantsRouter = Router();
 
 participantsRouter.get("/participants", async (_request, response) => {
   response.json(await getParticipants());
+});
+
+participantsRouter.post("/participants", async (request, response) => {
+  const createdParticipant = await createParticipant(request.body);
+  response.status(201).json(createdParticipant);
 });
 
 participantsRouter.get("/participants/:id", async (request, response) => {

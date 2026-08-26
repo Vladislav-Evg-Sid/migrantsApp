@@ -1,9 +1,10 @@
 import { Router } from "express";
 
-import { getTestResults } from "../services/test-results.service.js";
+import { createTestResult } from "../services/test-results.service.js";
 
 export const testResultsRouter = Router();
 
-testResultsRouter.get("/test-results", async (_request, response) => {
-  response.json(await getTestResults());
+testResultsRouter.post("/test-results", async (request, response) => {
+  await createTestResult(request.body);
+  response.status(201).send();
 });

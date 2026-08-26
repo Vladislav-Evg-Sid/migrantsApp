@@ -4,6 +4,87 @@ import type {
   ParticipantExamRow,
   ParticipantListRow,
 } from "../types/repository/participants.repository.types.js";
+import type { CreateParticipantInput, CreatedParticipant } from "../types/participants.js";
+
+export async function insertParticipantWithFirstExam(
+  input: CreateParticipantInput,
+): Promise<CreatedParticipant> {
+  const client = await pool.connect();
+  const pptPart = String(input.firstExam.testingCenterPptCode).padStart(4, "0");
+  const classPart = String(input.firstExam.class).padStart(2, "0");
+  const participantPrefix = Number(`72${pptPart}${classPart}`);
+  const firstParticipantId = participantPrefix * 100 + 1;
+  const lastParticipantId = participantPrefix * 100 + 99;
+
+  try {
+    await client.query("BEGIN");
+    await client.query("SELECT pg_advisory_xact_lock($1)", [participantPrefix]);
+
+    const sequenceResult = await client.query<{ next_number: number }>(
+      `SELECT COALESCE(MAX((id % 100)::INTEGER), 0) + 1 AS next_number
+       FROM participants
+       WHERE id BETWEEN $1 AND $2`,
+      [firstParticipantId, lastParticipantId],
+    );
+    const nextNumber = Number(sequenceResult.rows[0].next_number);
+    if (nextNumber > 99) {
+      const error = new Error("Для сочетания ППТ и класса закончились номера участников");
+      Object.assign(error, { code: "PARTICIPANT_SEQUENCE_EXHAUSTED" });
+      throw error;
+    }
+
+    const participantId = participantPrefix * 100 + nextNumber;
+    await client.query(
+      `INSERT INTO participants (
+         id, surname, name, patronymic, birth_day, birth_month, birth_year,
+         nation_id, confirmed_school_code, next_planned_date, comment, rcoi_note
+       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+      [
+        participantId,
+        input.surname,
+        input.name,
+        input.patronymic,
+        input.birthDay,
+        input.birthMonth,
+        input.birthYear,
+        input.nationId,
+        input.confirmedSchoolCode,
+        input.nextPlannedDate,
+        input.comment,
+        input.rcoiNote,
+      ],
+    );
+
+    const exam = input.firstExam;
+    await client.query(
+      `INSERT INTO test_results (
+         participant_id, is_special_category, status_id, test_date_id, result,
+         class, sending_school_code, test_attempt_number, appeal_id,
+         testing_center_ppt_code
+       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+      [
+        participantId,
+        exam.isSpecialCategory,
+        exam.statusId,
+        exam.testDateId,
+        exam.result,
+        exam.class,
+        exam.sendingSchoolCode,
+        exam.testAttemptNumber,
+        exam.appealId,
+        exam.testingCenterPptCode,
+      ],
+    );
+
+    await client.query("COMMIT");
+    return { id: participantId };
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
+}
 
 export async function findParticipantsForTable(): Promise<ParticipantListRow[]> {
   const result = await pool.query<ParticipantListRow>(

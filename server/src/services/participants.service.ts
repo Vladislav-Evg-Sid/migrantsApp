@@ -2,14 +2,20 @@ import {
   findParticipantById,
   findParticipantExams,
   findParticipantsForTable,
+  insertParticipantWithFirstExam,
 } from "../repositories/participants.repository.js";
 import {
   findAllNations,
   findAllParticipantStatuses,
   findAllPpts,
   findAllSchools,
+  pptExistsByCode,
 } from "../repositories/reference-data.repository.js";
-import type { ParticipantData } from "../types/participants.js";
+import type {
+  CreateParticipantInput,
+  CreatedParticipant,
+  ParticipantData,
+} from "../types/participants.js";
 import type { ForeignKey, TableData } from "../types/reference-data.js";
 
 function formatDate(day: number, month: number, year: number): string {
@@ -24,6 +30,31 @@ function formatOptionalDate(value: string | null): string | null {
 
 function foreignKey(code: number, name: string): ForeignKey {
   return { code, name };
+}
+
+export async function createParticipant(
+  input: CreateParticipantInput,
+): Promise<CreatedParticipant> {
+  const pptCode = input.firstExam?.testingCenterPptCode;
+  const classNumber = input.firstExam?.class;
+  if (
+    !Number.isInteger(pptCode) ||
+    !Number.isInteger(classNumber) ||
+    classNumber < 1 ||
+    classNumber > 11
+  ) {
+    const error = new Error("Для генерации ID нужны корректные код ППТ и класс");
+    Object.assign(error, { code: "INVALID_PARTICIPANT_ID_SOURCE" });
+    throw error;
+  }
+
+  if (!(await pptExistsByCode(pptCode))) {
+    const error = new Error("ППТ с переданным кодом не найден");
+    Object.assign(error, { code: "PPT_NOT_FOUND" });
+    throw error;
+  }
+
+  return insertParticipantWithFirstExam(input);
 }
 
 export async function getParticipants(): Promise<TableData> {
