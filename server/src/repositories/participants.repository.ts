@@ -143,6 +143,7 @@ export async function findParticipantExams(id: number): Promise<ParticipantExamR
     `SELECT
        tr.id,
        tr.test_attempt_number,
+       tr.test_date_id,
        td.day AS test_day,
        td.month AS test_month,
        td.year AS test_year,
