@@ -1,5 +1,5 @@
 export type ForeignKey = {
-  code: number | string;
+  code: number;
   name: string;
 };
 

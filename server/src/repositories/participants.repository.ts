@@ -5,6 +5,7 @@ import type {
   ParticipantListRow,
 } from "../types/repository/participants.repository.types.js";
 import type { CreateParticipantInput, CreatedParticipant } from "../types/participants.js";
+import { testResultValueFromCode } from "../mappers/test-results.mapper.js";
 
 export async function insertParticipantWithFirstExam(
   input: CreateParticipantInput,
@@ -67,7 +68,7 @@ export async function insertParticipantWithFirstExam(
         exam.isSpecialCategory,
         exam.statusId,
         exam.testDateId,
-        exam.result,
+        testResultValueFromCode(exam.result),
         exam.class,
         exam.sendingSchoolCode,
         exam.testAttemptNumber,

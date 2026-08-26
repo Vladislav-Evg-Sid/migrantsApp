@@ -177,12 +177,7 @@ export const openApiDocument = {
         type: "object",
         required: ["code", "name"],
         properties: {
-          code: {
-            oneOf: [
-              { type: "integer", format: "int64" },
-              { type: "string" },
-            ],
-          },
+          code: { type: "integer", format: "int64" },
           name: { type: "string" },
         },
       },
@@ -265,7 +260,7 @@ export const openApiDocument = {
           isSpecialCategory: { type: "boolean" },
           statusId: { type: "integer", nullable: true },
           testDateId: { type: "integer" },
-          result: { type: "string", enum: ["Да", "Нет", "Неявка"], nullable: true },
+          result: { type: "integer", enum: [1, 2, 3], nullable: true, description: "1 — Да, 2 — Нет, 3 — Неявка" },
           class: { type: "integer", minimum: 1, maximum: 11 },
           sendingSchoolCode: { type: "integer" },
           testAttemptNumber: { type: "integer", minimum: 1 },
@@ -281,7 +276,7 @@ export const openApiDocument = {
           isSpecialCategory: { type: "boolean" },
           statusId: { type: "integer", nullable: true },
           testDateId: { type: "integer" },
-          result: { type: "string", enum: ["Да", "Нет", "Неявка"], nullable: true },
+          result: { type: "integer", enum: [1, 2, 3], nullable: true, description: "1 — Да, 2 — Нет, 3 — Неявка" },
           class: { type: "integer", minimum: 1, maximum: 11 },
           sendingSchoolCode: { type: "integer" },
           testAttemptNumber: { type: "integer", minimum: 1 },
