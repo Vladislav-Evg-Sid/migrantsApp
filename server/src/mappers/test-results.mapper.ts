@@ -6,6 +6,11 @@ export const TEST_RESULT_OPTIONS = [
   { code: 3, name: "Неявка" },
 ] as const satisfies readonly { code: TestResultCode; name: TestResultValue }[];
 
+export const TEST_RESULT_SELECT_OPTIONS = [
+  ...TEST_RESULT_OPTIONS,
+  { code: null, name: "Не указано" },
+] as const;
+
 export function isTestResultCode(value: unknown): value is TestResultCode {
   return TEST_RESULT_OPTIONS.some((option) => option.code === value);
 }

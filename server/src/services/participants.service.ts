@@ -16,10 +16,10 @@ import type {
   CreatedParticipant,
   ParticipantData,
 } from "../types/participants.js";
-import type { ForeignKey, TableData } from "../types/reference-data.js";
+import type { ForeignKey, SelectOption, TableData } from "../types/reference-data.js";
 import {
   isTestResultCode,
-  TEST_RESULT_OPTIONS,
+  TEST_RESULT_SELECT_OPTIONS,
   testResultCodeFromValue,
 } from "../mappers/test-results.mapper.js";
 
@@ -37,7 +37,7 @@ function foreignKey(code: number, name: string): ForeignKey {
   return { code, name };
 }
 
-const resultOptions: ForeignKey[] = TEST_RESULT_OPTIONS.map(({ code, name }) => ({ code, name }));
+const resultOptions: SelectOption[] = [...TEST_RESULT_SELECT_OPTIONS];
 
 export async function createParticipant(
   input: CreateParticipantInput,

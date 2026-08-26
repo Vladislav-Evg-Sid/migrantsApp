@@ -162,6 +162,20 @@ export const openApiDocument = {
         },
       },
     },
+    "/test-results/head": {
+      get: {
+        tags: ["Результаты"],
+        summary: "Получить шапку формы создания экзамена",
+        description: "Возвращает поля и варианты выбора для первого или последующего экзамена без ID результата и ID участника.",
+        responses: {
+          200: {
+            description: "Шапка формы экзамена",
+            content: jsonContent({ type: "array", items: schemaRef("TableHeadCell") }),
+          },
+          500: { description: "Внутренняя ошибка", content: jsonContent(schemaRef("ErrorResponse")) },
+        },
+      },
+    },
     ...referenceCrudPaths({ path: "areas", tag: "Справочники", title: "Муниципальные образования", idName: "code", idDescription: "Код МО", createSchema: "CreateArea", updateSchema: "UpdateArea" }),
     ...referenceCrudPaths({ path: "schools", tag: "Справочники", title: "Школы", idName: "code", idDescription: "Код школы", createSchema: "CreateSchool", updateSchema: "UpdateSchool" }),
     ...referenceCrudPaths({ path: "ppts", tag: "Справочники", title: "ППТ", idName: "code", idDescription: "Код ППТ", createSchema: "CreatePpt", updateSchema: "UpdatePpt" }),
@@ -181,6 +195,14 @@ export const openApiDocument = {
           name: { type: "string" },
         },
       },
+      SelectOption: {
+        type: "object",
+        required: ["code", "name"],
+        properties: {
+          code: { type: "integer", format: "int64", nullable: true },
+          name: { type: "string" },
+        },
+      },
       TableHeadCell: {
         type: "object",
         required: ["cell", "type"],
@@ -189,7 +211,7 @@ export const openApiDocument = {
           type: {
             oneOf: [
               { type: "string", enum: ["string", "number", "phone", "email", "date", "boolean"] },
-              { type: "array", items: schemaRef("ForeignKey") },
+              { type: "array", items: schemaRef("SelectOption") },
             ],
           },
         },
