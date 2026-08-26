@@ -47,6 +47,15 @@ export async function findAllPpts(): Promise<PptRow[]> {
   return result.rows;
 }
 
+export async function pptExistsByCode(code: number): Promise<boolean> {
+  const result = await pool.query<{ exists: boolean }>(
+    "SELECT EXISTS(SELECT 1 FROM ppts WHERE code = $1) AS exists",
+    [code],
+  );
+
+  return result.rows[0].exists;
+}
+
 export async function findAllAreaResponsibles(): Promise<AreaResponsibleRow[]> {
   const result = await pool.query<AreaResponsibleRow>(
     `SELECT
