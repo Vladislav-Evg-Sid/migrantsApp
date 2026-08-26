@@ -14,13 +14,12 @@ import {
   DialogContentText,
   DialogActions,
 } from "@mui/material";
-import { DeleteForever, Edit, More } from "@mui/icons-material";
+import { DeleteForever, Edit, More, Check } from "@mui/icons-material";
 
 import {
   type TableData,
   type TableCellData,
   type TableBodyRowData,
-  type RefTables,
 } from "../types/tables";
 import InserterReferenceData from "./InserterReferenceData";
 import { tableColumnHider } from "./utils/tableColumnHider";
@@ -36,6 +35,7 @@ interface DataTableProps extends TableData {
   onDelete?: (id: TableCellData) => void;
   onSaveChanges?: (data: TableCellData[]) => void;
   actionColumn?: "edit-delete" | "detail";
+  fillAvailableHeight?: boolean;
 }
 
 export default function DataTable({
@@ -49,6 +49,7 @@ export default function DataTable({
   width = "100%",
   reference = false,
   actionColumn = "edit-delete",
+  fillAvailableHeight = false,
 }: DataTableProps) {
   const [editingData, setEditingData] = useState<string[] | null>(null);
   const [viewTable, setViewTable] = useState<TableBodyRowData[]>(body);
@@ -137,8 +138,9 @@ export default function DataTable({
         sx={{
           width,
           maxWidth: "100%",
-          maxHeight: "93%",
-          mb: 4,
+          height: fillAvailableHeight ? "100%" : undefined,
+          maxHeight: fillAvailableHeight ? "100%" : "93%",
+          mb: fillAvailableHeight ? 0 : 4,
           overflowY: "auto",
           overflowX: "hidden",
         }}
@@ -224,9 +226,19 @@ export default function DataTable({
                         overflowWrap: "anywhere",
                       }}
                     >
-                      {(typeof cell === "number" || typeof cell === "string"
-                        ? cell
-                        : cell.name) ?? "-"}
+                      {(cell === null ? (
+                        ""
+                      ) : typeof cell === "object" ? (
+                        cell.name
+                      ) : typeof cell === "boolean" ? (
+                        cell ? (
+                          <Check />
+                        ) : (
+                          ""
+                        )
+                      ) : (
+                        cell
+                      )) ?? "-"}
                     </TableCell>,
                   ),
                 )}
@@ -248,7 +260,11 @@ export default function DataTable({
                           setEditingData(
                             row.row.map((cell) =>
                               String(
-                                typeof cell === "object" ? cell.code : cell,
+                                cell === null
+                                  ? ""
+                                  : typeof cell === "object"
+                                    ? cell.code
+                                    : cell,
                               ),
                             ),
                           )

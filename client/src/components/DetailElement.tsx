@@ -1,78 +1,149 @@
-import { Box, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import type { ForeignKey } from "../types/tables";
+import type { ColumnTypes, ForeignKey } from "../types/tables";
+import { updateTextFieldValue } from "../services/dataInput";
 
 interface detailElementProps {
   name: string;
   data: string | number | undefined | ForeignKey;
+  inputType: ColumnTypes;
   disabled?: boolean;
+  isChanged: boolean;
+  setIsChangedValue?: () => void;
 }
 
 export default function DetailElement({
   name,
   data,
+  inputType,
   disabled,
+  isChanged,
+  setIsChangedValue = () => {},
 }: detailElementProps) {
   const [userInput, setUserInput] = useState<String>("");
 
-  useEffect(
-    () =>
-      setUserInput(typeof data === "object" ? data.name : String(data ?? "")),
-    [data],
-  );
+  useEffect(() => {
+    setUserInput(
+      data === null
+        ? ""
+        : String(typeof data === "object" ? data.code : (data ?? "")),
+    );
+  }, [data]);
+
+  const handleValueChanged = (value: string) => {
+    const strType = typeof inputType === "string" ? inputType : "string";
+    let newValue = "";
+
+    try {
+      newValue = updateTextFieldValue(value, strType);
+    } catch {
+      return;
+    }
+
+    setIsChangedValue();
+    setUserInput(newValue);
+  };
+
+  const inputSx = {
+    width: "100%",
+    height: "100%",
+    minWidth: 0,
+    backgroundColor: "white",
+    "& .MuiFormControl-root": { height: "100%" },
+    "& .MuiOutlinedInput-root": {
+      height: "100%",
+      minHeight: 56,
+      borderRadius: "0 8px 8px 0",
+      backgroundColor: isChanged ? "#FFFBF3" : "white",
+      boxShadow: isChanged
+        ? "0 0 0 3px rgba(237, 108, 2, 0.12)"
+        : "none",
+      "& .MuiOutlinedInput-notchedOutline": {
+        borderColor: isChanged ? "warning.main" : "divider",
+        borderWidth: isChanged ? 2 : 1,
+      },
+    },
+  };
 
   return (
     <Box
       sx={{
-        display: "flex",
-        flexDirection: "row",
-        width: "49%",
-        m: "0.1%",
+        display: "grid",
+        gridTemplateColumns: {
+          xs: "minmax(115px, 0.7fr) minmax(0, 1.3fr)",
+          md: "minmax(140px, 0.55fr) minmax(0, 1.45fr)",
+        },
+        alignItems: "stretch",
+        minWidth: 0,
       }}
     >
       <Box
         sx={{
           display: "flex",
-          justifyContent: "start",
+          justifyContent: "flex-start",
           alignItems: "center",
-          border: "solid",
-          borderColor: "black",
-          width: "22%",
-          p: "0.5%",
-          backgroundColor: "white",
+          minHeight: 56,
+          border: isChanged ? "2px solid" : "1px solid",
+          borderColor: isChanged ? "warning.main" : "divider",
+          borderRadius: "8px 0 0 8px",
+          px: 1.25,
+          py: 0.75,
+          backgroundColor: isChanged ? "#FFF4DE" : "grey.50",
+          boxSizing: "border-box",
         }}
       >
-        <Typography sx={{ color: "black" }}>{name}</Typography>
+        <Typography
+          sx={{
+            color: isChanged ? "warning.dark" : "text.primary",
+            fontSize: "0.9rem",
+            fontWeight: isChanged ? 700 : 400,
+          }}
+        >
+          {name}
+        </Typography>
       </Box>
-      <TextField
-        sx={{
-          width: "77%",
-          backgroundColor: "white",
-          height: "100%",
-        }}
-        disabled={disabled}
-        value={userInput}
-        // onChange={(event) => setValue(index, event.target.value)}
-        // type={
-        //   type === "phone" ? "tel" : type === "email" ? "email" : "text"
-        // }
-        // inputMode={
-        // type === "number" || type === "phone"
-        // ? "numeric"
-        // : type === "email"
-        // ? "email"
-        // : "text"
-        // }
-        // slotProps={
-        // type === "phone"
-        // ? { htmlInput: { maxLength: 11, pattern: "[0-9]{11}" } }
-        // : type === "email"
-        // ? { htmlInput: { maxLength: 127 } }
-        // : undefined
-        // }
-        // fullWidth
-        // disabled={index === 0 && editMode}
-      />
+
+      {typeof inputType === "string" ? (
+        <TextField
+          sx={inputSx}
+          disabled={disabled}
+          value={
+            inputType === "date"
+              ? userInput.split(".").reverse().join("-")
+              : userInput
+          }
+          onChange={(event) => handleValueChanged(event.target.value)}
+          type={
+            inputType === "phone"
+              ? "tel"
+              : inputType === "email"
+                ? "email"
+                : inputType === "date"
+                  ? "date"
+                  : "text"
+          }
+          inputMode={inputType === "number" ? "numeric" : "text"}
+          slotProps={
+            inputType === "date" ? { inputLabel: { shrink: true } } : undefined
+          }
+        />
+      ) : (
+        <Autocomplete
+          sx={inputSx}
+          disabled={disabled}
+          options={inputType ?? [{ code: -1, name: "Ошибка" }]}
+          getOptionLabel={(option) => option.name}
+          value={
+            (inputType ?? []).find(
+              (variant) => String(variant.code) === userInput,
+            ) ?? null
+          }
+          onChange={(_, newValue) => {
+            handleValueChanged(String((newValue ?? { code: "" }).code) ?? "");
+          }}
+          renderInput={(params) => <TextField {...params} label="" />}
+        />
+      )}
     </Box>
   );
 }

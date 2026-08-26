@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
-import { Button, TableCell, TableRow, TextField } from "@mui/material";
+import {
+  Button,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  TableCell,
+  TableRow,
+  TextField,
+} from "@mui/material";
 import { FilterAlt, FilterAltOff } from "@mui/icons-material";
 
 import type { ColumnTypes } from "../types/tables";
@@ -68,16 +76,44 @@ export default function FilterRow({
               overflowWrap: "anywhere",
             }}
           >
-            <TextField
-              value={values[index] ?? ""}
-              onChange={(event) => setValue(index, event.target.value)}
-              inputMode={
-                typeof filter === "string" && filter === "number"
-                  ? "numeric"
-                  : "text"
-              }
-              fullWidth
-            />
+            {filter === "boolean" ? (
+              <RadioGroup
+                value={values[index] ?? ""}
+                onChange={(event) => setValue(index, event.target.value)}
+                name="radio-buttons-group"
+                sx={{ gap: 0 }}
+              >
+                <FormControlLabel
+                  value=""
+                  control={<Radio size="small" sx={{ py: 0.25 }} />}
+                  label="Все"
+                  sx={{ my: 0 }}
+                />
+                <FormControlLabel
+                  value="true"
+                  control={<Radio size="small" sx={{ py: 0.25 }} />}
+                  label="Да"
+                  sx={{ my: 0 }}
+                />
+                <FormControlLabel
+                  value="false"
+                  control={<Radio size="small" sx={{ py: 0.25 }} />}
+                  label="Нет"
+                  sx={{ my: 0 }}
+                />
+              </RadioGroup>
+            ) : (
+              <TextField
+                value={values[index] ?? ""}
+                onChange={(event) => setValue(index, event.target.value)}
+                inputMode={
+                  typeof filter === "string" && filter === "number"
+                    ? "numeric"
+                    : "text"
+                }
+                fullWidth
+              />
+            )}
           </TableCell>,
         ),
       )}

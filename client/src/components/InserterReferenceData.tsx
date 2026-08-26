@@ -5,11 +5,13 @@ import {
   TextField,
   Button,
   Autocomplete,
+  Checkbox,
 } from "@mui/material";
 import { Bounce, toast } from "react-toastify";
 
 import { type ColumnTypes, type TableCellData } from "../types/tables";
 import { tableColumnHider } from "./utils/tableColumnHider";
+import { updateTextFieldValue } from "../services/dataInput";
 
 interface InserterProps {
   hideIdCol: boolean;
@@ -36,19 +38,17 @@ export default function InserterReferenceData({
   }, [types.length, editingData]);
 
   const setValue = (ind: number, value: string) => {
-    if (typeof types[ind] === "string") {
-      if (types[ind] === "number") {
-        if (!/^\d*$/.test(value)) {
-          return;
-        }
-      }
-      if (types[ind] === "phone" && !/^\d{0,11}$/.test(value)) {
-        return;
-      }
+    const type = typeof types[ind] === "string" ? types[ind] : "string";
+    let newValue = "";
+
+    try {
+      newValue = updateTextFieldValue(value, type);
+    } catch {
+      return;
     }
     setValues((prev) => {
       const newValues = [...prev];
-      newValues[ind] = value;
+      newValues[ind] = newValue;
       return newValues;
     });
   };
@@ -116,29 +116,42 @@ export default function InserterReferenceData({
             }}
           >
             {typeof type === "string" ? (
-              <TextField
-                value={values[index] ?? ""}
-                onChange={(event) => setValue(index, event.target.value)}
-                type={
-                  type === "phone" ? "tel" : type === "email" ? "email" : "text"
-                }
-                inputMode={
-                  type === "number" || type === "phone"
-                    ? "numeric"
-                    : type === "email"
-                      ? "email"
-                      : "text"
-                }
-                slotProps={
-                  type === "phone"
-                    ? { htmlInput: { maxLength: 11, pattern: "[0-9]{11}" } }
-                    : type === "email"
-                      ? { htmlInput: { maxLength: 127 } }
-                      : undefined
-                }
-                fullWidth
-                disabled={index === 0 && editMode}
-              />
+              type === "boolean" ? (
+                <Checkbox
+                  checked={values[index] ? true : false}
+                  onChange={(event) =>
+                    setValue(index, event.target.checked ? "Yes" : "")
+                  }
+                />
+              ) : (
+                <TextField
+                  value={values[index] ?? ""}
+                  onChange={(event) => setValue(index, event.target.value)}
+                  type={
+                    type === "phone"
+                      ? "tel"
+                      : type === "email"
+                        ? "email"
+                        : "text"
+                  }
+                  inputMode={
+                    type === "number" || type === "phone"
+                      ? "numeric"
+                      : type === "email"
+                        ? "email"
+                        : "text"
+                  }
+                  slotProps={
+                    type === "phone"
+                      ? { htmlInput: { maxLength: 11, pattern: "[0-9]{11}" } }
+                      : type === "email"
+                        ? { htmlInput: { maxLength: 127 } }
+                        : undefined
+                  }
+                  fullWidth
+                  disabled={index === 0 && editMode}
+                />
+              )
             ) : (
               <Autocomplete
                 fullWidth
