@@ -73,7 +73,7 @@ export default function AddExamDatesDialog() {
 
       <Dialog open={dialogIsOpen} onClose={closeDialog} fullWidth maxWidth="sm">
         <DialogTitle sx={{ fontWeight: 700 }}>
-          Добавление дат экзаменов
+          Добавление дат тестирований
         </DialogTitle>
         <DialogContent>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>

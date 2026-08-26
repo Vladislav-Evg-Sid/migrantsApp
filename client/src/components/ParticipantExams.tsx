@@ -14,7 +14,6 @@ export default function ParticipantExams({ table }: ParticipantExamsProps) {
         borderRadius: 10,
         p: 2,
         mt: "0.2%",
-        height: "60vh",
       }}
     >
       <DataTable

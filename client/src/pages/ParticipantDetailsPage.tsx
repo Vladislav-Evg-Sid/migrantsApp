@@ -5,6 +5,8 @@ import { Box, Button } from "@mui/material";
 import ParticipantDetails from "../components/ParticipantDetails";
 import { type ParticipantData } from "../types/participants";
 import ParticipantExams from "../components/ParticipantExams";
+import { type ForeignKey } from "../types/tables";
+import { getReferenceTable } from "../api/references";
 
 export default function ParticipantDetailsPage() {
   const { id } = useParams();
@@ -16,6 +18,9 @@ export default function ParticipantDetailsPage() {
     nation: { code: 0, name: "" },
     exams: { head: [], body: [] },
   });
+  const [schoolVariants, setSchoolVariants] = useState<ForeignKey[]>([]);
+  const [nationVariants, setNationVariants] = useState<ForeignKey[]>([]);
+
   const navigate = useNavigate();
 
   const participantID = Number(id);
@@ -24,6 +29,29 @@ export default function ParticipantDetailsPage() {
       setParticipant(await getParticipantDetails(participantID));
     handeParticipantDetails();
   }, [id]);
+
+  useEffect(() => {
+    const fetchSchools = async () => {
+      const schools = await getReferenceTable("schools");
+      setSchoolVariants(
+        schools.body.map(({ row }) => ({
+          code: Number(row[0] ?? -1),
+          name: String(row[1] ?? ""),
+        })),
+      );
+    };
+    const fetchNations = async () => {
+      const schools = await getReferenceTable("nations");
+      setNationVariants(
+        schools.body.map(({ row }) => ({
+          code: Number(row[0] ?? -1),
+          name: String(row[1] ?? ""),
+        })),
+      );
+    };
+    fetchSchools();
+    fetchNations();
+  }, []);
 
   return (
     <Box
@@ -43,7 +71,11 @@ export default function ParticipantDetailsPage() {
       >
         Назад
       </Button>
-      <ParticipantDetails participant={participant} />
+      <ParticipantDetails
+        participant={participant}
+        nationVariants={nationVariants}
+        schoolVariants={schoolVariants}
+      />
       <ParticipantExams table={participant.exams} />
     </Box>
   );
