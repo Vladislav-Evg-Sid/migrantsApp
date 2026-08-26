@@ -54,16 +54,31 @@ export default function ParticipantsPage() {
           hideIdCol={false}
           name="participants"
           actionColumn="detail"
+          fillAvailableHeight
         />
       </Box>
-      <Button
-        onClick={() => alert("Пока функция не готова")}
-        variant="contained"
-        color="success"
-        sx={{ textTransform: "none" }}
+      <Box
+        sx={{
+          display: "flex",
+        }}
       >
-        Загрузить из Excel
-      </Button>
+        <Button
+          onClick={() => alert("Пока функция не готова")}
+          variant="contained"
+          color="success"
+          sx={{ textTransform: "none", mr: 1 }}
+        >
+          Загрузить из Excel
+        </Button>
+        <Button
+          onClick={() => alert("Пока функция не готова")}
+          variant="contained"
+          color="success"
+          sx={{ textTransform: "none" }}
+        >
+          Добавить
+        </Button>
+      </Box>
     </Box>
   );
 }
