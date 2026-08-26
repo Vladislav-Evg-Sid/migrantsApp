@@ -77,7 +77,7 @@ export default function ParticipantDetailsPage() {
       >
         <Button
           onClick={() => navigate("/participants")}
-          variant="outlined"
+          variant="contained"
           startIcon={<ArrowBack />}
           sx={{ borderRadius: 2, textTransform: "none" }}
         >
