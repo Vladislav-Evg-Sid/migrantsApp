@@ -92,7 +92,7 @@ export default function FilterRow({
                 <FormControlLabel
                   value="true"
                   control={<Radio size="small" sx={{ py: 0.25 }} />}
-                  label="Есть"
+                  label="Да"
                   sx={{ my: 0 }}
                 />
                 <FormControlLabel

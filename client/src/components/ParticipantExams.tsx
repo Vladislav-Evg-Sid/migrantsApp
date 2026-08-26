@@ -7,8 +7,8 @@ interface ParticipantExamsProps {
 }
 
 export default function ParticipantExams({ table }: ParticipantExamsProps) {
-  table.head.splice(8, 2);
-  table.body.forEach(({ row }) => row.splice(8, 2));
+  table.head.splice(9, 2);
+  table.body.forEach(({ row }) => row.splice(9, 2));
 
   return (
     <Paper
@@ -36,7 +36,7 @@ export default function ParticipantExams({ table }: ParticipantExamsProps) {
           name="Результаты"
           head={table.head}
           body={table.body}
-          hideIdCol={false}
+          hideIdCol
           fillAvailableHeight
           reference
         />
