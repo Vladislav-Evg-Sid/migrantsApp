@@ -30,14 +30,14 @@ export default function ParticipantDetails({
         <DetailElement name="Национальность" data={participant.nation} />
         <DetailElement name="Фамилия" data={participant.surname} />
         <DetailElement name="Школа обучения" data={participant.school} />
-        <DetailElement name="Имя" data={participant.firstname} />
+        <DetailElement name="Имя" data={participant.name} />
         <DetailElement
           name="Дата следующего экзамена"
           data={participant.nextExamDate}
         />
-        <DetailElement name="Отчество" data={participant.lastname} />
-        <DetailElement name="Комментарий" data={participant.comment} />
-        <DetailElement name="Дата рождения" data={participant.birthday} />
+        <DetailElement name="Отчество" data={participant.patronymic} />
+        <DetailElement name="Комментарий" data={participant.schoolComment} />
+        <DetailElement name="Дата рождения" data={participant.birthDate} />
         <DetailElement name="Примечание РЦОИ" data={participant.rcoiNote} />
       </Box>
       <Box

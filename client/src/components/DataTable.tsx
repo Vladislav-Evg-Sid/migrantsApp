@@ -224,9 +224,11 @@ export default function DataTable({
                         overflowWrap: "anywhere",
                       }}
                     >
-                      {(typeof cell === "number" || typeof cell === "string"
-                        ? cell
-                        : cell.name) ?? "-"}
+                      {(cell === null
+                        ? ""
+                        : typeof cell === "object"
+                          ? cell.name
+                          : cell) ?? "-"}
                     </TableCell>,
                   ),
                 )}

@@ -11,8 +11,8 @@ export default function ParticipantDetailsPage() {
   const [participant, setParticipant] = useState<ParticipantData>({
     id: 0,
     surname: "",
-    firstname: "",
-    birthday: "",
+    name: "",
+    birthDate: "",
     nation: { code: 0, name: "" },
     exams: { head: [], body: [] },
   });

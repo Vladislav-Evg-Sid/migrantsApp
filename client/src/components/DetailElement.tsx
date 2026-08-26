@@ -15,11 +15,15 @@ export default function DetailElement({
 }: detailElementProps) {
   const [userInput, setUserInput] = useState<String>("");
 
-  useEffect(
-    () =>
-      setUserInput(typeof data === "object" ? data.name : String(data ?? "")),
-    [data],
-  );
+  useEffect(() => {
+    setUserInput(
+      data === null
+        ? ""
+        : typeof data === "object"
+          ? data.name
+          : String(data ?? ""),
+    );
+  }, [data]);
 
   return (
     <Box

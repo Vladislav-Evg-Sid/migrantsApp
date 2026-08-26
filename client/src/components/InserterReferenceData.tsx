@@ -10,6 +10,7 @@ import { Bounce, toast } from "react-toastify";
 
 import { type ColumnTypes, type TableCellData } from "../types/tables";
 import { tableColumnHider } from "./utils/tableColumnHider";
+import { updateTextFieldValue } from "../services/dataInput";
 
 interface InserterProps {
   hideIdCol: boolean;
@@ -36,19 +37,17 @@ export default function InserterReferenceData({
   }, [types.length, editingData]);
 
   const setValue = (ind: number, value: string) => {
-    if (typeof types[ind] === "string") {
-      if (types[ind] === "number") {
-        if (!/^\d*$/.test(value)) {
-          return;
-        }
-      }
-      if (types[ind] === "phone" && !/^\d{0,11}$/.test(value)) {
-        return;
-      }
+    const type = typeof types[ind] === "string" ? types[ind] : "string";
+    let newValue = "";
+
+    try {
+      newValue = updateTextFieldValue(value, type);
+    } catch {
+      return;
     }
     setValues((prev) => {
       const newValues = [...prev];
-      newValues[ind] = value;
+      newValues[ind] = newValue;
       return newValues;
     });
   };
