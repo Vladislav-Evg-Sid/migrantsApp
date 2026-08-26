@@ -177,7 +177,12 @@ export const openApiDocument = {
         type: "object",
         required: ["code", "name"],
         properties: {
-          code: { type: "integer", format: "int64" },
+          code: {
+            oneOf: [
+              { type: "integer", format: "int64" },
+              { type: "string" },
+            ],
+          },
           name: { type: "string" },
         },
       },

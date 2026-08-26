@@ -17,6 +17,7 @@ import type {
   ParticipantData,
 } from "../types/participants.js";
 import type { ForeignKey, TableData } from "../types/reference-data.js";
+import type { TestResultValue } from "../types/test-results.js";
 
 function formatDate(day: number, month: number, year: number): string {
   return `${String(day).padStart(2, "0")}.${String(month).padStart(2, "0")}.${year}`;
@@ -28,9 +29,12 @@ function formatOptionalDate(value: string | null): string | null {
   return match ? `${match[3]}.${match[2]}.${match[1]}` : value;
 }
 
-function foreignKey(code: number, name: string): ForeignKey {
+function foreignKey(code: number | string, name: string): ForeignKey {
   return { code, name };
 }
+
+const resultOptions: ForeignKey[] = (["Да", "Нет", "Неявка"] satisfies TestResultValue[])
+  .map((result) => foreignKey(result, result));
 
 export async function createParticipant(
   input: CreateParticipantInput,
@@ -110,12 +114,13 @@ export async function getParticipantDetails(id: number): Promise<ParticipantData
     rcoiNote: participant.rcoi_note,
     exams: {
       head: [
+        { type: "number", cell: "ID" },
         { type: "number", cell: "Попытка" },
         { type: "date", cell: "Дата тестирования" },
         { type: schools.map((school) => foreignKey(school.code, school.name)), cell: "Школа, направившая" },
         { type: ppts.map((ppt) => foreignKey(ppt.code, ppt.school_name)), cell: "ППТ" },
         { type: "number", cell: "Класс" },
-        { type: "string", cell: "Результат" },
+        { type: resultOptions, cell: "Результат" },
         { type: statuses.map((status) => foreignKey(status.id, status.name)), cell: "Статус" },
         { type: "boolean", cell: "Специальная категория" },
         { type: "date", cell: "Дата апелляции" },
@@ -124,12 +129,13 @@ export async function getParticipantDetails(id: number): Promise<ParticipantData
       ],
       body: exams.map((exam) => ({
         row: [
+          exam.id,
           exam.test_attempt_number,
           formatDate(exam.test_day, exam.test_month, exam.test_year),
           foreignKey(exam.sending_school_code, exam.sending_school_name),
           foreignKey(exam.testing_center_ppt_code, exam.testing_center_name),
           exam.class,
-          exam.result,
+          exam.result ? foreignKey(exam.result, exam.result) : null,
           exam.status_id && exam.status_name ? foreignKey(exam.status_id, exam.status_name) : null,
           exam.is_special_category,
           formatOptionalDate(exam.appeal_review_date),
