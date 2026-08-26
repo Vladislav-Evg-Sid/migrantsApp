@@ -1,3 +1,4 @@
+export type TestResultCode = 1 | 2 | 3;
 export type TestResultValue = "Да" | "Нет" | "Неявка";
 
 export type CreateTestResultInput = {
@@ -5,7 +6,7 @@ export type CreateTestResultInput = {
   isSpecialCategory: boolean;
   statusId: number | null;
   testDateId: number;
-  result: TestResultValue | null;
+  result: TestResultCode | null;
   class: number;
   sendingSchoolCode: number;
   testAttemptNumber: number;

@@ -1,4 +1,5 @@
 import { pool } from "../db.js";
+import { testResultValueFromCode } from "../mappers/test-results.mapper.js";
 import type { CreateTestResultInput } from "../types/test-results.js";
 
 export async function insertTestResult(input: CreateTestResultInput): Promise<void> {
@@ -20,7 +21,7 @@ export async function insertTestResult(input: CreateTestResultInput): Promise<vo
       input.isSpecialCategory,
       input.statusId,
       input.testDateId,
-      input.result,
+      testResultValueFromCode(input.result),
       input.class,
       input.sendingSchoolCode,
       input.testAttemptNumber,

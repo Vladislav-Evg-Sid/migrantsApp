@@ -17,7 +17,11 @@ import type {
   ParticipantData,
 } from "../types/participants.js";
 import type { ForeignKey, TableData } from "../types/reference-data.js";
-import type { TestResultValue } from "../types/test-results.js";
+import {
+  isTestResultCode,
+  TEST_RESULT_OPTIONS,
+  testResultCodeFromValue,
+} from "../mappers/test-results.mapper.js";
 
 function formatDate(day: number, month: number, year: number): string {
   return `${String(day).padStart(2, "0")}.${String(month).padStart(2, "0")}.${year}`;
@@ -29,18 +33,18 @@ function formatOptionalDate(value: string | null): string | null {
   return match ? `${match[3]}.${match[2]}.${match[1]}` : value;
 }
 
-function foreignKey(code: number | string, name: string): ForeignKey {
+function foreignKey(code: number, name: string): ForeignKey {
   return { code, name };
 }
 
-const resultOptions: ForeignKey[] = (["Да", "Нет", "Неявка"] satisfies TestResultValue[])
-  .map((result) => foreignKey(result, result));
+const resultOptions: ForeignKey[] = TEST_RESULT_OPTIONS.map(({ code, name }) => ({ code, name }));
 
 export async function createParticipant(
   input: CreateParticipantInput,
 ): Promise<CreatedParticipant> {
   const pptCode = input.firstExam?.testingCenterPptCode;
   const classNumber = input.firstExam?.class;
+  const result = input.firstExam?.result;
   if (
     !Number.isInteger(pptCode) ||
     !Number.isInteger(classNumber) ||
@@ -49,6 +53,12 @@ export async function createParticipant(
   ) {
     const error = new Error("Для генерации ID нужны корректные код ППТ и класс");
     Object.assign(error, { code: "INVALID_PARTICIPANT_ID_SOURCE" });
+    throw error;
+  }
+
+  if (result !== null && !isTestResultCode(result)) {
+    const error = new Error("Некорректный код результата экзамена");
+    Object.assign(error, { code: "INVALID_TEST_RESULT" });
     throw error;
   }
 
@@ -135,7 +145,7 @@ export async function getParticipantDetails(id: number): Promise<ParticipantData
           foreignKey(exam.sending_school_code, exam.sending_school_name),
           foreignKey(exam.testing_center_ppt_code, exam.testing_center_name),
           exam.class,
-          exam.result ? foreignKey(exam.result, exam.result) : null,
+          exam.result ? foreignKey(testResultCodeFromValue(exam.result), exam.result) : null,
           exam.status_id && exam.status_name ? foreignKey(exam.status_id, exam.status_name) : null,
           exam.is_special_category,
           formatOptionalDate(exam.appeal_review_date),

@@ -48,6 +48,14 @@ app.use((error: unknown, request: express.Request, response: express.Response, _
     return;
   }
 
+  if (hasErrorCode(error, "INVALID_TEST_RESULT")) {
+    response.status(400).json({
+      error: "INVALID_TEST_RESULT",
+      message: "Результат должен иметь код 1, 2, 3 или значение null",
+    });
+    return;
+  }
+
   if (hasErrorCode(error, "PARTICIPANT_SEQUENCE_EXHAUSTED")) {
     response.status(409).json({
       error: "PARTICIPANT_SEQUENCE_EXHAUSTED",
