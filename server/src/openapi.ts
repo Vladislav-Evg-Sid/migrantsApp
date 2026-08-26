@@ -181,6 +181,14 @@ export const openApiDocument = {
           name: { type: "string" },
         },
       },
+      SelectOption: {
+        type: "object",
+        required: ["code", "name"],
+        properties: {
+          code: { type: "integer", format: "int64", nullable: true },
+          name: { type: "string" },
+        },
+      },
       TableHeadCell: {
         type: "object",
         required: ["cell", "type"],
@@ -189,7 +197,7 @@ export const openApiDocument = {
           type: {
             oneOf: [
               { type: "string", enum: ["string", "number", "phone", "email", "date", "boolean"] },
-              { type: "array", items: schemaRef("ForeignKey") },
+              { type: "array", items: schemaRef("SelectOption") },
             ],
           },
         },

@@ -3,7 +3,12 @@ export type ForeignKey = {
   name: string;
 };
 
-export type ColumnType = "string" | "number" | "phone" | "email" | "date" | "boolean" | ForeignKey[];
+export type SelectOption = {
+  code: number | null;
+  name: string;
+};
+
+export type ColumnType = "string" | "number" | "phone" | "email" | "date" | "boolean" | SelectOption[];
 
 export type TableCellData = string | number | boolean | null | ForeignKey;
 

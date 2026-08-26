@@ -16,7 +16,7 @@ import type {
   CreatedParticipant,
   ParticipantData,
 } from "../types/participants.js";
-import type { ForeignKey, TableData } from "../types/reference-data.js";
+import type { ForeignKey, SelectOption, TableData } from "../types/reference-data.js";
 import {
   isTestResultCode,
   TEST_RESULT_OPTIONS,
@@ -37,7 +37,10 @@ function foreignKey(code: number, name: string): ForeignKey {
   return { code, name };
 }
 
-const resultOptions: ForeignKey[] = TEST_RESULT_OPTIONS.map(({ code, name }) => ({ code, name }));
+const resultOptions: SelectOption[] = [
+  ...TEST_RESULT_OPTIONS,
+  { code: null, name: "Не указано" },
+];
 
 export async function createParticipant(
   input: CreateParticipantInput,
