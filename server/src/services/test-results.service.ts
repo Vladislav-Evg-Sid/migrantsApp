@@ -7,7 +7,6 @@ import {
   findAllParticipantStatuses,
   findAllPpts,
   findAllSchools,
-  findAllTestAttempts,
   findAllTestDates,
 } from "../repositories/reference-data.repository.js";
 import type { SelectOption, TableHeadCell } from "../types/reference-data.js";
@@ -21,21 +20,17 @@ function nullableOptions(options: SelectOption[]): SelectOption[] {
   return [...options, { code: null, name: "Не указано" }];
 }
 
-export async function getTestResultCreationHead(): Promise<TableHeadCell[]> {
-  const [statuses, testDates, schools, attempts, ppts] = await Promise.all([
+export async function getTestResultHead(): Promise<TableHeadCell[]> {
+  const [statuses, testDates, schools, ppts] = await Promise.all([
     findAllParticipantStatuses(),
     findAllTestDates(),
     findAllSchools(),
-    findAllTestAttempts(),
     findAllPpts(),
   ]);
 
   return [
-    { cell: "Специальная категория", type: "boolean" },
-    {
-      cell: "Статус",
-      type: nullableOptions(statuses.map((status) => ({ code: status.id, name: status.name }))),
-    },
+    { type: "number", cell: "ID" },
+    { type: "number", cell: "Попытка" },
     {
       cell: "Дата тестирования",
       type: testDates.map((date) => ({
@@ -43,24 +38,24 @@ export async function getTestResultCreationHead(): Promise<TableHeadCell[]> {
         name: formatDate(date.day, date.month, date.year),
       })),
     },
-    { cell: "Результат", type: [...TEST_RESULT_SELECT_OPTIONS] },
-    { cell: "Класс", type: "number" },
     {
       cell: "Школа, направившая",
       type: schools.map((school) => ({ code: school.code, name: school.name })),
     },
     {
-      cell: "Попытка",
-      type: attempts.map((attempt) => ({ code: attempt.number, name: attempt.name })),
-    },
-    {
-      cell: "Апелляция",
-      type: [{ code: null, name: "Не указано" }],
-    },
-    {
       cell: "ППТ",
       type: ppts.map((ppt) => ({ code: ppt.code, name: ppt.school_name })),
     },
+    { type: "number", cell: "Класс" },
+    { type: [...TEST_RESULT_SELECT_OPTIONS], cell: "Результат" },
+    {
+      type: nullableOptions(statuses.map((status) => ({ code: status.id, name: status.name }))),
+      cell: "Статус",
+    },
+    { type: "boolean", cell: "Специальная категория" },
+    { type: "date", cell: "Дата апелляции" },
+    { type: "boolean", cell: "Апелляция удовлетворена" },
+    { type: "boolean", cell: "Участник присутствовал" },
   ];
 }
 

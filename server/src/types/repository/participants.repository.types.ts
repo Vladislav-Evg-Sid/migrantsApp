@@ -34,6 +34,7 @@ export type ParticipantDetailsRow = {
 export type ParticipantExamRow = {
   id: number;
   test_attempt_number: number;
+  test_date_id: number;
   test_day: number;
   test_month: number;
   test_year: number;

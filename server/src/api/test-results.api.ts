@@ -2,13 +2,13 @@ import { Router } from "express";
 
 import {
   createTestResult,
-  getTestResultCreationHead,
+  getTestResultHead,
 } from "../services/test-results.service.js";
 
 export const testResultsRouter = Router();
 
 testResultsRouter.get("/test-results/head", async (_request, response) => {
-  response.json(await getTestResultCreationHead());
+  response.json(await getTestResultHead());
 });
 
 testResultsRouter.post("/test-results", async (request, response) => {

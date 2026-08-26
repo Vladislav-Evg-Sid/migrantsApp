@@ -6,9 +6,6 @@ import {
 } from "../repositories/participants.repository.js";
 import {
   findAllNations,
-  findAllParticipantStatuses,
-  findAllPpts,
-  findAllSchools,
   pptExistsByCode,
 } from "../repositories/reference-data.repository.js";
 import type {
@@ -16,12 +13,12 @@ import type {
   CreatedParticipant,
   ParticipantData,
 } from "../types/participants.js";
-import type { ForeignKey, SelectOption, TableData } from "../types/reference-data.js";
+import type { ForeignKey, TableData } from "../types/reference-data.js";
 import {
   isTestResultCode,
-  TEST_RESULT_SELECT_OPTIONS,
   testResultCodeFromValue,
 } from "../mappers/test-results.mapper.js";
+import { getTestResultHead } from "./test-results.service.js";
 
 function formatDate(day: number, month: number, year: number): string {
   return `${String(day).padStart(2, "0")}.${String(month).padStart(2, "0")}.${year}`;
@@ -36,8 +33,6 @@ function formatOptionalDate(value: string | null): string | null {
 function foreignKey(code: number, name: string): ForeignKey {
   return { code, name };
 }
-
-const resultOptions: SelectOption[] = [...TEST_RESULT_SELECT_OPTIONS];
 
 export async function createParticipant(
   input: CreateParticipantInput,
@@ -100,12 +95,10 @@ export async function getParticipants(): Promise<TableData> {
 }
 
 export async function getParticipantDetails(id: number): Promise<ParticipantData | null> {
-  const [participant, exams, schools, ppts, statuses] = await Promise.all([
+  const [participant, exams, examHead] = await Promise.all([
     findParticipantById(id),
     findParticipantExams(id),
-    findAllSchools(),
-    findAllPpts(),
-    findAllParticipantStatuses(),
+    getTestResultHead(),
   ]);
 
   if (!participant) return null;
@@ -123,25 +116,15 @@ export async function getParticipantDetails(id: number): Promise<ParticipantData
     schoolComment: participant.comment,
     rcoiNote: participant.rcoi_note,
     exams: {
-      head: [
-        { type: "number", cell: "ID" },
-        { type: "number", cell: "Попытка" },
-        { type: "date", cell: "Дата тестирования" },
-        { type: schools.map((school) => foreignKey(school.code, school.name)), cell: "Школа, направившая" },
-        { type: ppts.map((ppt) => foreignKey(ppt.code, ppt.school_name)), cell: "ППТ" },
-        { type: "number", cell: "Класс" },
-        { type: resultOptions, cell: "Результат" },
-        { type: statuses.map((status) => foreignKey(status.id, status.name)), cell: "Статус" },
-        { type: "boolean", cell: "Специальная категория" },
-        { type: "date", cell: "Дата апелляции" },
-        { type: "boolean", cell: "Апелляция удовлетворена" },
-        { type: "boolean", cell: "Участник присутствовал" },
-      ],
+      head: examHead,
       body: exams.map((exam) => ({
         row: [
           exam.id,
           exam.test_attempt_number,
-          formatDate(exam.test_day, exam.test_month, exam.test_year),
+          foreignKey(
+            exam.test_date_id,
+            formatDate(exam.test_day, exam.test_month, exam.test_year),
+          ),
           foreignKey(exam.sending_school_code, exam.sending_school_name),
           foreignKey(exam.testing_center_ppt_code, exam.testing_center_name),
           exam.class,
