@@ -1,16 +1,23 @@
 import "dotenv/config";
 import cors from "cors";
 import express from "express";
+import swaggerUi from "swagger-ui-express";
 
 import { participantsRouter } from "./api/participants.api.js";
 import { referenceDataRouter } from "./api/reference-data.api.js";
 import { testResultsRouter } from "./api/test-results.api.js";
+import { openApiDocument } from "./openapi.js";
 
 const app = express();
 const port = Number(process.env.PORT ?? 3000);
 
 app.use(cors({ origin: process.env.CLIENT_ORIGIN }));
 app.use(express.json());
+app.get("/openapi.json", (_request, response) => response.json(openApiDocument));
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(openApiDocument, {
+  customSiteTitle: "Migrants App API — Swagger",
+  swaggerOptions: { displayRequestDuration: true },
+}));
 app.use("/api", referenceDataRouter);
 app.use("/api", participantsRouter);
 app.use("/api", testResultsRouter);
