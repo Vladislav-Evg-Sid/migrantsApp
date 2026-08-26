@@ -12,11 +12,13 @@ export type ColumnType = "string" | "number" | "phone" | "email" | "date" | "boo
 
 export type TableCellData = string | number | boolean | null | ForeignKey;
 
+export type TableHeadCell = {
+  cell: string;
+  type: ColumnType;
+};
+
 export type TableData = {
-  head: {
-    cell: string;
-    type: ColumnType;
-  }[];
+  head: TableHeadCell[];
   body: {
     row: TableCellData[];
   }[];
