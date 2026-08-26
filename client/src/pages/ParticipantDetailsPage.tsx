@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getParticipantDetails } from "../api/participants";
+import { getExamTableHead, getParticipantDetails } from "../api/participants";
 import { ArrowBack } from "@mui/icons-material";
 import { Box, Button, Typography } from "@mui/material";
 import ParticipantDetails from "../components/ParticipantDetails";
@@ -22,14 +22,31 @@ export default function ParticipantDetailsPage() {
   });
   const [schoolVariants, setSchoolVariants] = useState<ForeignKey[]>([]);
   const [nationVariants, setNationVariants] = useState<ForeignKey[]>([]);
+  const [isCreating, setIsCreating] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
   const participantID = Number(id);
   useEffect(() => {
-    const handeParticipantDetails = async () =>
-      setParticipant(await getParticipantDetails(participantID));
-    handeParticipantDetails();
+    if (participantID === -1) {
+      setIsCreating(true);
+      const fetchParticipantExamHead = async () => {
+        const newHead = await getExamTableHead();
+        setParticipant((prev) => ({
+          ...prev,
+          exams: {
+            ...prev.exams,
+            head: newHead,
+          },
+        }));
+      };
+      fetchParticipantExamHead();
+    } else {
+      const handeParticipantDetails = async () =>
+        setParticipant(await getParticipantDetails(participantID));
+      setIsCreating(false);
+      handeParticipantDetails();
+    }
   }, [id]);
 
   useEffect(() => {
@@ -104,6 +121,7 @@ export default function ParticipantDetailsPage() {
         participant={participant}
         nationVariants={nationVariants}
         schoolVariants={schoolVariants}
+        isCreating={isCreating}
       />
       <ParticipantExams table={participant.exams} />
     </Box>

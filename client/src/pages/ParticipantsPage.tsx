@@ -6,12 +6,15 @@ import DataTable from "../components/DataTable";
 import type { TableData } from "../types/tables";
 import { getParticipants } from "../api/participants";
 import { Bounce, ToastContainer } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function ParticipantsPage() {
   const [participantsData, setParticipantsData] = useState<TableData>({
     body: [],
     head: [],
   });
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchfilters = async () =>
@@ -55,6 +58,7 @@ export default function ParticipantsPage() {
           name="participants"
           actionColumn="detail"
           fillAvailableHeight
+          navigateRoute="/participants/details"
         />
       </Box>
       <Box
@@ -71,7 +75,7 @@ export default function ParticipantsPage() {
           Загрузить из Excel
         </Button>
         <Button
-          onClick={() => alert("Пока функция не готова")}
+          onClick={() => navigate("/participants/details/-1")}
           variant="contained"
           color="success"
           sx={{ textTransform: "none" }}

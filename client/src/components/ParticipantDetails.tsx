@@ -76,7 +76,7 @@ export default function ParticipantDetails({
           data={participant.id}
           inputType="number"
           isChanged={changedInputs.id}
-          disabled={!isCreating}
+          disabled
           setIsChangedValue={() => {
             setChangedInputStatus("id");
           }}
@@ -178,7 +178,7 @@ export default function ParticipantDetails({
             textTransform: "none",
           }}
         >
-          Сохранить
+          {isCreating ? "Добавить" : "Сохранить"}
         </Button>
       </Box>
     </Paper>

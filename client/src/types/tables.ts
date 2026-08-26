@@ -23,7 +23,7 @@ export type ColumnTypes =
 
 export type TableCellData = string | number | ForeignKey;
 
-interface TableHeadCellData {
+export interface TableHeadCellData {
   type: ColumnTypes;
   cell: TableCellData;
 }

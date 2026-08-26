@@ -35,6 +35,7 @@ interface DataTableProps extends TableData {
   onDelete?: (id: TableCellData) => void;
   onSaveChanges?: (data: TableCellData[]) => void;
   actionColumn?: "edit-delete" | "detail";
+  navigateRoute?: string;
   fillAvailableHeight?: boolean;
 }
 
@@ -49,6 +50,7 @@ export default function DataTable({
   width = "100%",
   reference = false,
   actionColumn = "edit-delete",
+  navigateRoute = "/",
   fillAvailableHeight = false,
 }: DataTableProps) {
   const [editingData, setEditingData] = useState<string[] | null>(null);
@@ -290,9 +292,7 @@ export default function DataTable({
                     </>
                   ) : (
                     <Button
-                      onClick={() =>
-                        navigate(`/participants/details/${row.row[0]}`)
-                      }
+                      onClick={() => navigate(`${navigateRoute}/${row.row[0]}`)}
                       sx={{
                         minWidth: "48px",
                       }}
