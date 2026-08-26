@@ -36,6 +36,7 @@ interface DataTableProps extends TableData {
   onDelete?: (id: TableCellData) => void;
   onSaveChanges?: (data: TableCellData[]) => void;
   actionColumn?: "edit-delete" | "detail";
+  fillAvailableHeight?: boolean;
 }
 
 export default function DataTable({
@@ -49,6 +50,7 @@ export default function DataTable({
   width = "100%",
   reference = false,
   actionColumn = "edit-delete",
+  fillAvailableHeight = false,
 }: DataTableProps) {
   const [editingData, setEditingData] = useState<string[] | null>(null);
   const [viewTable, setViewTable] = useState<TableBodyRowData[]>(body);
@@ -137,8 +139,9 @@ export default function DataTable({
         sx={{
           width,
           maxWidth: "100%",
-          maxHeight: "93%",
-          mb: 4,
+          height: fillAvailableHeight ? "100%" : undefined,
+          maxHeight: fillAvailableHeight ? "100%" : "93%",
+          mb: fillAvailableHeight ? 0 : 4,
           overflowY: "auto",
           overflowX: "hidden",
         }}

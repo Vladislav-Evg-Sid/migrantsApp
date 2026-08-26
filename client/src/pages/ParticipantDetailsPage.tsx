@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getParticipantDetails } from "../api/participants";
-import { Box, Button } from "@mui/material";
+import { ArrowBack } from "@mui/icons-material";
+import { Box, Button, Typography } from "@mui/material";
 import ParticipantDetails from "../components/ParticipantDetails";
 import { type ParticipantData } from "../types/participants";
 import ParticipantExams from "../components/ParticipantExams";
@@ -56,21 +57,40 @@ export default function ParticipantDetailsPage() {
   return (
     <Box
       sx={{
-        m: "0.5%",
         display: "flex",
         flexDirection: "column",
-        alignItems: "left",
+        height: "100svh",
         minWidth: 0,
         boxSizing: "border-box",
+        overflow: "hidden",
+        gap: { xs: 1.5, md: 2 },
+        p: { xs: 1.5, sm: 2, md: 2.5 },
       }}
     >
-      <Button
-        onClick={() => navigate("/participants")}
-        variant="contained"
-        sx={{ m: "0.2%", width: "90px" }}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1.5,
+          flexShrink: 0,
+        }}
       >
-        Назад
-      </Button>
+        <Button
+          onClick={() => navigate("/participants")}
+          variant="outlined"
+          startIcon={<ArrowBack />}
+          sx={{ borderRadius: 2, textTransform: "none" }}
+        >
+          Назад
+        </Button>
+        <Typography
+          variant="h5"
+          component="h1"
+          sx={{ fontWeight: 700, lineHeight: 1.2 }}
+        >
+          Карточка участника
+        </Typography>
+      </Box>
       <ParticipantDetails
         participant={participant}
         nationVariants={nationVariants}

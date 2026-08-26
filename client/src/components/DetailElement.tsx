@@ -41,40 +41,71 @@ export default function DetailElement({
     }
 
     setIsChangedValue();
-
     setUserInput(newValue);
+  };
+
+  const inputSx = {
+    width: "100%",
+    height: "100%",
+    minWidth: 0,
+    backgroundColor: "white",
+    "& .MuiFormControl-root": { height: "100%" },
+    "& .MuiOutlinedInput-root": {
+      height: "100%",
+      minHeight: 56,
+      borderRadius: "0 8px 8px 0",
+      backgroundColor: isChanged ? "#FFFBF3" : "white",
+      boxShadow: isChanged
+        ? "0 0 0 3px rgba(237, 108, 2, 0.12)"
+        : "none",
+      "& .MuiOutlinedInput-notchedOutline": {
+        borderColor: isChanged ? "warning.main" : "divider",
+        borderWidth: isChanged ? 2 : 1,
+      },
+    },
   };
 
   return (
     <Box
       sx={{
-        display: "flex",
-        flexDirection: "row",
-        width: "49%",
-        m: "0.1%",
+        display: "grid",
+        gridTemplateColumns: {
+          xs: "minmax(115px, 0.7fr) minmax(0, 1.3fr)",
+          md: "minmax(140px, 0.55fr) minmax(0, 1.45fr)",
+        },
+        alignItems: "stretch",
+        minWidth: 0,
       }}
     >
       <Box
         sx={{
           display: "flex",
-          justifyContent: "start",
+          justifyContent: "flex-start",
           alignItems: "center",
-          border: "solid",
-          borderColor: isChanged ? "gray" : "black",
-          width: "22%",
-          p: "0.5%",
-          backgroundColor: "white",
+          minHeight: 56,
+          border: isChanged ? "2px solid" : "1px solid",
+          borderColor: isChanged ? "warning.main" : "divider",
+          borderRadius: "8px 0 0 8px",
+          px: 1.25,
+          py: 0.75,
+          backgroundColor: isChanged ? "#FFF4DE" : "grey.50",
+          boxSizing: "border-box",
         }}
       >
-        <Typography sx={{ color: "black" }}>{name}</Typography>
+        <Typography
+          sx={{
+            color: isChanged ? "warning.dark" : "text.primary",
+            fontSize: "0.9rem",
+            fontWeight: isChanged ? 700 : 400,
+          }}
+        >
+          {name}
+        </Typography>
       </Box>
+
       {typeof inputType === "string" ? (
         <TextField
-          sx={{
-            width: "77%",
-            backgroundColor: "white",
-            height: "100%",
-          }}
+          sx={inputSx}
           disabled={disabled}
           value={
             inputType === "date"
@@ -98,11 +129,7 @@ export default function DetailElement({
         />
       ) : (
         <Autocomplete
-          sx={{
-            width: "77%",
-            backgroundColor: "white",
-            height: "100%",
-          }}
+          sx={inputSx}
           disabled={disabled}
           options={inputType ?? [{ code: -1, name: "Ошибка" }]}
           getOptionLabel={(option) => option.name}

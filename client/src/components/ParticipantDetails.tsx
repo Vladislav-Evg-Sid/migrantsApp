@@ -1,4 +1,4 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button, Paper, Typography } from "@mui/material";
 import DetailElement from "./DetailElement";
 import type { ParticipantData } from "../types/participants";
 import { useState } from "react";
@@ -51,17 +51,24 @@ export default function ParticipantDetails({
   };
 
   return (
-    <Box
+    <Paper
+      elevation={2}
       sx={{
         backgroundColor: "#D9D9D9",
-        borderRadius: 10,
-        p: 2,
+        borderRadius: 3,
+        p: { xs: 1.5, md: 2 },
+        flexShrink: 0,
       }}
     >
+      <Typography variant="h6" component="h2" sx={{ mb: 1.5, fontWeight: 700 }}>
+        Основная информация
+      </Typography>
       <Box
         sx={{
-          display: "flex",
-          flexWrap: "wrap",
+          backgroundColor: "#D9D9D9",
+          display: "grid",
+          gridTemplateColumns: { xs: "1fr", sm: "repeat(2, minmax(0, 1fr))" },
+          gap: 1,
         }}
       >
         <DetailElement
@@ -159,19 +166,21 @@ export default function ParticipantDetails({
       <Box
         sx={{
           display: "flex",
-          justifyContent: "end",
+          justifyContent: "flex-end",
+          mt: 1.5,
         }}
       >
         <Button
           variant="contained"
           sx={{
-            mt: "0.2%",
-            mr: "1.7%",
+            minWidth: 120,
+            borderRadius: 2,
+            textTransform: "none",
           }}
         >
           Сохранить
         </Button>
       </Box>
-    </Box>
+    </Paper>
   );
 }
