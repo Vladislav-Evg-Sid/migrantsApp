@@ -14,13 +14,12 @@ import {
   DialogContentText,
   DialogActions,
 } from "@mui/material";
-import { DeleteForever, Edit, More } from "@mui/icons-material";
+import { DeleteForever, Edit, More, Check } from "@mui/icons-material";
 
 import {
   type TableData,
   type TableCellData,
   type TableBodyRowData,
-  type RefTables,
 } from "../types/tables";
 import InserterReferenceData from "./InserterReferenceData";
 import { tableColumnHider } from "./utils/tableColumnHider";
@@ -227,11 +226,19 @@ export default function DataTable({
                         overflowWrap: "anywhere",
                       }}
                     >
-                      {(cell === null
-                        ? ""
-                        : typeof cell === "object"
-                          ? cell.name
-                          : cell) ?? "-"}
+                      {(cell === null ? (
+                        ""
+                      ) : typeof cell === "object" ? (
+                        cell.name
+                      ) : typeof cell === "boolean" ? (
+                        cell ? (
+                          <Check />
+                        ) : (
+                          ""
+                        )
+                      ) : (
+                        cell
+                      )) ?? "-"}
                     </TableCell>,
                   ),
                 )}
@@ -253,7 +260,11 @@ export default function DataTable({
                           setEditingData(
                             row.row.map((cell) =>
                               String(
-                                typeof cell === "object" ? cell.code : cell,
+                                cell === null
+                                  ? ""
+                                  : typeof cell === "object"
+                                    ? cell.code
+                                    : cell,
                               ),
                             ),
                           )

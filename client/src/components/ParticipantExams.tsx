@@ -7,6 +7,9 @@ interface ParticipantExamsProps {
 }
 
 export default function ParticipantExams({ table }: ParticipantExamsProps) {
+  table.head.splice(8, 2);
+  table.body.forEach(({ row }) => row.splice(8, 2));
+
   return (
     <Paper
       elevation={2}
@@ -35,6 +38,7 @@ export default function ParticipantExams({ table }: ParticipantExamsProps) {
           body={table.body}
           hideIdCol={false}
           fillAvailableHeight
+          reference
         />
       </Box>
     </Paper>

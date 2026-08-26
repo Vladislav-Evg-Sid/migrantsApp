@@ -5,6 +5,7 @@ import {
   TextField,
   Button,
   Autocomplete,
+  Checkbox,
 } from "@mui/material";
 import { Bounce, toast } from "react-toastify";
 
@@ -115,29 +116,42 @@ export default function InserterReferenceData({
             }}
           >
             {typeof type === "string" ? (
-              <TextField
-                value={values[index] ?? ""}
-                onChange={(event) => setValue(index, event.target.value)}
-                type={
-                  type === "phone" ? "tel" : type === "email" ? "email" : "text"
-                }
-                inputMode={
-                  type === "number" || type === "phone"
-                    ? "numeric"
-                    : type === "email"
-                      ? "email"
-                      : "text"
-                }
-                slotProps={
-                  type === "phone"
-                    ? { htmlInput: { maxLength: 11, pattern: "[0-9]{11}" } }
-                    : type === "email"
-                      ? { htmlInput: { maxLength: 127 } }
-                      : undefined
-                }
-                fullWidth
-                disabled={index === 0 && editMode}
-              />
+              type === "boolean" ? (
+                <Checkbox
+                  checked={values[index] ? true : false}
+                  onChange={(event) =>
+                    setValue(index, event.target.checked ? "Yes" : "")
+                  }
+                />
+              ) : (
+                <TextField
+                  value={values[index] ?? ""}
+                  onChange={(event) => setValue(index, event.target.value)}
+                  type={
+                    type === "phone"
+                      ? "tel"
+                      : type === "email"
+                        ? "email"
+                        : "text"
+                  }
+                  inputMode={
+                    type === "number" || type === "phone"
+                      ? "numeric"
+                      : type === "email"
+                        ? "email"
+                        : "text"
+                  }
+                  slotProps={
+                    type === "phone"
+                      ? { htmlInput: { maxLength: 11, pattern: "[0-9]{11}" } }
+                      : type === "email"
+                        ? { htmlInput: { maxLength: 127 } }
+                        : undefined
+                  }
+                  fullWidth
+                  disabled={index === 0 && editMode}
+                />
+              )
             ) : (
               <Autocomplete
                 fullWidth

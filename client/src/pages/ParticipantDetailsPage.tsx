@@ -8,6 +8,7 @@ import { type ParticipantData } from "../types/participants";
 import ParticipantExams from "../components/ParticipantExams";
 import { type ForeignKey } from "../types/tables";
 import { getReferenceTable } from "../api/references";
+import { Bounce, ToastContainer } from "react-toastify";
 
 export default function ParticipantDetailsPage() {
   const { id } = useParams();
@@ -67,6 +68,14 @@ export default function ParticipantDetailsPage() {
         p: { xs: 1.5, sm: 2, md: 2.5 },
       }}
     >
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        newestOnTop={false}
+        closeOnClick
+        theme="light"
+        transition={Bounce}
+      />
       <Box
         sx={{
           display: "flex",
