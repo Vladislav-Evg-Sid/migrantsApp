@@ -53,8 +53,17 @@ export default function FilterRow({
     onFilter(emptyFilters);
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    console.log(">>>");
+    if (event.key === "Enter") {
+      event.preventDefault();
+      onFilter(values);
+    }
+  };
+
   return (
     <TableRow
+      onKeyDown={handleKeyDown}
       sx={{
         "&:nth-of-type(even)": {
           backgroundColor: "#FAFBFC",
