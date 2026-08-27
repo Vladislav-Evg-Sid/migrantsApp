@@ -25,19 +25,24 @@ function parseParticipantContext(
   participantDataContext: ParticipantDataContextInterface | null,
 ): Pick<
   ParticipantDataContextInterface,
-  "isCreating" | "participantFirstExam" | "setParticipantFirstExam"
+  | "isCreating"
+  | "participantFirstExam"
+  | "setParticipantFirstExam"
+  | "addResetStateAfterCreate"
 > {
   if (participantDataContext === null) {
     return {
       isCreating: false,
       participantFirstExam: { row: [] },
       setParticipantFirstExam: (participantFirstExam: TableBodyRowData) => {},
+      addResetStateAfterCreate: (callback: () => void) => {},
     };
   } else {
     return {
       isCreating: participantDataContext.isCreating,
       participantFirstExam: participantDataContext.participantFirstExam,
       setParticipantFirstExam: participantDataContext.setParticipantFirstExam,
+      addResetStateAfterCreate: participantDataContext.addResetStateAfterCreate,
     };
   }
 }
@@ -86,8 +91,11 @@ function checkInsertValue(
 
 function reduceButtonText(
   currentText: "Добавить" | "Сохранить" | "Сохранено" | "Изменить",
-  action: "update" | "save-upd" | "context-change" | "context-save",
+  action: "update" | "save-upd" | "context-change" | "context-save" | "reset",
 ) {
+  if (action === "reset") {
+    return "Добавить";
+  }
   switch (currentText) {
     case "Добавить":
       if (action === "update") {
@@ -134,12 +142,15 @@ export default function InserterReferenceData({
   );
 
   const [values, setValues] = useState<string[]>(Array(types.length).fill(""));
-  const [buttonText, setButtonText] = useReducer(reduceButtonText, "Добавить");
+  const [buttonText, dispatchButtonText] = useReducer(
+    reduceButtonText,
+    "Добавить",
+  );
 
   const editMode = editingData !== null && editingData.length === types.length;
   useEffect(() => {
     if (editMode) {
-      setButtonText("update");
+      dispatchButtonText("update");
       setValues(editingData);
       return;
     }
@@ -160,7 +171,7 @@ export default function InserterReferenceData({
       newValues[ind] = newValue;
       return newValues;
     });
-    setButtonText("context-change");
+    dispatchButtonText("context-change");
   };
 
   const handleAdd = () => {
@@ -184,7 +195,11 @@ export default function InserterReferenceData({
       newData.push((values[index] ?? "").trim().replace(/\s+/g, " "));
     }
     if (participantExamsContext.isCreating) {
-      setButtonText("context-save");
+      participantExamsContext.addResetStateAfterCreate(() => {
+        dispatchButtonText("reset");
+        setValues(Array(types.length).fill(""));
+      });
+      dispatchButtonText("context-save");
       if (editingData === null) {
         newData.unshift(-1);
       }
@@ -192,7 +207,7 @@ export default function InserterReferenceData({
         row: newData,
       });
     } else {
-      setButtonText("save-upd");
+      dispatchButtonText("save-upd");
       onAdd(newData);
       setValues(Array(types.length).fill(""));
     }

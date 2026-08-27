@@ -166,6 +166,7 @@ export default function ParticipantDetails({
       });
 
       navigate(`/participants/details/${participantID}`);
+      participantContext.resetStateAfterCreate();
     };
 
     fetchCreateParticipant();

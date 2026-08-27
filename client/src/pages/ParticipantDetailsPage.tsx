@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   getExamTableHead,
@@ -28,6 +28,7 @@ export default function ParticipantDetailsPage() {
   const [schoolVariants, setSchoolVariants] = useState<ForeignKey[]>([]);
   const [nationVariants, setNationVariants] = useState<ForeignKey[]>([]);
   const [isCreating, setIsCreating] = useState<boolean>(false);
+  const resetStateAfterCreate = useRef<() => void>(() => {});
 
   const navigate = useNavigate();
 
@@ -177,6 +178,10 @@ export default function ParticipantDetailsPage() {
                 body: [participantFirstExam],
               },
             }));
+          },
+          resetStateAfterCreate: resetStateAfterCreate.current,
+          addResetStateAfterCreate: (callback: () => void) => {
+            resetStateAfterCreate.current = callback;
           },
         }}
       >

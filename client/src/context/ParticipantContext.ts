@@ -14,6 +14,8 @@ export interface ParticipantDataContextInterface {
   ) => void;
   setParticipantFirstExam: (participantFirstExam: TableBodyRowData) => void;
   isCreating: boolean;
+  resetStateAfterCreate: () => void;
+  addResetStateAfterCreate: (callback: () => void) => void;
 }
 
 export const ParticipantDataContext =
