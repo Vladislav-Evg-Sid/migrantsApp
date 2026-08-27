@@ -11,9 +11,9 @@ interface ParticipantExamsProps {
 function ParticipantExams({ table, isCreating }: ParticipantExamsProps) {
   const visibleTable = useMemo<TableData>(
     () => ({
-      head: table.head.filter((_, index) => index < 9 || index > 10),
+      head: table.head.filter((_, index) => index < 9 || index > 11),
       body: table.body.map(({ row }) => ({
-        row: row.filter((_, index) => index < 9 || index > 10),
+        row: row.filter((_, index) => index < 9 || index > 11),
       })),
     }),
     [table],
