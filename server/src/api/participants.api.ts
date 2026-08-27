@@ -2,6 +2,7 @@ import { Router } from "express";
 
 import {
   createParticipant,
+  deleteParticipant,
   getParticipantDetails,
   getParticipantExams,
   getParticipants,
@@ -52,6 +53,27 @@ participantsRouter.put("/participants/:id", async (request, response) => {
   }
 
   if (!(await updateParticipant(id, request.body))) {
+    response.status(404).json({
+      error: "PARTICIPANT_NOT_FOUND",
+      message: "Участник не найден",
+    });
+    return;
+  }
+
+  response.status(204).send();
+});
+
+participantsRouter.delete("/participants/:id", async (request, response) => {
+  const id = Number(request.params.id);
+  if (!Number.isSafeInteger(id) || id <= 0) {
+    response.status(400).json({
+      error: "INVALID_PARTICIPANT_ID",
+      message: "Некорректный ID участника",
+    });
+    return;
+  }
+
+  if (!(await deleteParticipant(id))) {
     response.status(404).json({
       error: "PARTICIPANT_NOT_FOUND",
       message: "Участник не найден",

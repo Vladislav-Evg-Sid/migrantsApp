@@ -2,6 +2,7 @@ import { Router } from "express";
 
 import {
   createTestResult,
+  deleteTestResult,
   getTestResultHead,
   updateTestResult,
 } from "../services/test-results.service.js";
@@ -28,6 +29,27 @@ testResultsRouter.put("/test-results/:id", async (request, response) => {
   }
 
   if (!(await updateTestResult(id, request.body))) {
+    response.status(404).json({
+      error: "TEST_RESULT_NOT_FOUND",
+      message: "Экзамен не найден",
+    });
+    return;
+  }
+
+  response.status(204).send();
+});
+
+testResultsRouter.delete("/test-results/:id", async (request, response) => {
+  const id = Number(request.params.id);
+  if (!Number.isSafeInteger(id) || id <= 0) {
+    response.status(400).json({
+      error: "INVALID_TEST_RESULT_ID",
+      message: "Некорректный ID экзамена",
+    });
+    return;
+  }
+
+  if (!(await deleteTestResult(id))) {
     response.status(404).json({
       error: "TEST_RESULT_NOT_FOUND",
       message: "Экзамен не найден",

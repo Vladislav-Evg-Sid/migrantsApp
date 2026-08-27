@@ -188,6 +188,23 @@ export async function updateParticipantById(
   return result.rowCount === 1;
 }
 
+export async function deleteParticipantById(id: number): Promise<boolean> {
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+    await client.query("DELETE FROM test_results WHERE participant_id = $1", [id]);
+    const result = await client.query("DELETE FROM participants WHERE id = $1", [id]);
+    await client.query("COMMIT");
+    return result.rowCount === 1;
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
 export async function findParticipantExams(id: number): Promise<ParticipantExamRow[]> {
   const result = await pool.query<ParticipantExamRow>(
     `SELECT

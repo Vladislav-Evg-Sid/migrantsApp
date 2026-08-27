@@ -1,4 +1,5 @@
 import {
+  deleteParticipantById,
   findParticipantById,
   findParticipantExams,
   findParticipantsForTable,
@@ -149,6 +150,10 @@ export async function updateParticipant(
   input: UpdateParticipantInput,
 ): Promise<boolean> {
   return updateParticipantById(id, input);
+}
+
+export async function deleteParticipant(id: number): Promise<boolean> {
+  return deleteParticipantById(id);
 }
 
 export async function getParticipantDetails(id: number): Promise<ParticipantData | null> {

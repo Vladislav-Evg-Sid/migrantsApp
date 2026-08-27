@@ -168,6 +168,25 @@ export const openApiDocument = {
           500: { description: "Внутренняя ошибка", content: jsonContent(schemaRef("ErrorResponse")) },
         },
       },
+      delete: {
+        tags: ["Участники"],
+        summary: "Удалить участника",
+        description: "Транзакционно удаляет участника и все связанные с ним экзамены.",
+        parameters: [{
+          name: "id",
+          in: "path",
+          required: true,
+          description: "ID участника с учётом дублей",
+          schema: { type: "integer", format: "int64", minimum: 1 },
+        }],
+        responses: {
+          204: emptyResponse("Участник и его экзамены удалены"),
+          400: { description: "Некорректный ID", content: jsonContent(schemaRef("ErrorResponse")) },
+          404: { description: "Участник не найден", content: jsonContent(schemaRef("ErrorResponse")) },
+          409: { description: "Удаление запрещено существующими связями", content: jsonContent(schemaRef("ErrorResponse")) },
+          500: { description: "Внутренняя ошибка", content: jsonContent(schemaRef("ErrorResponse")) },
+        },
+      },
     },
     "/participants/{id}/test-results": {
       get: {
@@ -224,6 +243,25 @@ export const openApiDocument = {
           204: emptyResponse("Экзамен обновлён"),
           400: { description: "Некорректный ID или код результата", content: jsonContent(schemaRef("ErrorResponse")) },
           404: { description: "Экзамен не найден", content: jsonContent(schemaRef("ErrorResponse")) },
+          500: { description: "Внутренняя ошибка", content: jsonContent(schemaRef("ErrorResponse")) },
+        },
+      },
+      delete: {
+        tags: ["Результаты"],
+        summary: "Удалить экзамен",
+        description: "Удаляет один экзамен по ID строки test_results. Участник не удаляется.",
+        parameters: [{
+          name: "id",
+          in: "path",
+          required: true,
+          description: "ID экзамена",
+          schema: { type: "integer", minimum: 1 },
+        }],
+        responses: {
+          204: emptyResponse("Экзамен удалён"),
+          400: { description: "Некорректный ID", content: jsonContent(schemaRef("ErrorResponse")) },
+          404: { description: "Экзамен не найден", content: jsonContent(schemaRef("ErrorResponse")) },
+          409: { description: "Удаление запрещено существующими связями", content: jsonContent(schemaRef("ErrorResponse")) },
           500: { description: "Внутренняя ошибка", content: jsonContent(schemaRef("ErrorResponse")) },
         },
       },

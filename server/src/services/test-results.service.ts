@@ -1,4 +1,5 @@
 import {
+  deleteTestResultById,
   insertTestResult,
   updateTestResultById,
 } from "../repositories/test-results.repository.js";
@@ -86,4 +87,8 @@ export async function updateTestResult(
   }
 
   return updateTestResultById(id, input);
+}
+
+export async function deleteTestResult(id: number): Promise<boolean> {
+  return deleteTestResultById(id);
 }

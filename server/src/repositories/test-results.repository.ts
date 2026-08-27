@@ -68,3 +68,8 @@ export async function updateTestResultById(
 
   return result.rowCount === 1;
 }
+
+export async function deleteTestResultById(id: number): Promise<boolean> {
+  const result = await pool.query("DELETE FROM test_results WHERE id = $1", [id]);
+  return result.rowCount === 1;
+}
