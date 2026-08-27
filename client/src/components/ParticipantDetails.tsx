@@ -5,6 +5,8 @@ import { useContext, useEffect, useState } from "react";
 import type { ForeignKey } from "../types/tables";
 import { ParticipantDataContext } from "../context/ParticipantContext";
 import { Bounce, toast } from "react-toastify";
+import { createParticipant } from "../api/participants";
+import { useNavigate } from "react-router-dom";
 
 interface participantDetailsProps {
   nationVariants: ForeignKey[];
@@ -37,6 +39,18 @@ const defaultInputStates: ChangedInputs = {
   rcoiNote: "saved",
 };
 
+function parseExamResult(rawResult: string): 1 | 2 | 3 | null {
+  switch (rawResult) {
+    case "1":
+      return 1;
+    case "2":
+      return 2;
+    case "3":
+      return 3;
+  }
+  return null;
+}
+
 export default function ParticipantDetails({
   nationVariants,
   schoolVariants,
@@ -45,6 +59,8 @@ export default function ParticipantDetails({
   if (participantContext === null) {
     throw Error("Undefined participant context");
   }
+
+  const navigate = useNavigate();
 
   const [changedInputs, setChangedInputs] =
     useState<ChangedInputs>(defaultInputStates);
@@ -103,6 +119,54 @@ export default function ParticipantDetails({
       }
     }
 
+    const fetchCreateParticipant = async () => {
+      const participantID = await createParticipant({
+        surname: participantContext.participantDetails.surname,
+        name: participantContext.participantDetails.name,
+        patronymic: participantContext.participantDetails.patronymic ?? null,
+        birthDay: Number(
+          participantContext.participantDetails.birthDate.split("-")[2],
+        ),
+        birthMonth: Number(
+          participantContext.participantDetails.birthDate.split("-")[1],
+        ),
+        birthYear: Number(
+          participantContext.participantDetails.birthDate.split("-")[0],
+        ),
+        nationId: participantContext.participantDetails.nation.code,
+        confirmedSchoolCode:
+          participantContext.participantDetails.school?.code ?? null,
+        nextPlannedDate:
+          participantContext.participantDetails.nextExamDate ?? null,
+        comment: participantContext.participantDetails.schoolComment ?? null,
+        rcoiNote: participantContext.participantDetails.rcoiNote ?? null,
+        firstExam: {
+          isSpecialCategory: participantContext.participantFirstExam.row[8]
+            ? true
+            : false,
+          statusId: Number(participantContext.participantFirstExam.row[7]),
+          testDateId: Number(participantContext.participantFirstExam.row[2]),
+          result: parseExamResult(
+            String(participantContext.participantFirstExam.row[6]),
+          ),
+          class: Number(participantContext.participantFirstExam.row[5]),
+          sendingSchoolCode: Number(
+            participantContext.participantFirstExam.row[3],
+          ),
+          testAttemptNumber: Number(
+            participantContext.participantFirstExam.row[1],
+          ),
+          appealId: null,
+          testingCenterPptCode: Number(
+            participantContext.participantFirstExam.row[4],
+          ),
+        },
+      });
+
+      navigate(`/participants/details/${participantID}`);
+    };
+
+    fetchCreateParticipant();
     setChangedInputs(defaultInputStates);
   };
 

@@ -1,4 +1,6 @@
+import { Bounce, toast } from "react-toastify";
 import { baseApi } from "../env";
+import type { CreateParticipantInput } from "../types/dto";
 import type { ParticipantData } from "../types/participants";
 import type { TableData, TableHeadCellData } from "../types/tables";
 
@@ -29,4 +31,34 @@ export async function getExamTableHead(): Promise<TableHeadCellData[]> {
   }
   const data = await response.json();
   return data;
+}
+
+export async function createParticipant(
+  participant: CreateParticipantInput,
+): Promise<number> {
+  const response = await fetch(`${baseApi}/participants`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(participant),
+  });
+  console.log(response);
+  if (!response.ok) {
+    toast.error("Не удалось создать участника", {
+      position: "top-right",
+      autoClose: 5000,
+      theme: "light",
+      transition: Bounce,
+    });
+    throw new Error(`${response.status}`);
+  }
+  toast.success("Участник создан", {
+    position: "top-right",
+    autoClose: 5000,
+    theme: "light",
+    transition: Bounce,
+  });
+  const data = await response.json();
+  return data.id;
 }

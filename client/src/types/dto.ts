@@ -70,3 +70,36 @@ export type UpdateParticipantStatusInput = CreateParticipantStatusInput;
 export type UpdateTestDateInput = CreateTestDateInput;
 
 export type UpdateTestAttemptInput = Omit<CreateTestAttemptInput, "number">;
+
+export type CreateTestResultInput = {
+  participantId: number;
+  isSpecialCategory: boolean;
+  statusId: number | null;
+  testDateId: number;
+  result: 1 | 2 | 3 | null;
+  class: number;
+  sendingSchoolCode: number;
+  testAttemptNumber: number;
+  appealId: number | null;
+  testingCenterPptCode: number;
+};
+
+export type CreateFirstTestResultInput = Omit<
+  CreateTestResultInput,
+  "participantId"
+>;
+
+export type CreateParticipantInput = {
+  surname: string;
+  name: string;
+  patronymic: string | null;
+  birthDay: number;
+  birthMonth: number;
+  birthYear: number;
+  nationId: number;
+  confirmedSchoolCode: number | null;
+  nextPlannedDate: string | null;
+  comment: string | null;
+  rcoiNote: string | null;
+  firstExam: CreateFirstTestResultInput;
+};

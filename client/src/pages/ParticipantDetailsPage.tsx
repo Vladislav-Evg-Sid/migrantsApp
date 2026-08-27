@@ -74,15 +74,17 @@ export default function ParticipantDetailsPage() {
   }, []);
 
   useEffect(() => {
-    toast.info(
-      "Заполните данные участника, добавьте первый экзамен и создайте участника",
-      {
-        position: "top-right",
-        autoClose: 5000,
-        theme: "light",
-        transition: Bounce,
-      },
-    );
+    if (participantID === -1) {
+      toast.info(
+        "Заполните данные участника, добавьте первый экзамен и создайте участника",
+        {
+          position: "top-right",
+          autoClose: 5000,
+          theme: "light",
+          transition: Bounce,
+        },
+      );
+    }
   }, []);
 
   return (
