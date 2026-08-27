@@ -3,6 +3,7 @@ import {
   findParticipantExams,
   findParticipantsForTable,
   insertParticipantWithFirstExam,
+  participantExistsById,
 } from "../repositories/participants.repository.js";
 import {
   findAllNations,
@@ -13,7 +14,8 @@ import type {
   CreatedParticipant,
   ParticipantData,
 } from "../types/participants.js";
-import type { ForeignKey, TableData } from "../types/reference-data.js";
+import type { ForeignKey, TableData, TableHeadCell } from "../types/reference-data.js";
+import type { ParticipantExamRow } from "../types/repository/participants.repository.types.js";
 import {
   isTestResultCode,
   testResultCodeFromValue,
@@ -32,6 +34,43 @@ function formatOptionalDate(value: string | null): string | null {
 
 function foreignKey(code: number, name: string): ForeignKey {
   return { code, name };
+}
+
+function mapParticipantExams(
+  exams: ParticipantExamRow[],
+  head: TableHeadCell[],
+): TableData {
+  return {
+    head,
+    body: exams.map((exam) => ({
+      row: [
+        exam.id,
+        exam.test_attempt_number,
+        foreignKey(
+          exam.test_date_id,
+          formatDate(exam.test_day, exam.test_month, exam.test_year),
+        ),
+        foreignKey(exam.sending_school_code, exam.sending_school_name),
+        foreignKey(exam.testing_center_ppt_code, exam.testing_center_name),
+        exam.class,
+        exam.result ? foreignKey(testResultCodeFromValue(exam.result), exam.result) : null,
+        exam.status_id && exam.status_name ? foreignKey(exam.status_id, exam.status_name) : null,
+        exam.is_special_category,
+        formatOptionalDate(exam.appeal_review_date),
+        exam.appeal_is_granted,
+        exam.appeal_is_appellant_present,
+      ],
+    })),
+  };
+}
+
+async function loadParticipantExams(id: number): Promise<TableData> {
+  const [exams, head] = await Promise.all([
+    findParticipantExams(id),
+    getTestResultHead(),
+  ]);
+
+  return mapParticipantExams(exams, head);
 }
 
 export async function createParticipant(
@@ -94,11 +133,19 @@ export async function getParticipants(): Promise<TableData> {
   };
 }
 
+export async function getParticipantExams(id: number): Promise<TableData | null> {
+  const [participantExists, exams] = await Promise.all([
+    participantExistsById(id),
+    loadParticipantExams(id),
+  ]);
+
+  return participantExists ? exams : null;
+}
+
 export async function getParticipantDetails(id: number): Promise<ParticipantData | null> {
-  const [participant, exams, examHead] = await Promise.all([
+  const [participant, exams] = await Promise.all([
     findParticipantById(id),
-    findParticipantExams(id),
-    getTestResultHead(),
+    loadParticipantExams(id),
   ]);
 
   if (!participant) return null;
@@ -115,27 +162,6 @@ export async function getParticipantDetails(id: number): Promise<ParticipantData
     nextExamDate: formatOptionalDate(participant.next_planned_date),
     schoolComment: participant.comment,
     rcoiNote: participant.rcoi_note,
-    exams: {
-      head: examHead,
-      body: exams.map((exam) => ({
-        row: [
-          exam.id,
-          exam.test_attempt_number,
-          foreignKey(
-            exam.test_date_id,
-            formatDate(exam.test_day, exam.test_month, exam.test_year),
-          ),
-          foreignKey(exam.sending_school_code, exam.sending_school_name),
-          foreignKey(exam.testing_center_ppt_code, exam.testing_center_name),
-          exam.class,
-          exam.result ? foreignKey(testResultCodeFromValue(exam.result), exam.result) : null,
-          exam.status_id && exam.status_name ? foreignKey(exam.status_id, exam.status_name) : null,
-          exam.is_special_category,
-          formatOptionalDate(exam.appeal_review_date),
-          exam.appeal_is_granted,
-          exam.appeal_is_appellant_present,
-        ],
-      })),
-    },
+    exams,
   };
 }

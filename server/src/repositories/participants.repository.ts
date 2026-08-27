@@ -138,6 +138,15 @@ export async function findParticipantById(id: number): Promise<ParticipantDetail
   return result.rows[0] ?? null;
 }
 
+export async function participantExistsById(id: number): Promise<boolean> {
+  const result = await pool.query<{ exists: boolean }>(
+    "SELECT EXISTS(SELECT 1 FROM participants WHERE id = $1) AS exists",
+    [id],
+  );
+
+  return result.rows[0].exists;
+}
+
 export async function findParticipantExams(id: number): Promise<ParticipantExamRow[]> {
   const result = await pool.query<ParticipantExamRow>(
     `SELECT

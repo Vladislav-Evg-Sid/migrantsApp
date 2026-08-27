@@ -147,6 +147,26 @@ export const openApiDocument = {
         },
       },
     },
+    "/participants/{id}/test-results": {
+      get: {
+        tags: ["Результаты"],
+        summary: "Получить все экзамены участника",
+        description: "Возвращает только таблицу экзаменов участника в формате TableData.",
+        parameters: [{
+          name: "id",
+          in: "path",
+          required: true,
+          description: "ID участника с учётом дублей",
+          schema: { type: "integer", format: "int64", minimum: 1 },
+        }],
+        responses: {
+          200: tableDataResponse,
+          400: { description: "Некорректный ID", content: jsonContent(schemaRef("ErrorResponse")) },
+          404: { description: "Участник не найден", content: jsonContent(schemaRef("ErrorResponse")) },
+          500: { description: "Внутренняя ошибка", content: jsonContent(schemaRef("ErrorResponse")) },
+        },
+      },
+    },
     "/test-results": {
       post: {
         tags: ["Результаты"],
