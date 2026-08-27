@@ -181,7 +181,7 @@ export default function InserterReferenceData({
         case "good":
           break;
       }
-      newData.push(values[index] ?? "");
+      newData.push((values[index] ?? "").trim().replace(/\s+/g, " "));
     }
     if (participantExamsContext.isCreating) {
       setButtonText("context-save");
@@ -194,7 +194,7 @@ export default function InserterReferenceData({
     } else {
       setButtonText("save-upd");
       onAdd(newData);
-      // setValues(Array(types.length).fill(""));
+      setValues(Array(types.length).fill(""));
     }
   };
 

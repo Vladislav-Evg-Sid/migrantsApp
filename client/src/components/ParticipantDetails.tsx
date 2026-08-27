@@ -116,9 +116,16 @@ export default function ParticipantDetails({
 
     const fetchCreateParticipant = async () => {
       const participantID = await createParticipant({
-        surname: participantContext.participantDetails.surname,
-        name: participantContext.participantDetails.name,
-        patronymic: participantContext.participantDetails.patronymic ?? null,
+        surname: participantContext.participantDetails.surname
+          .trim()
+          .replace(/\s+/g, " "),
+        name: participantContext.participantDetails.name
+          .trim()
+          .replace(/\s+/g, " "),
+        patronymic:
+          participantContext.participantDetails.patronymic
+            ?.trim()
+            .replace(/\s+/g, " ") ?? null,
         birthDay: Number(
           participantContext.participantDetails.birthDate.split("-")[2],
         ),
