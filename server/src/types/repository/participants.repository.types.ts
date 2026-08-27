@@ -43,7 +43,7 @@ export type ParticipantExamRow = {
   testing_center_ppt_code: number;
   testing_center_name: string;
   class: number;
-  result: "Да" | "Нет" | "Неявка" | null;
+  result: "Зачет" | "Незачет" | "Неявка" | null;
   status_id: number | null;
   status_name: string | null;
   is_special_category: boolean;
