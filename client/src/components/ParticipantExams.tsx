@@ -29,19 +29,22 @@ function ParticipantExams({
   );
 
   const handleAddExam = (data: TableCellData[]) => {
-    createParticipantExam({
-      participantId: participantID,
-      isSpecialCategory: Boolean(data[7]),
-      statusId: Number(data[6]),
-      testDateId: Number(data[1]),
-      result: parseExamResult(String(data[5])),
-      class: Number(data[4]),
-      sendingSchoolCode: Number(data[2]),
-      testAttemptNumber: Number(data[0]),
-      appealId: null,
-      testingCenterPptCode: Number(data[3]),
-    });
-    rerenderTrigger();
+    const fetchAddExam = async () => {
+      await createParticipantExam({
+        participantId: participantID,
+        isSpecialCategory: Boolean(data[7]),
+        statusId: Number(data[6]),
+        testDateId: Number(data[1]),
+        result: parseExamResult(String(data[5])),
+        class: Number(data[4]),
+        sendingSchoolCode: Number(data[2]),
+        testAttemptNumber: Number(data[0]),
+        appealId: null,
+        testingCenterPptCode: Number(data[3]),
+      });
+      rerenderTrigger();
+    };
+    fetchAddExam();
   };
 
   return (

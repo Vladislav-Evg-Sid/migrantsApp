@@ -21,6 +21,12 @@ export async function getParticipantDetails(
 ): Promise<ParticipantData> {
   const response = await fetch(`${baseApi}/participants/${id}`);
   if (!response.ok) {
+    toast.error("Не удалось загрузить данные участника", {
+      position: "top-right",
+      autoClose: 5000,
+      theme: "light",
+      transition: Bounce,
+    });
     throw new Error(`${response.status}`);
   }
   const data = await response.json();
@@ -30,17 +36,33 @@ export async function getParticipantDetails(
 export async function getParticipantExams(
   participantID: number,
 ): Promise<TableData> {
-  const response = await fetch(`${baseApi}/participant-exams/${participantID}`);
+  console.log(">>>");
+  const response = await fetch(
+    `${baseApi}/participants/${participantID}/test-results`,
+  );
   if (!response.ok) {
+    toast.error("Не удалось загрузить экзамены участника", {
+      position: "top-right",
+      autoClose: 5000,
+      theme: "light",
+      transition: Bounce,
+    });
     throw new Error(`${response.status}`);
   }
   const data = await response.json();
+  console.log(data);
   return data;
 }
 
 export async function getExamTableHead(): Promise<TableHeadCellData[]> {
   const response = await fetch(`${baseApi}/test-results/head`);
   if (!response.ok) {
+    toast.error("Не удалось загрузить шапку таблицы экзаменов участника", {
+      position: "top-right",
+      autoClose: 5000,
+      theme: "light",
+      transition: Bounce,
+    });
     throw new Error(`${response.status}`);
   }
   const data = await response.json();
