@@ -58,8 +58,8 @@ CREATE TABLE appeals (
 
 -- Основные таблицы
 CREATE TYPE test_result AS ENUM (
-    'Да',
-    'Нет',
+    'Зачет',
+    'Незачет',
     'Неявка'
 );
 

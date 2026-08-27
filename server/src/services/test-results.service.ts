@@ -52,7 +52,7 @@ export async function getTestResultHead(): Promise<TableHeadCell[]> {
       type: nullableOptions(statuses.map((status) => ({ code: status.id, name: status.name }))),
       cell: "Статус",
     },
-    { type: "boolean", cell: "Специальная категория" },
+    { type: "boolean", cell: "Специальная категория Минпрос 727" },
     { type: "date", cell: "Дата апелляции" },
     { type: "boolean", cell: "Апелляция удовлетворена" },
     { type: "boolean", cell: "Участник присутствовал" },

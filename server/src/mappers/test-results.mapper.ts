@@ -1,8 +1,8 @@
 import type { TestResultCode, TestResultValue } from "../types/test-results.js";
 
 export const TEST_RESULT_OPTIONS = [
-  { code: 1, name: "Да" },
-  { code: 2, name: "Нет" },
+  { code: 1, name: "Зачет" },
+  { code: 2, name: "Незачет" },
   { code: 3, name: "Неявка" },
 ] as const satisfies readonly { code: TestResultCode; name: TestResultValue }[];
 

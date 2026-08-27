@@ -1,5 +1,5 @@
 export type TestResultCode = 1 | 2 | 3;
-export type TestResultValue = "Да" | "Нет" | "Неявка";
+export type TestResultValue = "Зачет" | "Незачет" | "Неявка";
 
 export type CreateTestResultInput = {
   participantId: number;
