@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { act, useContext, useEffect, useReducer, useState } from "react";
 import {
   TableRow,
   TableCell,
@@ -9,9 +9,113 @@ import {
 } from "@mui/material";
 import { Bounce, toast } from "react-toastify";
 
-import { type ColumnTypes, type TableCellData } from "../types/tables";
+import {
+  type ColumnTypes,
+  type TableBodyRowData,
+  type TableCellData,
+} from "../types/tables";
 import { tableColumnHider } from "./utils/tableColumnHider";
 import { updateTextFieldValue } from "../services/dataInput";
+import {
+  ParticipantDataContext,
+  type ParticipantDataContextInterface,
+} from "../context/ParticipantContext";
+import ParticipantExams from "./ParticipantExams";
+
+function parseParticipantContext(
+  participantDataContext: ParticipantDataContextInterface | null,
+): Pick<
+  ParticipantDataContextInterface,
+  "isCreating" | "participantFirstExam" | "setParticipantFirstExam"
+> {
+  if (participantDataContext === null) {
+    return {
+      isCreating: false,
+      participantFirstExam: { row: [] },
+      setParticipantFirstExam: (participantFirstExam: TableBodyRowData) => {},
+    };
+  } else {
+    return {
+      isCreating: participantDataContext.isCreating,
+      participantFirstExam: participantDataContext.participantFirstExam,
+      setParticipantFirstExam: participantDataContext.setParticipantFirstExam,
+    };
+  }
+}
+
+function checkInsertValue(
+  curVal: string | undefined,
+  isNullableCol: boolean,
+  type: ColumnTypes | undefined,
+): "good" | "return" | "continue" {
+  if (curVal === undefined || curVal === "") {
+    if (isNullableCol) {
+      return "continue";
+    }
+    if (type === "boolean") {
+      return "good";
+    }
+
+    toast.error("Все данные должны быть заполнены", {
+      position: "top-right",
+      autoClose: 5000,
+      theme: "light",
+      transition: Bounce,
+    });
+    return "return";
+  }
+  if (type === "phone" && !/^\d{11}$/.test(curVal ?? "")) {
+    toast.error("Телефон должен содержать ровно 11 цифр", {
+      position: "top-right",
+      autoClose: 5000,
+      theme: "light",
+      transition: Bounce,
+    });
+    return "return";
+  }
+  if (type === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(curVal ?? "")) {
+    toast.error("Введите корректный адрес электронной почты", {
+      position: "top-right",
+      autoClose: 5000,
+      theme: "light",
+      transition: Bounce,
+    });
+    return "return";
+  }
+  return "good";
+}
+
+function reduceButtonText(
+  currentText: "Добавить" | "Сохранить" | "Сохранено" | "Изменить",
+  action: "update" | "save-upd" | "context-change" | "context-save",
+) {
+  switch (currentText) {
+    case "Добавить":
+      if (action === "update") {
+        return "Сохранить";
+      }
+      if (action === "context-save") {
+        return "Сохранено";
+      }
+      break;
+    case "Сохранить":
+      if (action === "save-upd") {
+        return "Добавить";
+      }
+      break;
+    case "Сохранено":
+      if (action === "context-change") {
+        return "Изменить";
+      }
+      break;
+    case "Изменить":
+      if (action === "context-save") {
+        return "Сохранено";
+      }
+      break;
+  }
+  return currentText;
+}
 
 interface InserterProps {
   hideIdCol: boolean;
@@ -26,11 +130,17 @@ export default function InserterReferenceData({
   editedData: editingData,
   hideIdCol,
 }: InserterProps) {
+  const participantExamsContext = parseParticipantContext(
+    useContext(ParticipantDataContext),
+  );
+
   const [values, setValues] = useState<string[]>(Array(types.length).fill(""));
+  const [buttonText, setButtonText] = useReducer(reduceButtonText, "Добавить");
 
   const editMode = editingData !== null && editingData.length === types.length;
   useEffect(() => {
     if (editMode) {
+      setButtonText("update");
       setValues(editingData);
       return;
     }
@@ -51,49 +161,42 @@ export default function InserterReferenceData({
       newValues[ind] = newValue;
       return newValues;
     });
+    setButtonText("context-change");
   };
 
   const handleAdd = () => {
     const newData: TableCellData[] = [];
     for (const index in values) {
       const curVal = values[index];
-      if (curVal === undefined || curVal === "") {
-        if (index === "0" && hideIdCol && editingData === null) {
-          continue;
-        }
-        toast.error("Все данные должны быть заполнены", {
-          position: "top-right",
-          autoClose: 5000,
-          theme: "light",
-          transition: Bounce,
-        });
-        return;
-      }
-      if (types[index] === "phone" && !/^\d{11}$/.test(curVal ?? "")) {
-        toast.error("Телефон должен содержать ровно 11 цифр", {
-          position: "top-right",
-          autoClose: 5000,
-          theme: "light",
-          transition: Bounce,
-        });
-        return;
-      }
-      if (
-        types[index] === "email" &&
-        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(curVal ?? "")
+      switch (
+        checkInsertValue(
+          curVal,
+          index === "0" && hideIdCol && editingData === null,
+          types[index],
+        )
       ) {
-        toast.error("Введите корректный адрес электронной почты", {
-          position: "top-right",
-          autoClose: 5000,
-          theme: "light",
-          transition: Bounce,
-        });
-        return;
+        case "return":
+          return;
+        case "continue":
+          continue;
+        case "good":
+          break;
       }
       newData.push(values[index] ?? "");
     }
-    onAdd(newData);
-    setValues(Array(types.length).fill(""));
+    if (participantExamsContext.isCreating) {
+      setButtonText("context-save");
+      if (editingData === null) {
+        newData.unshift(-1);
+      }
+      participantExamsContext.setParticipantFirstExam({
+        row: newData,
+      });
+    } else {
+      setButtonText("save-upd");
+      onAdd(newData);
+      setValues(Array(types.length).fill(""));
+    }
   };
 
   return (
@@ -193,7 +296,7 @@ export default function InserterReferenceData({
           color="success"
           sx={{ textTransform: "none" }}
         >
-          {editMode ? "Сохранить" : "Добавить"}
+          {buttonText}
         </Button>
       </TableCell>
     </TableRow>

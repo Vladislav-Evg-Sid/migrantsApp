@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Paper,
   TableContainer,
@@ -25,6 +25,7 @@ import InserterReferenceData from "./InserterReferenceData";
 import { tableColumnHider } from "./utils/tableColumnHider";
 import FilterRow from "./FilterRow";
 import { useNavigate } from "react-router-dom";
+import { ParticipantDataContext } from "../context/ParticipantContext";
 
 interface DataTableProps extends TableData {
   name: string;
@@ -53,6 +54,9 @@ export default function DataTable({
   navigateRoute = "/",
   fillAvailableHeight = false,
 }: DataTableProps) {
+  const isCreatingParticipant =
+    useContext(ParticipantDataContext)?.isCreating ?? false;
+
   const [editingData, setEditingData] = useState<string[] | null>(null);
   const [viewTable, setViewTable] = useState<TableBodyRowData[]>(body);
   const [deleteDialogIsOpen, setDeleteDialogIsOpen] = useState<boolean>(false);
@@ -108,6 +112,8 @@ export default function DataTable({
     }
     return "Неизвестная таблица";
   };
+
+  const isUndeleteable = isCreatingParticipant || editingData !== null;
 
   return (
     <>
@@ -282,7 +288,7 @@ export default function DataTable({
                           setIdentifierRow(row.row);
                           setDeleteDialogIsOpen(true);
                         }}
-                        disabled={editingData !== null}
+                        disabled={isUndeleteable}
                         sx={{
                           minWidth: "48px",
                         }}

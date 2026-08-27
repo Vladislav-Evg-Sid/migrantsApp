@@ -6,9 +6,14 @@ import { Box, Button, Typography } from "@mui/material";
 import ParticipantDetails from "../components/ParticipantDetails";
 import { type ParticipantData } from "../types/participants";
 import ParticipantExams from "../components/ParticipantExams";
-import { type ForeignKey } from "../types/tables";
+import {
+  type ForeignKey,
+  type TableBodyRowData,
+  type TableData,
+} from "../types/tables";
 import { getReferenceTable } from "../api/references";
-import { Bounce, ToastContainer } from "react-toastify";
+import { Bounce, toast, ToastContainer } from "react-toastify";
+import { ParticipantDataContext } from "../context/ParticipantContext";
 
 export default function ParticipantDetailsPage() {
   const { id } = useParams();
@@ -72,6 +77,18 @@ export default function ParticipantDetailsPage() {
     fetchNations();
   }, []);
 
+  useEffect(() => {
+    toast.info(
+      "Заполните данные участника, добавьте первый экзамен и создайте участника",
+      {
+        position: "top-right",
+        autoClose: 5000,
+        theme: "light",
+        transition: Bounce,
+      },
+    );
+  }, []);
+
   return (
     <Box
       sx={{
@@ -117,13 +134,38 @@ export default function ParticipantDetailsPage() {
           Карточка участника
         </Typography>
       </Box>
-      <ParticipantDetails
-        participant={participant}
-        nationVariants={nationVariants}
-        schoolVariants={schoolVariants}
-        isCreating={isCreating}
-      />
-      <ParticipantExams table={participant.exams} />
+      <ParticipantDataContext
+        value={{
+          isCreating: isCreating,
+          participantDetails: participant,
+          participantFirstExam: participant.exams.body[0] ?? { row: [] },
+          setParticipantDetails: (
+            participantDetails: Omit<ParticipantData, "exams">,
+          ) => {
+            setParticipant((prev) => ({
+              ...participantDetails,
+              exams: prev.exams,
+            }));
+          },
+          setParticipantFirstExam: (participantFirstExam: TableBodyRowData) => {
+            setParticipant((prev) => ({
+              ...prev,
+              exams: {
+                ...prev.exams,
+                body: [participantFirstExam],
+              },
+            }));
+          },
+        }}
+      >
+        <ParticipantDetails
+          participant={participant}
+          nationVariants={nationVariants}
+          schoolVariants={schoolVariants}
+          isCreating={isCreating}
+        />
+        <ParticipantExams table={participant.exams} />
+      </ParticipantDataContext>
     </Box>
   );
 }

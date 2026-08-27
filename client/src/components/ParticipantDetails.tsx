@@ -178,7 +178,7 @@ export default function ParticipantDetails({
             textTransform: "none",
           }}
         >
-          {isCreating ? "Добавить" : "Сохранить"}
+          {isCreating ? "Создать" : "Сохранить"}
         </Button>
       </Box>
     </Paper>

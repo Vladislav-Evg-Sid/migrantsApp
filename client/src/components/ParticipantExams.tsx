@@ -1,12 +1,16 @@
 import { Box, Paper, Typography } from "@mui/material";
 import DataTable from "./DataTable";
 import type { TableData } from "../types/tables";
+import { useContext } from "react";
+import { ParticipantDataContext } from "../context/ParticipantContext";
 
 interface ParticipantExamsProps {
   table: TableData;
 }
 
 export default function ParticipantExams({ table }: ParticipantExamsProps) {
+  const isCreatingParticipant =
+    useContext(ParticipantDataContext)?.isCreating ?? false;
   table.head.splice(9, 2);
   table.body.forEach(({ row }) => row.splice(9, 2));
 
@@ -35,7 +39,7 @@ export default function ParticipantExams({ table }: ParticipantExamsProps) {
         <DataTable
           name="Результаты"
           head={table.head}
-          body={table.body}
+          body={isCreatingParticipant ? [] : table.body}
           hideIdCol
           fillAvailableHeight
           reference
