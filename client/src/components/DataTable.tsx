@@ -14,7 +14,7 @@ import {
   DialogContentText,
   DialogActions,
 } from "@mui/material";
-import { DeleteForever, Edit, More, Check } from "@mui/icons-material";
+import { DeleteForever, Edit, More } from "@mui/icons-material";
 
 import {
   type TableData,
@@ -236,19 +236,15 @@ export default function DataTable({
                         overflowWrap: "anywhere",
                       }}
                     >
-                      {(cell === null ? (
-                        ""
-                      ) : typeof cell === "object" ? (
-                        cell.name
-                      ) : typeof cell === "boolean" ? (
-                        cell ? (
-                          <Check />
-                        ) : (
-                          ""
-                        )
-                      ) : (
-                        cell
-                      )) ?? "-"}
+                      {(cell === null
+                        ? ""
+                        : typeof cell === "object"
+                          ? cell.name
+                          : typeof cell === "boolean"
+                            ? cell
+                              ? "Да"
+                              : "Нет"
+                            : cell) ?? "-"}
                     </TableCell>,
                   ),
                 )}
