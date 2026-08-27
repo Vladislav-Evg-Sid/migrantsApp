@@ -15,3 +15,5 @@ export type CreateTestResultInput = {
 };
 
 export type CreateFirstTestResultInput = Omit<CreateTestResultInput, "participantId">;
+
+export type UpdateTestResultInput = CreateTestResultInput;

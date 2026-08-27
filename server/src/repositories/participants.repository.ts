@@ -4,7 +4,11 @@ import type {
   ParticipantExamRow,
   ParticipantListRow,
 } from "../types/repository/participants.repository.types.js";
-import type { CreateParticipantInput, CreatedParticipant } from "../types/participants.js";
+import type {
+  CreateParticipantInput,
+  CreatedParticipant,
+  UpdateParticipantInput,
+} from "../types/participants.js";
 import { testResultValueFromCode } from "../mappers/test-results.mapper.js";
 
 export async function insertParticipantWithFirstExam(
@@ -145,6 +149,43 @@ export async function participantExistsById(id: number): Promise<boolean> {
   );
 
   return result.rows[0].exists;
+}
+
+export async function updateParticipantById(
+  id: number,
+  input: UpdateParticipantInput,
+): Promise<boolean> {
+  const result = await pool.query(
+    `UPDATE participants
+     SET surname = $1,
+         name = $2,
+         patronymic = $3,
+         birth_day = $4,
+         birth_month = $5,
+         birth_year = $6,
+         nation_id = $7,
+         confirmed_school_code = $8,
+         next_planned_date = $9,
+         comment = $10,
+         rcoi_note = $11
+     WHERE id = $12`,
+    [
+      input.surname,
+      input.name,
+      input.patronymic,
+      input.birthDay,
+      input.birthMonth,
+      input.birthYear,
+      input.nationId,
+      input.confirmedSchoolCode,
+      input.nextPlannedDate,
+      input.comment,
+      input.rcoiNote,
+      id,
+    ],
+  );
+
+  return result.rowCount === 1;
 }
 
 export async function findParticipantExams(id: number): Promise<ParticipantExamRow[]> {

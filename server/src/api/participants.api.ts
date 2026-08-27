@@ -5,6 +5,7 @@ import {
   getParticipantDetails,
   getParticipantExams,
   getParticipants,
+  updateParticipant,
 } from "../services/participants.service.js";
 
 export const participantsRouter = Router();
@@ -38,6 +39,27 @@ participantsRouter.get("/participants/:id/test-results", async (request, respons
   }
 
   response.json(exams);
+});
+
+participantsRouter.put("/participants/:id", async (request, response) => {
+  const id = Number(request.params.id);
+  if (!Number.isSafeInteger(id) || id <= 0) {
+    response.status(400).json({
+      error: "INVALID_PARTICIPANT_ID",
+      message: "Некорректный ID участника",
+    });
+    return;
+  }
+
+  if (!(await updateParticipant(id, request.body))) {
+    response.status(404).json({
+      error: "PARTICIPANT_NOT_FOUND",
+      message: "Участник не найден",
+    });
+    return;
+  }
+
+  response.status(204).send();
 });
 
 participantsRouter.get("/participants/:id", async (request, response) => {

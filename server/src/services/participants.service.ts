@@ -4,6 +4,7 @@ import {
   findParticipantsForTable,
   insertParticipantWithFirstExam,
   participantExistsById,
+  updateParticipantById,
 } from "../repositories/participants.repository.js";
 import {
   findAllNations,
@@ -13,6 +14,7 @@ import type {
   CreateParticipantInput,
   CreatedParticipant,
   ParticipantData,
+  UpdateParticipantInput,
 } from "../types/participants.js";
 import type { ForeignKey, TableData, TableHeadCell } from "../types/reference-data.js";
 import type { ParticipantExamRow } from "../types/repository/participants.repository.types.js";
@@ -140,6 +142,13 @@ export async function getParticipantExams(id: number): Promise<TableData | null>
   ]);
 
   return participantExists ? exams : null;
+}
+
+export async function updateParticipant(
+  id: number,
+  input: UpdateParticipantInput,
+): Promise<boolean> {
+  return updateParticipantById(id, input);
 }
 
 export async function getParticipantDetails(id: number): Promise<ParticipantData | null> {
