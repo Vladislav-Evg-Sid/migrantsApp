@@ -12,9 +12,11 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import { Month, type ExamDate } from "../types/exams";
 import { getExamDates } from "../api/exams";
+import { useNavigate } from "react-router-dom";
 
 export default function ExamDateList() {
   const [examDates, setExamDates] = useState<ExamDate>(new Map());
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchExamDates = async () => {
@@ -98,16 +100,12 @@ export default function ExamDateList() {
                           }}
                         >
                           {[...days]
-                            .sort((a, b) => a - b)
+                            .sort((a, b) => a.day - b.day)
                             .map((day) => (
                               <Button
-                                key={day}
+                                key={day.id}
                                 variant="outlined"
-                                onClick={() => {
-                                  alert(
-                                    `Переход на страницу с экзамена с датой ${day}.${month}.${year}`,
-                                  );
-                                }}
+                                onClick={() => navigate(`/exam-ppts/${day.id}`)}
                                 sx={{
                                   minWidth: 0,
                                   py: 1.25,
@@ -115,7 +113,7 @@ export default function ExamDateList() {
                                   borderRadius: 2,
                                 }}
                               >
-                                {day}
+                                {day.day}
                               </Button>
                             ))}
                         </Box>
