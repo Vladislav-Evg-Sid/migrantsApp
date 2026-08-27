@@ -20,7 +20,6 @@ import {
   ParticipantDataContext,
   type ParticipantDataContextInterface,
 } from "../context/ParticipantContext";
-import ParticipantExams from "./ParticipantExams";
 
 function parseParticipantContext(
   participantDataContext: ParticipantDataContextInterface | null,

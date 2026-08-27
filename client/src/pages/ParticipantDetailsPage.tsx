@@ -6,11 +6,7 @@ import { Box, Button, Typography } from "@mui/material";
 import ParticipantDetails from "../components/ParticipantDetails";
 import { type ParticipantData } from "../types/participants";
 import ParticipantExams from "../components/ParticipantExams";
-import {
-  type ForeignKey,
-  type TableBodyRowData,
-  type TableData,
-} from "../types/tables";
+import { type ForeignKey, type TableBodyRowData } from "../types/tables";
 import { getReferenceTable } from "../api/references";
 import { Bounce, toast, ToastContainer } from "react-toastify";
 import { ParticipantDataContext } from "../context/ParticipantContext";
@@ -22,7 +18,7 @@ export default function ParticipantDetailsPage() {
     surname: "",
     name: "",
     birthDate: "",
-    nation: { code: 0, name: "" },
+    nation: { code: -1, name: "" },
     exams: { head: [], body: [] },
   });
   const [schoolVariants, setSchoolVariants] = useState<ForeignKey[]>([]);
@@ -147,6 +143,15 @@ export default function ParticipantDetailsPage() {
               exams: prev.exams,
             }));
           },
+          setParticipantDetailElement: (
+            inputName: keyof Omit<ParticipantData, "exams">,
+            newValue: string | ForeignKey,
+          ) => {
+            setParticipant((prev) => ({
+              ...prev,
+              [inputName]: newValue,
+            }));
+          },
           setParticipantFirstExam: (participantFirstExam: TableBodyRowData) => {
             setParticipant((prev) => ({
               ...prev,
@@ -159,10 +164,8 @@ export default function ParticipantDetailsPage() {
         }}
       >
         <ParticipantDetails
-          participant={participant}
           nationVariants={nationVariants}
           schoolVariants={schoolVariants}
-          isCreating={isCreating}
         />
         <ParticipantExams table={participant.exams} />
       </ParticipantDataContext>

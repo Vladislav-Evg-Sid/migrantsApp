@@ -1,15 +1,14 @@
 import { Autocomplete, Box, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import type { ColumnTypes, ForeignKey } from "../types/tables";
-import { updateTextFieldValue } from "../services/dataInput";
 
 interface detailElementProps {
   name: string;
   data: string | number | undefined | ForeignKey;
   inputType: ColumnTypes;
   disabled?: boolean;
-  isChanged: boolean;
-  setIsChangedValue?: () => void;
+  inputState: "error" | "saved" | "changed";
+  onChange: (newValue: string | ForeignKey) => void;
 }
 
 export default function DetailElement({
@@ -17,8 +16,8 @@ export default function DetailElement({
   data,
   inputType,
   disabled,
-  isChanged,
-  setIsChangedValue = () => {},
+  inputState,
+  onChange,
 }: detailElementProps) {
   const [userInput, setUserInput] = useState<String>("");
 
@@ -30,20 +29,18 @@ export default function DetailElement({
     );
   }, [data]);
 
-  const handleValueChanged = (value: string) => {
-    const strType = typeof inputType === "string" ? inputType : "string";
-    let newValue = "";
-
-    try {
-      newValue = updateTextFieldValue(value, strType);
-    } catch {
-      return;
-    }
-
-    setIsChangedValue();
-    setUserInput(newValue);
-  };
-
+  const isChanged = inputState === "changed";
+  const isError = inputState === "error";
+  const borderColor = isError
+    ? "error.main"
+    : isChanged
+      ? "warning.main"
+      : "divider";
+  const textColor = isError
+    ? "error.dark"
+    : isChanged
+      ? "warning.dark"
+      : "text.primary";
   const inputSx = {
     width: "100%",
     height: "100%",
@@ -54,13 +51,15 @@ export default function DetailElement({
       height: "100%",
       minHeight: 56,
       borderRadius: "0 8px 8px 0",
-      backgroundColor: isChanged ? "#FFFBF3" : "white",
-      boxShadow: isChanged
-        ? "0 0 0 3px rgba(237, 108, 2, 0.12)"
-        : "none",
+      backgroundColor: isError ? "#FFF8F8" : isChanged ? "#FFFBF3" : "white",
+      boxShadow: isError
+        ? "0 0 0 3px rgba(211, 47, 47, 0.12)"
+        : isChanged
+          ? "0 0 0 3px rgba(237, 108, 2, 0.12)"
+          : "none",
       "& .MuiOutlinedInput-notchedOutline": {
-        borderColor: isChanged ? "warning.main" : "divider",
-        borderWidth: isChanged ? 2 : 1,
+        borderColor,
+        borderWidth: inputState === "saved" ? 1 : 2,
       },
     },
   };
@@ -83,20 +82,24 @@ export default function DetailElement({
           justifyContent: "flex-start",
           alignItems: "center",
           minHeight: 56,
-          border: isChanged ? "2px solid" : "1px solid",
-          borderColor: isChanged ? "warning.main" : "divider",
+          border: inputState === "saved" ? "1px solid" : "2px solid",
+          borderColor,
           borderRadius: "8px 0 0 8px",
           px: 1.25,
           py: 0.75,
-          backgroundColor: isChanged ? "#FFF4DE" : "grey.50",
+          backgroundColor: isError
+            ? "#FDECEC"
+            : isChanged
+              ? "#FFF4DE"
+              : "grey.50",
           boxSizing: "border-box",
         }}
       >
         <Typography
           sx={{
-            color: isChanged ? "warning.dark" : "text.primary",
+            color: textColor,
             fontSize: "0.9rem",
-            fontWeight: isChanged ? 700 : 400,
+            fontWeight: inputState === "saved" ? 400 : 700,
           }}
         >
           {name}
@@ -112,7 +115,7 @@ export default function DetailElement({
               ? userInput.split(".").reverse().join("-")
               : userInput
           }
-          onChange={(event) => handleValueChanged(event.target.value)}
+          onChange={(event) => onChange(event.target.value)}
           type={
             inputType === "phone"
               ? "tel"
@@ -139,7 +142,10 @@ export default function DetailElement({
             ) ?? null
           }
           onChange={(_, newValue) => {
-            handleValueChanged(String((newValue ?? { code: "" }).code) ?? "");
+            onChange({
+              code: Number(newValue?.code),
+              name: String(newValue?.name),
+            });
           }}
           renderInput={(params) => <TextField {...params} label="" />}
         />

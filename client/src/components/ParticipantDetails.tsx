@@ -1,53 +1,109 @@
 import { Box, Button, Paper, Typography } from "@mui/material";
 import DetailElement from "./DetailElement";
 import type { ParticipantData } from "../types/participants";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import type { ForeignKey } from "../types/tables";
+import { ParticipantDataContext } from "../context/ParticipantContext";
+import { Bounce, toast } from "react-toastify";
 
 interface participantDetailsProps {
-  participant: Omit<ParticipantData, "exams">;
   nationVariants: ForeignKey[];
   schoolVariants: ForeignKey[];
-  isCreating?: boolean;
 }
 
 interface ChangedInputs {
-  id: boolean;
-  surname: boolean;
-  name: boolean;
-  patronymic: boolean;
-  birthDate: boolean;
-  nation: boolean;
-  school: boolean;
-  nextExamDate: boolean;
-  schoolComment: boolean;
-  rcoiNote: boolean;
+  id: "error" | "saved" | "changed";
+  surname: "error" | "saved" | "changed";
+  name: "error" | "saved" | "changed";
+  patronymic: "error" | "saved" | "changed";
+  birthDate: "error" | "saved" | "changed";
+  nation: "error" | "saved" | "changed";
+  school: "error" | "saved" | "changed";
+  nextExamDate: "error" | "saved" | "changed";
+  schoolComment: "error" | "saved" | "changed";
+  rcoiNote: "error" | "saved" | "changed";
 }
 
+const defaultInputStates: ChangedInputs = {
+  id: "saved",
+  surname: "saved",
+  name: "saved",
+  patronymic: "saved",
+  birthDate: "saved",
+  nation: "saved",
+  school: "saved",
+  nextExamDate: "saved",
+  schoolComment: "saved",
+  rcoiNote: "saved",
+};
+
 export default function ParticipantDetails({
-  participant,
   nationVariants,
   schoolVariants,
-  isCreating,
 }: participantDetailsProps) {
-  const [changedInputs, setChangedInputs] = useState<ChangedInputs>({
-    id: false,
-    surname: false,
-    name: false,
-    patronymic: false,
-    birthDate: false,
-    nation: false,
-    school: false,
-    nextExamDate: false,
-    schoolComment: false,
-    rcoiNote: false,
-  });
+  const participantContext = useContext(ParticipantDataContext);
+  if (participantContext === null) {
+    throw Error("Undefined participant context");
+  }
 
-  const setChangedInputStatus = (inputName: keyof ChangedInputs) => {
+  const [changedInputs, setChangedInputs] =
+    useState<ChangedInputs>(defaultInputStates);
+
+  const handleChangeParticipantData = (
+    inputName: keyof Omit<ParticipantData, "exams">,
+    newValue: string | ForeignKey,
+  ) => {
+    participantContext.setParticipantDetailElement(inputName, newValue);
     setChangedInputs((prev) => ({
       ...prev,
-      [inputName]: true,
+      [inputName]: "changed",
     }));
+  };
+
+  const handleSaveParticipant = () => {
+    const hasSurnameError =
+      participantContext.participantDetails.surname === "";
+    const hasNameError = participantContext.participantDetails.name === "";
+    const hasBirthDateError =
+      participantContext.participantDetails.birthDate === "";
+    const hasNationError =
+      participantContext.participantDetails.nation.code === -1;
+
+    if (
+      hasSurnameError ||
+      hasNameError ||
+      hasBirthDateError ||
+      hasNationError
+    ) {
+      setChangedInputs((prev) => ({
+        ...prev,
+        surname: hasSurnameError ? "error" : prev.surname,
+        name: hasNameError ? "error" : prev.name,
+        birthDate: hasBirthDateError ? "error" : prev.birthDate,
+        nation: hasNationError ? "error" : prev.nation,
+      }));
+      toast.error("Все обязательные поля должны быть заполненны", {
+        position: "top-right",
+        autoClose: 5000,
+        theme: "light",
+        transition: Bounce,
+      });
+      return;
+    }
+
+    if (participantContext.isCreating) {
+      if (participantContext.participantFirstExam.row.length == 0) {
+        toast.error("Необходимо добавить экзамен", {
+          position: "top-right",
+          autoClose: 5000,
+          theme: "light",
+          transition: Bounce,
+        });
+        return;
+      }
+    }
+
+    setChangedInputs(defaultInputStates);
   };
 
   return (
@@ -73,93 +129,93 @@ export default function ParticipantDetails({
       >
         <DetailElement
           name="ID"
-          data={participant.id}
+          data={participantContext.participantDetails.id}
           inputType="number"
-          isChanged={changedInputs.id}
+          inputState={changedInputs.id}
           disabled
-          setIsChangedValue={() => {
-            setChangedInputStatus("id");
+          onChange={(newValue) => {
+            handleChangeParticipantData("id", newValue);
           }}
         />
         <DetailElement
-          name="Национальность"
+          name="Национальность*"
           inputType={nationVariants}
-          isChanged={changedInputs.nation}
-          data={participant.nation}
-          setIsChangedValue={() => {
-            setChangedInputStatus("nation");
+          inputState={changedInputs.nation}
+          data={participantContext.participantDetails.nation}
+          onChange={(newValue) => {
+            handleChangeParticipantData("nation", newValue);
           }}
         />
         <DetailElement
-          name="Фамилия"
-          data={participant.surname}
+          name="Фамилия*"
+          data={participantContext.participantDetails.surname}
           inputType="string"
-          isChanged={changedInputs.surname}
-          setIsChangedValue={() => {
-            setChangedInputStatus("surname");
+          inputState={changedInputs.surname}
+          onChange={(newValue) => {
+            handleChangeParticipantData("surname", newValue);
           }}
         />
         <DetailElement
           name="Школа обучения"
-          data={participant.school}
+          data={participantContext.participantDetails.school}
           inputType={schoolVariants}
-          isChanged={changedInputs.school}
-          setIsChangedValue={() => {
-            setChangedInputStatus("school");
+          inputState={changedInputs.school}
+          onChange={(newValue) => {
+            handleChangeParticipantData("school", newValue);
           }}
         />
         <DetailElement
-          name="Имя"
-          data={participant.name}
+          name="Имя*"
+          data={participantContext.participantDetails.name}
           inputType="string"
-          isChanged={changedInputs.name}
-          setIsChangedValue={() => {
-            setChangedInputStatus("name");
+          inputState={changedInputs.name}
+          onChange={(newValue) => {
+            handleChangeParticipantData("name", newValue);
           }}
         />
         <DetailElement
           name="Дата следующего экзамена"
-          data={participant.nextExamDate}
+          data={participantContext.participantDetails.nextExamDate}
           inputType="date"
-          isChanged={changedInputs.nextExamDate}
-          setIsChangedValue={() => {
-            setChangedInputStatus("nextExamDate");
+          inputState={changedInputs.nextExamDate}
+          onChange={(newValue) => {
+            handleChangeParticipantData("nextExamDate", newValue);
           }}
         />
         <DetailElement
           name="Отчество"
-          data={participant.patronymic}
+          data={participantContext.participantDetails.patronymic}
           inputType="string"
-          isChanged={changedInputs.patronymic}
-          setIsChangedValue={() => {
-            setChangedInputStatus("patronymic");
+          inputState={changedInputs.patronymic}
+          onChange={(newValue) => {
+            handleChangeParticipantData("patronymic", newValue);
           }}
         />
         <DetailElement
           name="Комментарий"
-          data={participant.schoolComment}
+          data={participantContext.participantDetails.schoolComment}
           inputType="string"
-          isChanged={changedInputs.schoolComment}
-          setIsChangedValue={() => {
-            setChangedInputStatus("schoolComment");
+          inputState={changedInputs.schoolComment}
+          onChange={(newValue) => {
+            handleChangeParticipantData("schoolComment", newValue);
           }}
         />
         <DetailElement
-          name="Дата рождения"
-          data={participant.birthDate}
+          name="Дата рождения*"
+          data={participantContext.participantDetails.birthDate}
           inputType="date"
-          isChanged={changedInputs.birthDate}
-          setIsChangedValue={() => {
-            setChangedInputStatus("birthDate");
+          inputState={changedInputs.birthDate}
+          onChange={(newValue) => {
+            handleChangeParticipantData("birthDate", newValue);
           }}
         />
         <DetailElement
           name="Примечание РЦОИ"
-          data={participant.rcoiNote}
+          data={participantContext.participantDetails.rcoiNote}
           inputType="string"
-          isChanged={changedInputs.rcoiNote}
-          setIsChangedValue={() => {
-            setChangedInputStatus("rcoiNote");
+          inputState={changedInputs.rcoiNote}
+          onChange={(newValue) => {
+            handleChangeParticipantData("rcoiNote", newValue);
           }}
         />
       </Box>
@@ -172,13 +228,14 @@ export default function ParticipantDetails({
       >
         <Button
           variant="contained"
+          onClick={handleSaveParticipant}
           sx={{
             minWidth: 120,
             borderRadius: 2,
             textTransform: "none",
           }}
         >
-          {isCreating ? "Создать" : "Сохранить"}
+          {participantContext.isCreating ? "Создать" : "Сохранить"}
         </Button>
       </Box>
     </Paper>
