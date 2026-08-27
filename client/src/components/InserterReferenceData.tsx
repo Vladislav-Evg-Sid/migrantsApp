@@ -194,7 +194,7 @@ export default function InserterReferenceData({
     } else {
       setButtonText("save-upd");
       onAdd(newData);
-      setValues(Array(types.length).fill(""));
+      // setValues(Array(types.length).fill(""));
     }
   };
 

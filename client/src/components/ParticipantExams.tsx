@@ -1,14 +1,23 @@
 import { Box, Paper, Typography } from "@mui/material";
 import DataTable from "./DataTable";
-import type { TableData } from "../types/tables";
+import type { TableCellData, TableData } from "../types/tables";
 import { memo, useMemo } from "react";
+import { createParticipantExam } from "../api/participants";
+import { parseExamResult } from "../services/dataInput";
 
 interface ParticipantExamsProps {
+  participantID: number;
   table: TableData;
   isCreating: boolean;
+  rerenderTrigger: () => void;
 }
 
-function ParticipantExams({ table, isCreating }: ParticipantExamsProps) {
+function ParticipantExams({
+  table,
+  isCreating,
+  participantID,
+  rerenderTrigger,
+}: ParticipantExamsProps) {
   const visibleTable = useMemo<TableData>(
     () => ({
       head: table.head.filter((_, index) => index < 9 || index > 11),
@@ -18,6 +27,22 @@ function ParticipantExams({ table, isCreating }: ParticipantExamsProps) {
     }),
     [table],
   );
+
+  const handleAddExam = (data: TableCellData[]) => {
+    createParticipantExam({
+      participantId: participantID,
+      isSpecialCategory: Boolean(data[7]),
+      statusId: Number(data[6]),
+      testDateId: Number(data[1]),
+      result: parseExamResult(String(data[5])),
+      class: Number(data[4]),
+      sendingSchoolCode: Number(data[2]),
+      testAttemptNumber: Number(data[0]),
+      appealId: null,
+      testingCenterPptCode: Number(data[3]),
+    });
+    rerenderTrigger();
+  };
 
   return (
     <Paper
@@ -48,6 +73,7 @@ function ParticipantExams({ table, isCreating }: ParticipantExamsProps) {
           hideIdCol
           fillAvailableHeight
           reference
+          onAdd={handleAddExam}
         />
       </Box>
     </Paper>

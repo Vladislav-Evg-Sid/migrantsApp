@@ -9,3 +9,15 @@ export function updateTextFieldValue(value: string, type: string): string {
   }
   return value;
 }
+
+export function parseExamResult(rawResult: string): 1 | 2 | 3 | null {
+  switch (rawResult) {
+    case "1":
+      return 1;
+    case "2":
+      return 2;
+    case "3":
+      return 3;
+  }
+  return null;
+}

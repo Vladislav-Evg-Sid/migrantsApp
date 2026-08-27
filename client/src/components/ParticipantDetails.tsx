@@ -7,6 +7,7 @@ import { ParticipantDataContext } from "../context/ParticipantContext";
 import { Bounce, toast } from "react-toastify";
 import { createParticipant } from "../api/participants";
 import { useNavigate } from "react-router-dom";
+import { parseExamResult } from "../services/dataInput";
 
 interface participantDetailsProps {
   nationVariants: ForeignKey[];
@@ -38,18 +39,6 @@ const defaultInputStates: ChangedInputs = {
   schoolComment: "saved",
   rcoiNote: "saved",
 };
-
-function parseExamResult(rawResult: string): 1 | 2 | 3 | null {
-  switch (rawResult) {
-    case "1":
-      return 1;
-    case "2":
-      return 2;
-    case "3":
-      return 3;
-  }
-  return null;
-}
 
 export default function ParticipantDetails({
   nationVariants,

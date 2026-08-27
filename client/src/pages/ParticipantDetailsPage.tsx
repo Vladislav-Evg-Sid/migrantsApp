@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getExamTableHead, getParticipantDetails } from "../api/participants";
+import {
+  getExamTableHead,
+  getParticipantDetails,
+  getParticipantExams,
+} from "../api/participants";
 import { ArrowBack } from "@mui/icons-material";
 import { Box, Button, Typography } from "@mui/material";
 import ParticipantDetails from "../components/ParticipantDetails";
@@ -87,6 +91,17 @@ export default function ParticipantDetailsPage() {
     }
   }, []);
 
+  const refrashParticipantExams = () => {
+    const fetchParticipantExams = async () => {
+      const participantExams = await getParticipantExams(participantID);
+      setParticipant((prev) => ({
+        ...prev,
+        exams: participantExams,
+      }));
+    };
+    fetchParticipantExams();
+  };
+
   return (
     <Box
       sx={{
@@ -170,8 +185,10 @@ export default function ParticipantDetailsPage() {
           schoolVariants={schoolVariants}
         />
         <ParticipantExams
+          participantID={participantID}
           table={participant.exams}
           isCreating={isCreating}
+          rerenderTrigger={refrashParticipantExams}
         />
       </ParticipantDataContext>
     </Box>
