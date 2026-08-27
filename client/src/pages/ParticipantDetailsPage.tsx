@@ -169,7 +169,10 @@ export default function ParticipantDetailsPage() {
           nationVariants={nationVariants}
           schoolVariants={schoolVariants}
         />
-        <ParticipantExams table={participant.exams} />
+        <ParticipantExams
+          table={participant.exams}
+          isCreating={isCreating}
+        />
       </ParticipantDataContext>
     </Box>
   );

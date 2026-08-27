@@ -70,10 +70,16 @@ export default function ParticipantDetails({
     newValue: string | ForeignKey,
   ) => {
     participantContext.setParticipantDetailElement(inputName, newValue);
-    setChangedInputs((prev) => ({
-      ...prev,
-      [inputName]: "changed",
-    }));
+    setChangedInputs((prev) => {
+      if (prev[inputName] === "changed") {
+        return prev;
+      }
+
+      return {
+        ...prev,
+        [inputName]: "changed",
+      };
+    });
   };
 
   const handleSaveParticipant = () => {

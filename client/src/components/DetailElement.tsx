@@ -1,5 +1,5 @@
 import { Autocomplete, Box, TextField, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { memo, startTransition, useEffect, useState } from "react";
 import type { ColumnTypes, ForeignKey } from "../types/tables";
 
 interface detailElementProps {
@@ -11,7 +11,7 @@ interface detailElementProps {
   onChange: (newValue: string | ForeignKey) => void;
 }
 
-export default function DetailElement({
+function DetailElement({
   name,
   data,
   inputType,
@@ -28,6 +28,17 @@ export default function DetailElement({
         : String(typeof data === "object" ? data.code : (data ?? "")),
     );
   }, [data]);
+
+  const handleTextChange = (newValue: string) => {
+    setUserInput(newValue);
+    startTransition(() => onChange(newValue));
+  };
+
+  const handleAutocompleteChange = (newValue: ForeignKey | null) => {
+    const value = newValue ?? { code: -1, name: "" };
+    setUserInput(String(value.code));
+    startTransition(() => onChange(value));
+  };
 
   const isChanged = inputState === "changed";
   const isError = inputState === "error";
@@ -115,7 +126,7 @@ export default function DetailElement({
               ? userInput.split(".").reverse().join("-")
               : userInput
           }
-          onChange={(event) => onChange(event.target.value)}
+          onChange={(event) => handleTextChange(event.target.value)}
           type={
             inputType === "phone"
               ? "tel"
@@ -141,15 +152,20 @@ export default function DetailElement({
               (variant) => String(variant.code) === userInput,
             ) ?? null
           }
-          onChange={(_, newValue) => {
-            onChange({
-              code: Number(newValue?.code),
-              name: String(newValue?.name),
-            });
-          }}
+          onChange={(_, newValue) => handleAutocompleteChange(newValue)}
           renderInput={(params) => <TextField {...params} label="" />}
         />
       )}
     </Box>
   );
 }
+
+export default memo(DetailElement, (previousProps, nextProps) => {
+  return (
+    previousProps.name === nextProps.name &&
+    previousProps.data === nextProps.data &&
+    previousProps.inputType === nextProps.inputType &&
+    previousProps.disabled === nextProps.disabled &&
+    previousProps.inputState === nextProps.inputState
+  );
+});

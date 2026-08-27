@@ -1,18 +1,23 @@
 import { Box, Paper, Typography } from "@mui/material";
 import DataTable from "./DataTable";
 import type { TableData } from "../types/tables";
-import { useContext } from "react";
-import { ParticipantDataContext } from "../context/ParticipantContext";
+import { memo, useMemo } from "react";
 
 interface ParticipantExamsProps {
   table: TableData;
+  isCreating: boolean;
 }
 
-export default function ParticipantExams({ table }: ParticipantExamsProps) {
-  const isCreatingParticipant =
-    useContext(ParticipantDataContext)?.isCreating ?? false;
-  table.head.splice(9, 2);
-  table.body.forEach(({ row }) => row.splice(9, 2));
+function ParticipantExams({ table, isCreating }: ParticipantExamsProps) {
+  const visibleTable = useMemo<TableData>(
+    () => ({
+      head: table.head.filter((_, index) => index < 9 || index > 10),
+      body: table.body.map(({ row }) => ({
+        row: row.filter((_, index) => index < 9 || index > 10),
+      })),
+    }),
+    [table],
+  );
 
   return (
     <Paper
@@ -38,8 +43,8 @@ export default function ParticipantExams({ table }: ParticipantExamsProps) {
       <Box sx={{ flex: 1, minHeight: 0 }}>
         <DataTable
           name="Результаты"
-          head={table.head}
-          body={isCreatingParticipant ? [] : table.body}
+          head={visibleTable.head}
+          body={isCreating ? [] : visibleTable.body}
           hideIdCol
           fillAvailableHeight
           reference
@@ -48,3 +53,5 @@ export default function ParticipantExams({ table }: ParticipantExamsProps) {
     </Paper>
   );
 }
+
+export default memo(ParticipantExams);
