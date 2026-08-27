@@ -13,4 +13,9 @@ export enum Month {
   Декабрь,
 }
 
-export type ExamDate = Map<number, Map<Month, number[]>>;
+interface DateId {
+  id: number;
+  day: number;
+}
+
+export type ExamDate = Map<number, Map<Month, DateId[]>>;

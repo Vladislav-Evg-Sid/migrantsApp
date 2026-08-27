@@ -36,7 +36,6 @@ export async function getParticipantDetails(
 export async function getParticipantExams(
   participantID: number,
 ): Promise<TableData> {
-  console.log(">>>");
   const response = await fetch(
     `${baseApi}/participants/${participantID}/test-results`,
   );
@@ -50,7 +49,6 @@ export async function getParticipantExams(
     throw new Error(`${response.status}`);
   }
   const data = await response.json();
-  console.log(data);
   return data;
 }
 

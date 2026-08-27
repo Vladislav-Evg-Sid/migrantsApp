@@ -54,7 +54,6 @@ export default function FilterRow({
   };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    console.log(">>>");
     if (event.key === "Enter") {
       event.preventDefault();
       onFilter(values);
