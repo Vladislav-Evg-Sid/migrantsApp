@@ -1,4 +1,8 @@
-import { insertTestResult } from "../repositories/test-results.repository.js";
+import {
+  deleteTestResultById,
+  insertTestResult,
+  updateTestResultById,
+} from "../repositories/test-results.repository.js";
 import {
   isTestResultCode,
   TEST_RESULT_SELECT_OPTIONS,
@@ -10,7 +14,10 @@ import {
   findAllTestDates,
 } from "../repositories/reference-data.repository.js";
 import type { SelectOption, TableHeadCell } from "../types/reference-data.js";
-import type { CreateTestResultInput } from "../types/test-results.js";
+import type {
+  CreateTestResultInput,
+  UpdateTestResultInput,
+} from "../types/test-results.js";
 
 function formatDate(day: number, month: number, year: number): string {
   return `${String(day).padStart(2, "0")}.${String(month).padStart(2, "0")}.${year}`;
@@ -67,4 +74,21 @@ export async function createTestResult(input: CreateTestResultInput): Promise<vo
   }
 
   await insertTestResult(input);
+}
+
+export async function updateTestResult(
+  id: number,
+  input: UpdateTestResultInput,
+): Promise<boolean> {
+  if (input.result !== null && !isTestResultCode(input.result)) {
+    const error = new Error("Некорректный код результата экзамена");
+    Object.assign(error, { code: "INVALID_TEST_RESULT" });
+    throw error;
+  }
+
+  return updateTestResultById(id, input);
+}
+
+export async function deleteTestResult(id: number): Promise<boolean> {
+  return deleteTestResultById(id);
 }

@@ -146,6 +146,47 @@ export const openApiDocument = {
           500: { description: "Внутренняя ошибка", content: jsonContent(schemaRef("ErrorResponse")) },
         },
       },
+      put: {
+        tags: ["Участники"],
+        summary: "Обновить участника",
+        description: "Полностью обновляет поля участника по ID. ID участника и его экзамены не изменяются.",
+        parameters: [{
+          name: "id",
+          in: "path",
+          required: true,
+          description: "ID участника с учётом дублей",
+          schema: { type: "integer", format: "int64", minimum: 1 },
+        }],
+        requestBody: {
+          required: true,
+          content: jsonContent(schemaRef("UpdateParticipant")),
+        },
+        responses: {
+          204: emptyResponse("Участник обновлён"),
+          400: { description: "Некорректный ID", content: jsonContent(schemaRef("ErrorResponse")) },
+          404: { description: "Участник не найден", content: jsonContent(schemaRef("ErrorResponse")) },
+          500: { description: "Внутренняя ошибка", content: jsonContent(schemaRef("ErrorResponse")) },
+        },
+      },
+      delete: {
+        tags: ["Участники"],
+        summary: "Удалить участника",
+        description: "Транзакционно удаляет участника и все связанные с ним экзамены.",
+        parameters: [{
+          name: "id",
+          in: "path",
+          required: true,
+          description: "ID участника с учётом дублей",
+          schema: { type: "integer", format: "int64", minimum: 1 },
+        }],
+        responses: {
+          204: emptyResponse("Участник и его экзамены удалены"),
+          400: { description: "Некорректный ID", content: jsonContent(schemaRef("ErrorResponse")) },
+          404: { description: "Участник не найден", content: jsonContent(schemaRef("ErrorResponse")) },
+          409: { description: "Удаление запрещено существующими связями", content: jsonContent(schemaRef("ErrorResponse")) },
+          500: { description: "Внутренняя ошибка", content: jsonContent(schemaRef("ErrorResponse")) },
+        },
+      },
     },
     "/participants/{id}/test-results": {
       get: {
@@ -178,6 +219,49 @@ export const openApiDocument = {
         },
         responses: {
           201: { description: "Результат создан, тело ответа пустое" },
+          500: { description: "Внутренняя ошибка", content: jsonContent(schemaRef("ErrorResponse")) },
+        },
+      },
+    },
+    "/test-results/{id}": {
+      put: {
+        tags: ["Результаты"],
+        summary: "Обновить экзамен",
+        description: "Полностью обновляет экзамен по его ID. participantId передаётся в теле и может быть обновлён.",
+        parameters: [{
+          name: "id",
+          in: "path",
+          required: true,
+          description: "ID экзамена",
+          schema: { type: "integer", minimum: 1 },
+        }],
+        requestBody: {
+          required: true,
+          content: jsonContent(schemaRef("UpdateTestResult")),
+        },
+        responses: {
+          204: emptyResponse("Экзамен обновлён"),
+          400: { description: "Некорректный ID или код результата", content: jsonContent(schemaRef("ErrorResponse")) },
+          404: { description: "Экзамен не найден", content: jsonContent(schemaRef("ErrorResponse")) },
+          500: { description: "Внутренняя ошибка", content: jsonContent(schemaRef("ErrorResponse")) },
+        },
+      },
+      delete: {
+        tags: ["Результаты"],
+        summary: "Удалить экзамен",
+        description: "Удаляет один экзамен по ID строки test_results. Участник не удаляется.",
+        parameters: [{
+          name: "id",
+          in: "path",
+          required: true,
+          description: "ID экзамена",
+          schema: { type: "integer", minimum: 1 },
+        }],
+        responses: {
+          204: emptyResponse("Экзамен удалён"),
+          400: { description: "Некорректный ID", content: jsonContent(schemaRef("ErrorResponse")) },
+          404: { description: "Экзамен не найден", content: jsonContent(schemaRef("ErrorResponse")) },
+          409: { description: "Удаление запрещено существующими связями", content: jsonContent(schemaRef("ErrorResponse")) },
           500: { description: "Внутренняя ошибка", content: jsonContent(schemaRef("ErrorResponse")) },
         },
       },
@@ -295,6 +379,23 @@ export const openApiDocument = {
           firstExam: schemaRef("CreateFirstTestResult"),
         },
       },
+      UpdateParticipant: {
+        type: "object",
+        required: ["surname", "name", "patronymic", "birthDay", "birthMonth", "birthYear", "nationId", "confirmedSchoolCode", "nextPlannedDate", "comment", "rcoiNote"],
+        properties: {
+          surname: { type: "string", maxLength: 127 },
+          name: { type: "string", maxLength: 127 },
+          patronymic: { type: "string", maxLength: 127, nullable: true },
+          birthDay: { type: "integer", minimum: 1, maximum: 31 },
+          birthMonth: { type: "integer", minimum: 1, maximum: 12 },
+          birthYear: { type: "integer", minimum: 1900 },
+          nationId: { type: "integer" },
+          confirmedSchoolCode: { type: "integer", nullable: true },
+          nextPlannedDate: { type: "string", nullable: true },
+          comment: { type: "string", nullable: true },
+          rcoiNote: { type: "string", nullable: true },
+        },
+      },
       CreateFirstTestResult: {
         type: "object",
         required: ["isSpecialCategory", "statusId", "testDateId", "result", "class", "sendingSchoolCode", "testAttemptNumber", "appealId", "testingCenterPptCode"],
@@ -326,6 +427,7 @@ export const openApiDocument = {
           testingCenterPptCode: { type: "integer" },
         },
       },
+      UpdateTestResult: schemaRef("CreateTestResult"),
       CreatedParticipant: {
         type: "object",
         required: ["id"],

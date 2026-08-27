@@ -33,3 +33,5 @@ export type CreateParticipantInput = {
 export type CreatedParticipant = {
   id: number;
 };
+
+export type UpdateParticipantInput = Omit<CreateParticipantInput, "firstExam">;
