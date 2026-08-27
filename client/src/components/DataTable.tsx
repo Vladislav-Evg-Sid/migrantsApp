@@ -85,7 +85,9 @@ export default function DataTable({
     let intermediateFilteredData = [...body];
     for (let i = 0; i < filters.length; i++) {
       intermediateFilteredData = intermediateFilteredData.filter(({ row }) =>
-        cell2string(row[i] ?? "").includes(filters[i] ?? ""),
+        cell2string(row[i] ?? "")
+          .toLowerCase()
+          .includes(filters[i]?.toLocaleLowerCase() ?? ""),
       );
     }
     setViewTable(intermediateFilteredData);
