@@ -56,6 +56,8 @@ export default function DataTable({
 }: DataTableProps) {
   const isCreatingParticipant =
     useContext(ParticipantDataContext)?.isCreating ?? false;
+  const participantID =
+    useContext(ParticipantDataContext)?.participantDetails.id ?? -1;
 
   const [editingData, setEditingData] = useState<string[] | null>(null);
   const [viewTable, setViewTable] = useState<TableBodyRowData[]>(body);
@@ -111,8 +113,10 @@ export default function DataTable({
         return `контактные данные ответственного "${identifierRow[1]}" из ППТ ${identifierRow[0]}`;
       case "participants":
         return `участника с id ${identifierRow}`;
+      case "exams":
+        return `попытку экзамена номер ${identifierRow[1]} участника ${participantID}`;
     }
-    return "Неизвестная таблица";
+    return `Неизвестная таблица: ${name}`;
   };
 
   const isUndeleteable = isCreatingParticipant || editingData !== null;

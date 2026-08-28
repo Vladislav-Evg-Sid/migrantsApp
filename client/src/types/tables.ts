@@ -5,7 +5,8 @@ export type RefTables =
   | "participant-statuses"
   | "nations"
   | "area-responsibles"
-  | "ppts";
+  | "ppts"
+  | "exams";
 
 export interface ForeignKey {
   code: number;

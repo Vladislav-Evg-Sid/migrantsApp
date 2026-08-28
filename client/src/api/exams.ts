@@ -1,6 +1,7 @@
 import { Bounce, toast } from "react-toastify";
 import { baseApi } from "../env";
 import { type ExamDate, type Month } from "../types/exams";
+import type { TableCellData } from "../types/tables";
 
 export async function getExamDates(): Promise<ExamDate> {
   const response = await fetch(`${baseApi}/test-dates`);
@@ -196,4 +197,25 @@ export async function getExamDates(): Promise<ExamDate> {
       ]),
     ],
   ]);
+}
+
+export async function deleteExam(id: TableCellData) {
+  const response = await fetch(`${baseApi}/test-results/${id}`, {
+    method: "DELETE",
+  });
+  if (!response.ok) {
+    toast.error("Не удалось удалить попытку теста", {
+      position: "top-right",
+      autoClose: 5000,
+      theme: "light",
+      transition: Bounce,
+    });
+    throw new Error(`${response.status}`);
+  }
+  toast.success("Попытка теста удалена удалена", {
+    position: "top-right",
+    autoClose: 5000,
+    theme: "light",
+    transition: Bounce,
+  });
 }

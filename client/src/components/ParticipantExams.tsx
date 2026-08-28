@@ -4,6 +4,7 @@ import type { TableCellData, TableData } from "../types/tables";
 import { memo, useMemo } from "react";
 import { createParticipantExam } from "../api/participants";
 import { parseExamResult } from "../services/dataInput";
+import { deleteExam } from "../api/exams";
 
 interface ParticipantExamsProps {
   participantID: number;
@@ -47,6 +48,14 @@ function ParticipantExams({
     fetchAddExam();
   };
 
+  const handleDeleteExam = (id: TableCellData) => {
+    const fetchAddExam = async () => {
+      await deleteExam(id);
+      rerenderTrigger();
+    };
+    fetchAddExam();
+  };
+
   return (
     <Paper
       elevation={2}
@@ -70,13 +79,14 @@ function ParticipantExams({
       </Typography>
       <Box sx={{ flex: 1, minHeight: 0 }}>
         <DataTable
-          name="Результаты"
+          name="exams"
           head={visibleTable.head}
           body={isCreating ? [] : visibleTable.body}
           hideIdCol
           fillAvailableHeight
           reference
           onAdd={handleAddExam}
+          onDelete={handleDeleteExam}
         />
       </Box>
     </Paper>
