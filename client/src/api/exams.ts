@@ -2,6 +2,7 @@ import { Bounce, toast } from "react-toastify";
 import { baseApi } from "../env";
 import { type ExamDate, type Month } from "../types/exams";
 import type { TableCellData } from "../types/tables";
+import type { UpdateTestResultInput } from "../types/dto";
 
 export async function getExamDates(): Promise<ExamDate> {
   const response = await fetch(`${baseApi}/test-dates`);
@@ -213,6 +214,28 @@ export async function deleteExam(id: TableCellData) {
     throw new Error(`${response.status}`);
   }
   toast.success("Попытка теста удалена", {
+    position: "top-right",
+    autoClose: 5000,
+    theme: "light",
+    transition: Bounce,
+  });
+}
+
+export async function updateExam(
+  id: number,
+  updatedData: UpdateTestResultInput,
+) {
+  const response = await fetch(`${baseApi}/test-results/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updatedData),
+  });
+  if (!response.ok) {
+    throw new Error(`${response.status}`);
+  }
+  toast.success("Данные экзамена обновлены обновлены", {
     position: "top-right",
     autoClose: 5000,
     theme: "light",

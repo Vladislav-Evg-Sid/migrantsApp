@@ -15,7 +15,11 @@ import { useContext, useEffect, useState } from "react";
 import type { ForeignKey } from "../types/tables";
 import { ParticipantDataContext } from "../context/ParticipantContext";
 import { Bounce, toast } from "react-toastify";
-import { createParticipant, deleteParticipant } from "../api/participants";
+import {
+  createParticipant,
+  deleteParticipant,
+  updateParticipant,
+} from "../api/participants";
 import { useNavigate } from "react-router-dom";
 import { parseExamResult } from "../services/dataInput";
 
@@ -113,6 +117,35 @@ export default function ParticipantDetails({
       return;
     }
 
+    const baseParticipantData = {
+      surname: participantContext.participantDetails.surname
+        .trim()
+        .replace(/\s+/g, " "),
+      name: participantContext.participantDetails.name
+        .trim()
+        .replace(/\s+/g, " "),
+      patronymic:
+        participantContext.participantDetails.patronymic
+          ?.trim()
+          .replace(/\s+/g, " ") ?? null,
+      birthDay: Number(
+        participantContext.participantDetails.birthDate.split("-")[2],
+      ),
+      birthMonth: Number(
+        participantContext.participantDetails.birthDate.split("-")[1],
+      ),
+      birthYear: Number(
+        participantContext.participantDetails.birthDate.split("-")[0],
+      ),
+      nationId: participantContext.participantDetails.nation.code,
+      confirmedSchoolCode:
+        participantContext.participantDetails.school?.code ?? null,
+      nextPlannedDate:
+        participantContext.participantDetails.nextExamDate ?? null,
+      comment: participantContext.participantDetails.schoolComment ?? null,
+      rcoiNote: participantContext.participantDetails.rcoiNote ?? null,
+    };
+
     if (participantContext.isCreating) {
       if (participantContext.participantFirstExam.row.length == 0) {
         toast.error("Необходимо добавить экзамен", {
@@ -123,64 +156,48 @@ export default function ParticipantDetails({
         });
         return;
       }
+
+      const fetchCreateParticipant = async () => {
+        const participantID = await createParticipant({
+          ...baseParticipantData,
+          firstExam: {
+            isSpecialCategory: participantContext.participantFirstExam.row[8]
+              ? true
+              : false,
+            statusId: Number(participantContext.participantFirstExam.row[7]),
+            testDateId: Number(participantContext.participantFirstExam.row[2]),
+            result: parseExamResult(
+              String(participantContext.participantFirstExam.row[6]),
+            ),
+            class: Number(participantContext.participantFirstExam.row[5]),
+            sendingSchoolCode: Number(
+              participantContext.participantFirstExam.row[3],
+            ),
+            testAttemptNumber: Number(
+              participantContext.participantFirstExam.row[1],
+            ),
+            appealId: null,
+            testingCenterPptCode: Number(
+              participantContext.participantFirstExam.row[4],
+            ),
+          },
+        });
+
+        navigate(`/participants/details/${participantID}`);
+        participantContext.resetStateAfterCreate();
+      };
+
+      fetchCreateParticipant();
+    } else {
+      const fetchUpdateParticipant = async () => {
+        await updateParticipant(
+          participantContext.participantDetails.id,
+          baseParticipantData,
+        );
+      };
+
+      fetchUpdateParticipant();
     }
-
-    const fetchCreateParticipant = async () => {
-      const participantID = await createParticipant({
-        surname: participantContext.participantDetails.surname
-          .trim()
-          .replace(/\s+/g, " "),
-        name: participantContext.participantDetails.name
-          .trim()
-          .replace(/\s+/g, " "),
-        patronymic:
-          participantContext.participantDetails.patronymic
-            ?.trim()
-            .replace(/\s+/g, " ") ?? null,
-        birthDay: Number(
-          participantContext.participantDetails.birthDate.split("-")[2],
-        ),
-        birthMonth: Number(
-          participantContext.participantDetails.birthDate.split("-")[1],
-        ),
-        birthYear: Number(
-          participantContext.participantDetails.birthDate.split("-")[0],
-        ),
-        nationId: participantContext.participantDetails.nation.code,
-        confirmedSchoolCode:
-          participantContext.participantDetails.school?.code ?? null,
-        nextPlannedDate:
-          participantContext.participantDetails.nextExamDate ?? null,
-        comment: participantContext.participantDetails.schoolComment ?? null,
-        rcoiNote: participantContext.participantDetails.rcoiNote ?? null,
-        firstExam: {
-          isSpecialCategory: participantContext.participantFirstExam.row[8]
-            ? true
-            : false,
-          statusId: Number(participantContext.participantFirstExam.row[7]),
-          testDateId: Number(participantContext.participantFirstExam.row[2]),
-          result: parseExamResult(
-            String(participantContext.participantFirstExam.row[6]),
-          ),
-          class: Number(participantContext.participantFirstExam.row[5]),
-          sendingSchoolCode: Number(
-            participantContext.participantFirstExam.row[3],
-          ),
-          testAttemptNumber: Number(
-            participantContext.participantFirstExam.row[1],
-          ),
-          appealId: null,
-          testingCenterPptCode: Number(
-            participantContext.participantFirstExam.row[4],
-          ),
-        },
-      });
-
-      navigate(`/participants/details/${participantID}`);
-      participantContext.resetStateAfterCreate();
-    };
-
-    fetchCreateParticipant();
     setChangedInputs(defaultInputStates);
   };
 

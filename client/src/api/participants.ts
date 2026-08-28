@@ -3,6 +3,7 @@ import { baseApi } from "../env";
 import type {
   CreateParticipantInput,
   CreateTestResultInput,
+  UpdateParticipantInput,
 } from "../types/dto";
 import type { ParticipantData } from "../types/participants";
 import type { TableData, TableHeadCellData } from "../types/tables";
@@ -135,6 +136,28 @@ export async function deleteParticipant(id: number) {
     throw new Error(`${response.status}`);
   }
   toast.success("Участник удален", {
+    position: "top-right",
+    autoClose: 5000,
+    theme: "light",
+    transition: Bounce,
+  });
+}
+
+export async function updateParticipant(
+  id: number,
+  updatedData: UpdateParticipantInput,
+) {
+  const response = await fetch(`${baseApi}/participants/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updatedData),
+  });
+  if (!response.ok) {
+    throw new Error(`${response.status}`);
+  }
+  toast.success("Данные участника обновлены", {
     position: "top-right",
     autoClose: 5000,
     theme: "light",

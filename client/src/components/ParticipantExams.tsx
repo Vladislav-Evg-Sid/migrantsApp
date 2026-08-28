@@ -4,7 +4,7 @@ import type { TableCellData, TableData } from "../types/tables";
 import { memo, useMemo } from "react";
 import { createParticipantExam } from "../api/participants";
 import { parseExamResult } from "../services/dataInput";
-import { deleteExam } from "../api/exams";
+import { deleteExam, updateExam } from "../api/exams";
 
 interface ParticipantExamsProps {
   participantID: number;
@@ -56,6 +56,26 @@ function ParticipantExams({
     fetchAddExam();
   };
 
+  const handeUpdateExam = (newData: TableCellData[]) => {
+    const fetchUpdateExam = async () => {
+      await updateExam(Number(newData[0]), {
+        participantId: participantID,
+        isSpecialCategory: newData[8] ? true : false,
+        statusId: Number(newData[7]),
+        testDateId: Number(newData[2]),
+        result: parseExamResult(String(newData[6])),
+        class: Number(newData[5]),
+        sendingSchoolCode: Number(newData[3]),
+        testAttemptNumber: Number(newData[1]),
+        appealId: null,
+        testingCenterPptCode: Number(newData[4]),
+      });
+      rerenderTrigger();
+    };
+
+    fetchUpdateExam();
+  };
+
   return (
     <Paper
       elevation={2}
@@ -87,6 +107,7 @@ function ParticipantExams({
           reference
           onAdd={handleAddExam}
           onDelete={handleDeleteExam}
+          onSaveChanges={handeUpdateExam}
         />
       </Box>
     </Paper>

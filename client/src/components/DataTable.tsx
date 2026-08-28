@@ -268,13 +268,17 @@ export default function DataTable({
                       <Button
                         onClick={() =>
                           setEditingData(
-                            row.row.map((cell) =>
+                            row.row.map((cell, index) =>
                               String(
                                 cell === null
                                   ? ""
                                   : typeof cell === "object"
                                     ? cell.code
-                                    : cell,
+                                    : head[index]?.type === "boolean"
+                                      ? cell
+                                        ? "yes"
+                                        : ""
+                                      : cell,
                               ),
                             ),
                           )

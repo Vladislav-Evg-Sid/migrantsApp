@@ -134,7 +134,7 @@ interface InserterProps {
 export default function InserterReferenceData({
   types,
   onAdd,
-  editedData: editingData,
+  editedData,
   hideIdCol,
 }: InserterProps) {
   const participantExamsContext = parseParticipantContext(
@@ -147,15 +147,15 @@ export default function InserterReferenceData({
     "Добавить",
   );
 
-  const editMode = editingData !== null && editingData.length === types.length;
+  const editMode = editedData !== null && editedData.length === types.length;
   useEffect(() => {
     if (editMode) {
       dispatchButtonText("update");
-      setValues(editingData);
+      setValues(editedData);
       return;
     }
     setValues(Array(types.length).fill(""));
-  }, [types.length, editingData]);
+  }, [types.length, editedData]);
 
   const setValue = (ind: number, value: string) => {
     const type = typeof types[ind] === "string" ? types[ind] : "string";
@@ -181,7 +181,7 @@ export default function InserterReferenceData({
       switch (
         checkInsertValue(
           curVal,
-          index === "0" && hideIdCol && editingData === null,
+          index === "0" && hideIdCol && editedData === null,
           types[index],
         )
       ) {
@@ -200,7 +200,7 @@ export default function InserterReferenceData({
         setValues(Array(types.length).fill(""));
       });
       dispatchButtonText("context-save");
-      if (editingData === null) {
+      if (editedData === null) {
         newData.unshift(-1);
       }
       participantExamsContext.setParticipantFirstExam({

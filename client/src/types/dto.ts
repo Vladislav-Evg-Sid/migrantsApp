@@ -103,3 +103,7 @@ export type CreateParticipantInput = {
   rcoiNote: string | null;
   firstExam: CreateFirstTestResultInput;
 };
+
+export type UpdateParticipantInput = Omit<CreateParticipantInput, "firstExam">;
+
+export type UpdateTestResultInput = CreateTestResultInput;

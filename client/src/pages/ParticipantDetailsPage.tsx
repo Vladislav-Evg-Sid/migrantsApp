@@ -151,7 +151,12 @@ export default function ParticipantDetailsPage() {
       <ParticipantDataContext
         value={{
           isCreating: isCreating,
-          participantDetails: participant,
+          participantDetails: {
+            ...participant,
+            birthDate: participant.birthDate.includes(".")
+              ? participant.birthDate.split(".").reverse().join("-")
+              : participant.birthDate,
+          },
           participantFirstExam: participant.exams.body[0] ?? { row: [] },
           setParticipantDetails: (
             participantDetails: Omit<ParticipantData, "exams">,
