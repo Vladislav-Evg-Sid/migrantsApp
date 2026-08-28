@@ -212,7 +212,7 @@ export async function deleteExam(id: TableCellData) {
     });
     throw new Error(`${response.status}`);
   }
-  toast.success("Попытка теста удалена удалена", {
+  toast.success("Попытка теста удалена", {
     position: "top-right",
     autoClose: 5000,
     theme: "light",

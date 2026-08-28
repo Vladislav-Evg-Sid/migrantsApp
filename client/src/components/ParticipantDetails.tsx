@@ -1,11 +1,21 @@
-import { Box, Button, Paper, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Paper,
+  Typography,
+} from "@mui/material";
 import DetailElement from "./DetailElement";
 import type { ParticipantData } from "../types/participants";
 import { useContext, useEffect, useState } from "react";
 import type { ForeignKey } from "../types/tables";
 import { ParticipantDataContext } from "../context/ParticipantContext";
 import { Bounce, toast } from "react-toastify";
-import { createParticipant } from "../api/participants";
+import { createParticipant, deleteParticipant } from "../api/participants";
 import { useNavigate } from "react-router-dom";
 import { parseExamResult } from "../services/dataInput";
 
@@ -53,6 +63,7 @@ export default function ParticipantDetails({
 
   const [changedInputs, setChangedInputs] =
     useState<ChangedInputs>(defaultInputStates);
+  const [deleteDialogIsOpen, setDeleteDialogIsOpen] = useState<boolean>(false);
 
   const handleChangeParticipantData = (
     inputName: keyof Omit<ParticipantData, "exams">,
@@ -173,138 +184,193 @@ export default function ParticipantDetails({
     setChangedInputs(defaultInputStates);
   };
 
+  const handleDeleteParticipant = () => {
+    const fetchDeleteParticipant = async () => {
+      await deleteParticipant(participantContext.participantDetails.id);
+      navigate("/participants");
+    };
+
+    fetchDeleteParticipant();
+  };
+
   return (
-    <Paper
-      elevation={2}
-      sx={{
-        backgroundColor: "#D9D9D9",
-        borderRadius: 3,
-        p: { xs: 1.5, md: 2 },
-        flexShrink: 0,
-      }}
-    >
-      <Typography variant="h6" component="h2" sx={{ mb: 1.5, fontWeight: 700 }}>
-        Основная информация
-      </Typography>
-      <Box
+    <>
+      <Dialog
+        open={deleteDialogIsOpen}
+        onClose={() => setDeleteDialogIsOpen(false)}
+      >
+        <DialogTitle>Вы уверены?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Вы уверены, что хотите удалить участника{" "}
+            {participantContext.participantDetails.id}?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteDialogIsOpen(false)} autoFocus>
+            Закрыть
+          </Button>
+          <Button
+            onClick={() => {
+              handleDeleteParticipant();
+              setDeleteDialogIsOpen(false);
+            }}
+          >
+            Да
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Paper
+        elevation={2}
         sx={{
           backgroundColor: "#D9D9D9",
-          display: "grid",
-          gridTemplateColumns: { xs: "1fr", sm: "repeat(2, minmax(0, 1fr))" },
-          gap: 1,
+          borderRadius: 3,
+          p: { xs: 1.5, md: 2 },
+          flexShrink: 0,
         }}
       >
-        <DetailElement
-          name="ID"
-          data={participantContext.participantDetails.id}
-          inputType="number"
-          inputState={changedInputs.id}
-          disabled
-          onChange={(newValue) => {
-            handleChangeParticipantData("id", newValue);
-          }}
-        />
-        <DetailElement
-          name="Национальность*"
-          inputType={nationVariants}
-          inputState={changedInputs.nation}
-          data={participantContext.participantDetails.nation}
-          onChange={(newValue) => {
-            handleChangeParticipantData("nation", newValue);
-          }}
-        />
-        <DetailElement
-          name="Фамилия*"
-          data={participantContext.participantDetails.surname}
-          inputType="string"
-          inputState={changedInputs.surname}
-          onChange={(newValue) => {
-            handleChangeParticipantData("surname", newValue);
-          }}
-        />
-        <DetailElement
-          name="Школа обучения"
-          data={participantContext.participantDetails.school}
-          inputType={schoolVariants}
-          inputState={changedInputs.school}
-          onChange={(newValue) => {
-            handleChangeParticipantData("school", newValue);
-          }}
-        />
-        <DetailElement
-          name="Имя*"
-          data={participantContext.participantDetails.name}
-          inputType="string"
-          inputState={changedInputs.name}
-          onChange={(newValue) => {
-            handleChangeParticipantData("name", newValue);
-          }}
-        />
-        <DetailElement
-          name="Дата следующего экзамена"
-          data={participantContext.participantDetails.nextExamDate}
-          inputType="date"
-          inputState={changedInputs.nextExamDate}
-          onChange={(newValue) => {
-            handleChangeParticipantData("nextExamDate", newValue);
-          }}
-        />
-        <DetailElement
-          name="Отчество"
-          data={participantContext.participantDetails.patronymic}
-          inputType="string"
-          inputState={changedInputs.patronymic}
-          onChange={(newValue) => {
-            handleChangeParticipantData("patronymic", newValue);
-          }}
-        />
-        <DetailElement
-          name="Комментарий"
-          data={participantContext.participantDetails.schoolComment}
-          inputType="string"
-          inputState={changedInputs.schoolComment}
-          onChange={(newValue) => {
-            handleChangeParticipantData("schoolComment", newValue);
-          }}
-        />
-        <DetailElement
-          name="Дата рождения*"
-          data={participantContext.participantDetails.birthDate}
-          inputType="date"
-          inputState={changedInputs.birthDate}
-          onChange={(newValue) => {
-            handleChangeParticipantData("birthDate", newValue);
-          }}
-        />
-        <DetailElement
-          name="Примечание РЦОИ"
-          data={participantContext.participantDetails.rcoiNote}
-          inputType="string"
-          inputState={changedInputs.rcoiNote}
-          onChange={(newValue) => {
-            handleChangeParticipantData("rcoiNote", newValue);
-          }}
-        />
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "flex-end",
-          mt: 1.5,
-        }}
-      >
-        <Button
-          variant="contained"
-          onClick={handleSaveParticipant}
+        <Typography
+          variant="h6"
+          component="h2"
+          sx={{ mb: 1.5, fontWeight: 700 }}
+        >
+          Основная информация
+        </Typography>
+        <Box
           sx={{
-            minWidth: 120,
-            borderRadius: 2,
-            textTransform: "none",
+            backgroundColor: "#D9D9D9",
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", sm: "repeat(2, minmax(0, 1fr))" },
+            gap: 1,
           }}
         >
-          {participantContext.isCreating ? "Создать" : "Сохранить"}
-        </Button>
-      </Box>
-    </Paper>
+          <DetailElement
+            name="ID"
+            data={participantContext.participantDetails.id}
+            inputType="number"
+            inputState={changedInputs.id}
+            disabled
+            onChange={(newValue) => {
+              handleChangeParticipantData("id", newValue);
+            }}
+          />
+          <DetailElement
+            name="Национальность*"
+            inputType={nationVariants}
+            inputState={changedInputs.nation}
+            data={participantContext.participantDetails.nation}
+            onChange={(newValue) => {
+              handleChangeParticipantData("nation", newValue);
+            }}
+          />
+          <DetailElement
+            name="Фамилия*"
+            data={participantContext.participantDetails.surname}
+            inputType="string"
+            inputState={changedInputs.surname}
+            onChange={(newValue) => {
+              handleChangeParticipantData("surname", newValue);
+            }}
+          />
+          <DetailElement
+            name="Школа обучения"
+            data={participantContext.participantDetails.school}
+            inputType={schoolVariants}
+            inputState={changedInputs.school}
+            onChange={(newValue) => {
+              handleChangeParticipantData("school", newValue);
+            }}
+          />
+          <DetailElement
+            name="Имя*"
+            data={participantContext.participantDetails.name}
+            inputType="string"
+            inputState={changedInputs.name}
+            onChange={(newValue) => {
+              handleChangeParticipantData("name", newValue);
+            }}
+          />
+          <DetailElement
+            name="Дата следующего экзамена"
+            data={participantContext.participantDetails.nextExamDate}
+            inputType="date"
+            inputState={changedInputs.nextExamDate}
+            onChange={(newValue) => {
+              handleChangeParticipantData("nextExamDate", newValue);
+            }}
+          />
+          <DetailElement
+            name="Отчество"
+            data={participantContext.participantDetails.patronymic}
+            inputType="string"
+            inputState={changedInputs.patronymic}
+            onChange={(newValue) => {
+              handleChangeParticipantData("patronymic", newValue);
+            }}
+          />
+          <DetailElement
+            name="Комментарий"
+            data={participantContext.participantDetails.schoolComment}
+            inputType="string"
+            inputState={changedInputs.schoolComment}
+            onChange={(newValue) => {
+              handleChangeParticipantData("schoolComment", newValue);
+            }}
+          />
+          <DetailElement
+            name="Дата рождения*"
+            data={participantContext.participantDetails.birthDate}
+            inputType="date"
+            inputState={changedInputs.birthDate}
+            onChange={(newValue) => {
+              handleChangeParticipantData("birthDate", newValue);
+            }}
+          />
+          <DetailElement
+            name="Примечание РЦОИ"
+            data={participantContext.participantDetails.rcoiNote}
+            inputType="string"
+            inputState={changedInputs.rcoiNote}
+            onChange={(newValue) => {
+              handleChangeParticipantData("rcoiNote", newValue);
+            }}
+          />
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            mt: 1.5,
+          }}
+        >
+          <Button
+            variant="contained"
+            onClick={handleSaveParticipant}
+            sx={{
+              minWidth: 120,
+              borderRadius: 2,
+              textTransform: "none",
+            }}
+          >
+            {participantContext.isCreating ? "Создать" : "Сохранить"}
+          </Button>
+          {participantContext.isCreating || (
+            <Button
+              variant="contained"
+              onClick={() => setDeleteDialogIsOpen(true)}
+              color="error"
+              sx={{
+                minWidth: 120,
+                borderRadius: 2,
+                textTransform: "none",
+                ml: 0.5,
+              }}
+            >
+              Удалить
+            </Button>
+          )}
+        </Box>
+      </Paper>
+    </>
   );
 }

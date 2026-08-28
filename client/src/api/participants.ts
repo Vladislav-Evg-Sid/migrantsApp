@@ -120,3 +120,24 @@ export async function createParticipantExam(exam: CreateTestResultInput) {
     transition: Bounce,
   });
 }
+
+export async function deleteParticipant(id: number) {
+  const response = await fetch(`${baseApi}/participants/${id}`, {
+    method: "DELETE",
+  });
+  if (!response.ok) {
+    toast.error("Не удалось удалить участника", {
+      position: "top-right",
+      autoClose: 5000,
+      theme: "light",
+      transition: Bounce,
+    });
+    throw new Error(`${response.status}`);
+  }
+  toast.success("Участник удален", {
+    position: "top-right",
+    autoClose: 5000,
+    theme: "light",
+    transition: Bounce,
+  });
+}
