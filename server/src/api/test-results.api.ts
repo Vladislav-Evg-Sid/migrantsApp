@@ -3,6 +3,8 @@ import { Router } from "express";
 import {
   createTestResult,
   deleteTestResult,
+  getOtherParticipantsByPptAndTestDate,
+  getParticipantsByPptAndTestDate,
   getPptsByTestDateId,
   getTestResultHead,
   updateTestResult,
@@ -31,6 +33,68 @@ testResultsRouter.get("/test-results/dates/:testDateId/ppts", async (request, re
 
   response.json(ppts);
 });
+
+testResultsRouter.get(
+  "/test-results/dates/:testDateId/ppts/:pptCode/participants",
+  async (request, response) => {
+    const testDateId = Number(request.params.testDateId);
+    const pptCode = Number(request.params.pptCode);
+    if (
+      !Number.isSafeInteger(testDateId) ||
+      testDateId <= 0 ||
+      !Number.isSafeInteger(pptCode) ||
+      pptCode <= 0
+    ) {
+      response.status(400).json({
+        error: "INVALID_TEST_DATE_OR_PPT_CODE",
+        message: "Некорректный ID даты экзамена или код ППТ",
+      });
+      return;
+    }
+
+    const participants = await getParticipantsByPptAndTestDate(pptCode, testDateId);
+    if (!participants) {
+      response.status(404).json({
+        error: "TEST_DATE_OR_PPT_NOT_FOUND",
+        message: "Дата экзамена или ППТ не найдены",
+      });
+      return;
+    }
+
+    response.json(participants);
+  },
+);
+
+testResultsRouter.get(
+  "/test-results/dates/:testDateId/ppts/:pptCode/other-participants",
+  async (request, response) => {
+    const testDateId = Number(request.params.testDateId);
+    const pptCode = Number(request.params.pptCode);
+    if (
+      !Number.isSafeInteger(testDateId) ||
+      testDateId <= 0 ||
+      !Number.isSafeInteger(pptCode) ||
+      pptCode <= 0
+    ) {
+      response.status(400).json({
+        error: "INVALID_TEST_DATE_OR_PPT_CODE",
+        message: "Некорректный ID даты экзамена или код ППТ",
+      });
+      return;
+    }
+
+    const participants = await getOtherParticipantsByPptAndTestDate(pptCode, testDateId);
+    if (!participants) {
+      response.status(404).json({
+        error: "TEST_DATE_OR_PPT_NOT_FOUND",
+        message: "Дата экзамена или ППТ не найдены",
+      });
+      return;
+    }
+
+    response.json(participants);
+  },
+);
 
 testResultsRouter.get("/test-results/head", async (_request, response) => {
   response.json(await getTestResultHead());

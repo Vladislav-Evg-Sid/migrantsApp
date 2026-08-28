@@ -251,6 +251,64 @@ export const openApiDocument = {
         },
       },
     },
+    "/test-results/dates/{testDateId}/ppts/{pptCode}/participants": {
+      get: {
+        tags: ["Результаты"],
+        summary: "Получить участников экзамена по дате и ППТ",
+        description: "Возвращает участников, у которых есть экзамен в выбранную дату в выбранном ППТ. Формат ответа совпадает с GET /participants.",
+        parameters: [
+          {
+            name: "testDateId",
+            in: "path",
+            required: true,
+            description: "ID даты из справочника test_dates",
+            schema: { type: "integer", minimum: 1 },
+          },
+          {
+            name: "pptCode",
+            in: "path",
+            required: true,
+            description: "Код ППТ из справочника ppts",
+            schema: { type: "integer", minimum: 1 },
+          },
+        ],
+        responses: {
+          200: tableDataResponse,
+          400: { description: "Некорректный ID даты или код ППТ", content: jsonContent(schemaRef("ErrorResponse")) },
+          404: { description: "Дата экзамена или ППТ не найдены", content: jsonContent(schemaRef("ErrorResponse")) },
+          500: { description: "Внутренняя ошибка", content: jsonContent(schemaRef("ErrorResponse")) },
+        },
+      },
+    },
+    "/test-results/dates/{testDateId}/ppts/{pptCode}/other-participants": {
+      get: {
+        tags: ["Результаты"],
+        summary: "Получить остальных участников по дате и ППТ",
+        description: "Возвращает всех участников, у которых нет экзамена в выбранную дату в выбранном ППТ. Формат ответа совпадает с GET /participants.",
+        parameters: [
+          {
+            name: "testDateId",
+            in: "path",
+            required: true,
+            description: "ID даты из справочника test_dates",
+            schema: { type: "integer", minimum: 1 },
+          },
+          {
+            name: "pptCode",
+            in: "path",
+            required: true,
+            description: "Код ППТ из справочника ppts",
+            schema: { type: "integer", minimum: 1 },
+          },
+        ],
+        responses: {
+          200: tableDataResponse,
+          400: { description: "Некорректный ID даты или код ППТ", content: jsonContent(schemaRef("ErrorResponse")) },
+          404: { description: "Дата экзамена или ППТ не найдены", content: jsonContent(schemaRef("ErrorResponse")) },
+          500: { description: "Внутренняя ошибка", content: jsonContent(schemaRef("ErrorResponse")) },
+        },
+      },
+    },
     "/test-results/{id}": {
       put: {
         tags: ["Результаты"],
