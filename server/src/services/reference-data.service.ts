@@ -41,6 +41,8 @@ import type {
   CreateSchoolInput,
   CreateTestAttemptInput,
   CreateTestDateInput,
+  ExamDateMonthEntry,
+  ExamDates,
   TableData,
   UpdateAreaInput,
   UpdateAreaResponsibleInput,
@@ -162,18 +164,33 @@ export async function getParticipantStatuses(): Promise<TableData> {
   };
 }
 
-export async function getTestDates(): Promise<TableData> {
+export async function getTestDates(): Promise<ExamDates> {
   const rows = await findAllTestDates();
+  const datesByYear = new Map<number, Map<number, { id: number; day: number }[]>>();
 
-  return {
-    head: [
-      { cell: "ID", type: "number" },
-      { cell: "День", type: "number" },
-      { cell: "Месяц", type: "number" },
-      { cell: "Год", type: "number" },
-    ],
-    body: rows.map((row) => ({ row: [row.id, row.day, row.month, row.year] })),
-  };
+  for (const row of rows) {
+    let months = datesByYear.get(row.year);
+    if (!months) {
+      months = new Map();
+      datesByYear.set(row.year, months);
+    }
+
+    let dates = months.get(row.month);
+    if (!dates) {
+      dates = [];
+      months.set(row.month, dates);
+    }
+
+    dates.push({ id: row.id, day: row.day });
+  }
+
+  return Array.from(datesByYear.entries(), ([year, months]) => [
+    year,
+    Array.from(
+      months.entries(),
+      ([month, dates]): ExamDateMonthEntry => [month, dates],
+    ),
+  ]);
 }
 
 export async function getTestAttempts(): Promise<TableData> {

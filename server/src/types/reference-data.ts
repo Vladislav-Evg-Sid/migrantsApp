@@ -24,6 +24,15 @@ export type TableData = {
   }[];
 };
 
+export type ExamDateId = {
+  id: number;
+  day: number;
+};
+
+export type ExamDateMonthEntry = [month: number, dates: ExamDateId[]];
+export type ExamDateYearEntry = [year: number, months: ExamDateMonthEntry[]];
+export type ExamDates = ExamDateYearEntry[];
+
 export type CreateAreaInput = {
   code: number;
   name: string;
