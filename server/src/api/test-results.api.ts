@@ -3,11 +3,34 @@ import { Router } from "express";
 import {
   createTestResult,
   deleteTestResult,
+  getPptsByTestDateId,
   getTestResultHead,
   updateTestResult,
 } from "../services/test-results.service.js";
 
 export const testResultsRouter = Router();
+
+testResultsRouter.get("/test-results/dates/:testDateId/ppts", async (request, response) => {
+  const testDateId = Number(request.params.testDateId);
+  if (!Number.isSafeInteger(testDateId) || testDateId <= 0) {
+    response.status(400).json({
+      error: "INVALID_TEST_DATE_ID",
+      message: "Некорректный ID даты экзамена",
+    });
+    return;
+  }
+
+  const ppts = await getPptsByTestDateId(testDateId);
+  if (!ppts) {
+    response.status(404).json({
+      error: "TEST_DATE_NOT_FOUND",
+      message: "Дата экзамена не найдена",
+    });
+    return;
+  }
+
+  response.json(ppts);
+});
 
 testResultsRouter.get("/test-results/head", async (_request, response) => {
   response.json(await getTestResultHead());

@@ -4,6 +4,41 @@ import type {
   CreateTestResultInput,
   UpdateTestResultInput,
 } from "../types/test-results.js";
+import type { TestResultPptRow } from "../types/repository/test-results.repository.types.js";
+
+export async function testDateExistsById(id: number): Promise<boolean> {
+  const result = await pool.query<{ exists: boolean }>(
+    "SELECT EXISTS(SELECT 1 FROM test_dates WHERE id = $1) AS exists",
+    [id],
+  );
+
+  return result.rows[0].exists;
+}
+
+export async function findAllPptsWithParticipantCountByTestDateId(
+  testDateId: number,
+): Promise<TestResultPptRow[]> {
+  const result = await pool.query<TestResultPptRow>(
+    `SELECT
+       ppt.code AS ppt_code,
+       school.name AS ppt_name,
+       area.code AS area_code,
+       area.name AS area_name,
+       school.code AS school_code,
+       COUNT(DISTINCT tr.participant_id)::INTEGER AS participant_count
+     FROM ppts ppt
+     JOIN schools school ON school.code = ppt.school_code
+     JOIN areas area ON area.code = school.area_code
+     LEFT JOIN test_results tr
+       ON tr.testing_center_ppt_code = ppt.code
+      AND tr.test_date_id = $1
+     GROUP BY ppt.code, school.name, area.code, area.name, school.code
+     ORDER BY ppt.code`,
+    [testDateId],
+  );
+
+  return result.rows;
+}
 
 export async function insertTestResult(input: CreateTestResultInput): Promise<void> {
   await pool.query(
