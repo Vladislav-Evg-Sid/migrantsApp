@@ -1,6 +1,8 @@
 import {
   deleteTestResultById,
   findAllPptsWithParticipantCountByTestDateId,
+  findOtherParticipantsByPptAndTestDate,
+  findParticipantsByPptAndTestDate,
   insertTestResult,
   testDateExistsById,
   updateTestResultById,
@@ -11,10 +13,12 @@ import {
 } from "../mappers/test-results.mapper.js";
 import {
   findAllAreas,
+  findAllNations,
   findAllParticipantStatuses,
   findAllPpts,
   findAllSchools,
   findAllTestDates,
+  pptExistsByCode,
 } from "../repositories/reference-data.repository.js";
 import type {
   ForeignKey,
@@ -26,6 +30,7 @@ import type {
   CreateTestResultInput,
   UpdateTestResultInput,
 } from "../types/test-results.js";
+import { mapParticipantsTable } from "../mappers/participants-table.mapper.js";
 
 function formatDate(day: number, month: number, year: number): string {
   return `${String(day).padStart(2, "0")}.${String(month).padStart(2, "0")}.${year}`;
@@ -71,6 +76,39 @@ export async function getPptsByTestDateId(
       ],
     })),
   };
+}
+
+async function getParticipantsForPptAndTestDate(
+  pptCode: number,
+  testDateId: number,
+  includeParticipantsWhoTookExam: boolean,
+): Promise<TableData | null> {
+  const findRows = includeParticipantsWhoTookExam
+    ? findParticipantsByPptAndTestDate
+    : findOtherParticipantsByPptAndTestDate;
+  const [testDateExists, pptExists, rows, nations] = await Promise.all([
+    testDateExistsById(testDateId),
+    pptExistsByCode(pptCode),
+    findRows(pptCode, testDateId),
+    findAllNations(),
+  ]);
+
+  if (!testDateExists || !pptExists) return null;
+  return mapParticipantsTable(rows, nations);
+}
+
+export function getParticipantsByPptAndTestDate(
+  pptCode: number,
+  testDateId: number,
+): Promise<TableData | null> {
+  return getParticipantsForPptAndTestDate(pptCode, testDateId, true);
+}
+
+export function getOtherParticipantsByPptAndTestDate(
+  pptCode: number,
+  testDateId: number,
+): Promise<TableData | null> {
+  return getParticipantsForPptAndTestDate(pptCode, testDateId, false);
 }
 
 export async function getTestResultHead(): Promise<TableHeadCell[]> {

@@ -5,6 +5,7 @@ import type {
   UpdateTestResultInput,
 } from "../types/test-results.js";
 import type { TestResultPptRow } from "../types/repository/test-results.repository.types.js";
+import type { ParticipantListRow } from "../types/repository/participants.repository.types.js";
 
 export async function testDateExistsById(id: number): Promise<boolean> {
   const result = await pool.query<{ exists: boolean }>(
@@ -35,6 +36,64 @@ export async function findAllPptsWithParticipantCountByTestDateId(
      GROUP BY ppt.code, school.name, area.code, area.name, school.code
      ORDER BY ppt.code`,
     [testDateId],
+  );
+
+  return result.rows;
+}
+
+const participantTableColumns = `p.id,
+       p.surname,
+       p.name,
+       p.patronymic,
+       p.birth_day,
+       p.birth_month,
+       p.birth_year,
+       p.nation_id,
+       p.confirmed_school_code,
+       p.next_planned_date,
+       p.comment,
+       p.rcoi_note,
+       n.name AS nation_name`;
+
+export async function findParticipantsByPptAndTestDate(
+  pptCode: number,
+  testDateId: number,
+): Promise<ParticipantListRow[]> {
+  const result = await pool.query<ParticipantListRow>(
+    `SELECT ${participantTableColumns}
+     FROM participants p
+     JOIN nations n ON n.id = p.nation_id
+     WHERE EXISTS (
+       SELECT 1
+       FROM test_results tr
+       WHERE tr.participant_id = p.id
+         AND tr.testing_center_ppt_code = $1
+         AND tr.test_date_id = $2
+     )
+     ORDER BY p.id`,
+    [pptCode, testDateId],
+  );
+
+  return result.rows;
+}
+
+export async function findOtherParticipantsByPptAndTestDate(
+  pptCode: number,
+  testDateId: number,
+): Promise<ParticipantListRow[]> {
+  const result = await pool.query<ParticipantListRow>(
+    `SELECT ${participantTableColumns}
+     FROM participants p
+     JOIN nations n ON n.id = p.nation_id
+     WHERE NOT EXISTS (
+       SELECT 1
+       FROM test_results tr
+       WHERE tr.participant_id = p.id
+         AND tr.testing_center_ppt_code = $1
+         AND tr.test_date_id = $2
+     )
+     ORDER BY p.id`,
+    [pptCode, testDateId],
   );
 
   return result.rows;

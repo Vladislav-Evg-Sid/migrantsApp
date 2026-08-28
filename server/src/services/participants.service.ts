@@ -23,6 +23,7 @@ import {
   isTestResultCode,
   testResultCodeFromValue,
 } from "../mappers/test-results.mapper.js";
+import { mapParticipantsTable } from "../mappers/participants-table.mapper.js";
 import { getTestResultHead } from "./test-results.service.js";
 
 function formatDate(day: number, month: number, year: number): string {
@@ -114,26 +115,7 @@ export async function getParticipants(): Promise<TableData> {
     findAllNations(),
   ]);
 
-  return {
-    head: [
-      { type: "number", cell: "ID" },
-      { type: "string", cell: "Фамилия" },
-      { type: "string", cell: "Имя" },
-      { type: "string", cell: "Отчество" },
-      { type: "date", cell: "Дата рождения" },
-      { type: nations.map((nation) => foreignKey(nation.id, nation.name)), cell: "Национальность" },
-    ],
-    body: rows.map((row) => ({
-      row: [
-        Number(row.id),
-        row.surname,
-        row.name,
-        row.patronymic,
-        formatDate(row.birth_day, row.birth_month, row.birth_year),
-        foreignKey(row.nation_id, row.nation_name),
-      ],
-    })),
-  };
+  return mapParticipantsTable(rows, nations);
 }
 
 export async function getParticipantExams(id: number): Promise<TableData | null> {
