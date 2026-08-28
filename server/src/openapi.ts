@@ -19,6 +19,8 @@ type CrudOptions = {
   idDescription: string;
   createSchema: string;
   updateSchema: string;
+  getResponseSchema?: string;
+  getResponseDescription?: string;
 };
 
 function referenceCrudPaths(options: CrudOptions) {
@@ -29,6 +31,12 @@ function referenceCrudPaths(options: CrudOptions) {
     description: options.idDescription,
     schema: { type: "integer", format: "int64" },
   };
+  const getResponse = options.getResponseSchema
+    ? {
+        description: options.getResponseDescription ?? `Справочник «${options.title}»`,
+        content: jsonContent(schemaRef(options.getResponseSchema)),
+      }
+    : tableDataResponse;
 
   return {
     [`/${options.path}`]: {
@@ -36,7 +44,7 @@ function referenceCrudPaths(options: CrudOptions) {
         tags: [options.tag],
         summary: `Получить справочник «${options.title}»`,
         responses: {
-          200: tableDataResponse,
+          200: getResponse,
           500: { description: "Внутренняя ошибка", content: jsonContent(schemaRef("InternalErrorResponse")) },
         },
       },
@@ -286,7 +294,17 @@ export const openApiDocument = {
     ...referenceCrudPaths({ path: "area-responsibles", tag: "Справочники", title: "Ответственные по МО", idName: "id", idDescription: "ID ответственного", createSchema: "CreateAreaResponsible", updateSchema: "UpdateAreaResponsible" }),
     ...referenceCrudPaths({ path: "nations", tag: "Справочники", title: "Национальности", idName: "id", idDescription: "ID национальности", createSchema: "CreateName", updateSchema: "CreateName" }),
     ...referenceCrudPaths({ path: "participant-statuses", tag: "Справочники", title: "Статусы участников", idName: "id", idDescription: "ID статуса", createSchema: "CreateName", updateSchema: "CreateName" }),
-    ...referenceCrudPaths({ path: "test-dates", tag: "Справочники", title: "Даты тестирования", idName: "id", idDescription: "ID даты", createSchema: "CreateTestDate", updateSchema: "CreateTestDate" }),
+    ...referenceCrudPaths({
+      path: "test-dates",
+      tag: "Справочники",
+      title: "Даты тестирования",
+      idName: "id",
+      idDescription: "ID даты",
+      createSchema: "CreateTestDate",
+      updateSchema: "CreateTestDate",
+      getResponseSchema: "ExamDates",
+      getResponseDescription: "Даты экзаменов, сгруппированные по году и месяцу",
+    }),
     ...referenceCrudPaths({ path: "test-attempts", tag: "Справочники", title: "Кратность участия", idName: "number", idDescription: "Номер попытки", createSchema: "CreateTestAttempt", updateSchema: "UpdateTestAttempt" }),
   },
   components: {
@@ -343,6 +361,41 @@ export const openApiDocument = {
             },
           },
         },
+      },
+      ExamDateId: {
+        type: "object",
+        required: ["id", "day"],
+        properties: {
+          id: { type: "integer", minimum: 1 },
+          day: { type: "integer", minimum: 1, maximum: 31 },
+        },
+      },
+      ExamDates: {
+        type: "array",
+        description: "Массив пар [год, месяцы], где месяцы — массив пар [номер месяца, DateId[]]. После JSON-декодирования преобразуется в Map<number, Map<Month, DateId[]>>.",
+        items: {
+          type: "array",
+          minItems: 2,
+          maxItems: 2,
+          items: {
+            oneOf: [
+              { type: "integer", description: "Год" },
+              {
+                type: "array",
+                description: "Массив пар [месяц, DateId[]]",
+                items: {
+                  type: "array",
+                  minItems: 2,
+                  maxItems: 2,
+                },
+              },
+            ],
+          },
+        },
+        example: [
+          [2025, [[4, [{ id: 1, day: 24 }, { id: 2, day: 30 }]]]],
+          [2026, [[1, [{ id: 17, day: 14 }]]]],
+        ],
       },
       ParticipantData: {
         type: "object",
