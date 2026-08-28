@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import { Box } from "@mui/material";
 import "./App.css";
 
-import SideBar from "./components/SideBar";
+import SideBar from "./components/sideBar";
 import ReferencesPage from "./pages/ReferencesPage";
 import ReportsPage from "./pages/ReportsPage";
 import ExamDatePage from "./pages/ExamDatesPage";

@@ -13,6 +13,7 @@ const port = Number(process.env.PORT ?? 3000);
 
 app.use(cors({ origin: process.env.CLIENT_ORIGIN }));
 app.use(express.json());
+app.get("/health", (_request, response) => response.status(200).json({ status: "ok" }));
 app.get("/openapi.json", (_request, response) => response.json(openApiDocument));
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(openApiDocument, {
   customSiteTitle: "Migrants App API — Swagger",
