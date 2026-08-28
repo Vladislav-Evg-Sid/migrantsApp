@@ -13,7 +13,7 @@ export enum Month {
   Декабрь,
 }
 
-interface DateId {
+export interface DateId {
   id: number;
   day: number;
 }

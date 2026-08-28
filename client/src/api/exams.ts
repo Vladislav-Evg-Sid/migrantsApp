@@ -1,8 +1,10 @@
 import { Bounce, toast } from "react-toastify";
 import { baseApi } from "../env";
-import { type ExamDate, type Month } from "../types/exams";
+import { type DateId, type ExamDate, type Month } from "../types/exams";
 import type { TableCellData } from "../types/tables";
 import type { UpdateTestResultInput } from "../types/dto";
+
+type ExamDataResponse = [number, [Month, DateId[]][]];
 
 export async function getExamDates(): Promise<ExamDate> {
   const response = await fetch(`${baseApi}/test-dates`);
@@ -15,189 +17,10 @@ export async function getExamDates(): Promise<ExamDate> {
     });
     throw new Error(`${response.status}`);
   }
-  const data = await response.json();
+  const data: ExamDataResponse[] = await response.json();
   console.log(data);
 
-  return new Map([
-    [
-      2025,
-      new Map([
-        [
-          1,
-          [
-            { id: 1, day: 14 },
-            { id: 2, day: 16 },
-          ],
-        ],
-        [
-          2,
-          [
-            { id: 1, day: 14 },
-            { id: 2, day: 16 },
-          ],
-        ],
-        [
-          3,
-          [
-            { id: 1, day: 14 },
-            { id: 2, day: 16 },
-          ],
-        ],
-        [
-          4,
-          [
-            { id: 1, day: 14 },
-            { id: 2, day: 16 },
-          ],
-        ],
-        [
-          5,
-          [
-            { id: 1, day: 14 },
-            { id: 2, day: 16 },
-          ],
-        ],
-        [
-          6,
-          [
-            { id: 1, day: 14 },
-            { id: 2, day: 16 },
-          ],
-        ],
-        [
-          7,
-          [
-            { id: 1, day: 14 },
-            { id: 2, day: 16 },
-          ],
-        ],
-        [
-          8,
-          [
-            { id: 1, day: 14 },
-            { id: 2, day: 16 },
-          ],
-        ],
-        [
-          9,
-          [
-            { id: 1, day: 14 },
-            { id: 2, day: 16 },
-          ],
-        ],
-        [
-          10,
-          [
-            { id: 1, day: 14 },
-            { id: 2, day: 16 },
-          ],
-        ],
-        [
-          11,
-          [
-            { id: 1, day: 14 },
-            { id: 2, day: 16 },
-          ],
-        ],
-        [
-          12,
-          [
-            { id: 1, day: 14 },
-            { id: 2, day: 16 },
-          ],
-        ],
-      ]),
-    ],
-    [
-      2026,
-      new Map([
-        [
-          1,
-          [
-            { id: 1, day: 14 },
-            { id: 2, day: 16 },
-          ],
-        ],
-        [
-          2,
-          [
-            { id: 1, day: 14 },
-            { id: 2, day: 16 },
-          ],
-        ],
-        [
-          3,
-          [
-            { id: 1, day: 14 },
-            { id: 2, day: 16 },
-          ],
-        ],
-        [
-          4,
-          [
-            { id: 1, day: 14 },
-            { id: 2, day: 16 },
-          ],
-        ],
-        [
-          5,
-          [
-            { id: 1, day: 14 },
-            { id: 2, day: 16 },
-          ],
-        ],
-        [
-          6,
-          [
-            { id: 1, day: 14 },
-            { id: 2, day: 16 },
-          ],
-        ],
-        [
-          7,
-          [
-            { id: 1, day: 14 },
-            { id: 2, day: 16 },
-          ],
-        ],
-        [
-          8,
-          [
-            { id: 1, day: 14 },
-            { id: 2, day: 16 },
-          ],
-        ],
-        [
-          9,
-          [
-            { id: 1, day: 14 },
-            { id: 2, day: 16 },
-          ],
-        ],
-        [
-          10,
-          [
-            { id: 1, day: 14 },
-            { id: 2, day: 16 },
-          ],
-        ],
-        [
-          11,
-          [
-            { id: 1, day: 14 },
-            { id: 2, day: 16 },
-          ],
-        ],
-        [
-          12,
-          [
-            { id: 1, day: 14 },
-            { id: 2, day: 16 },
-          ],
-        ],
-      ]),
-    ],
-  ]);
+  return new Map(data.map(([year, month]) => [year, new Map(month)]));
 }
 
 export async function deleteExam(id: TableCellData) {
