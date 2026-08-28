@@ -1,6 +1,8 @@
 import {
   deleteTestResultById,
+  findAllPptsWithParticipantCountByTestDateId,
   insertTestResult,
+  testDateExistsById,
   updateTestResultById,
 } from "../repositories/test-results.repository.js";
 import {
@@ -8,12 +10,18 @@ import {
   TEST_RESULT_SELECT_OPTIONS,
 } from "../mappers/test-results.mapper.js";
 import {
+  findAllAreas,
   findAllParticipantStatuses,
   findAllPpts,
   findAllSchools,
   findAllTestDates,
 } from "../repositories/reference-data.repository.js";
-import type { SelectOption, TableHeadCell } from "../types/reference-data.js";
+import type {
+  ForeignKey,
+  SelectOption,
+  TableData,
+  TableHeadCell,
+} from "../types/reference-data.js";
 import type {
   CreateTestResultInput,
   UpdateTestResultInput,
@@ -25,6 +33,44 @@ function formatDate(day: number, month: number, year: number): string {
 
 function nullableOptions(options: SelectOption[]): SelectOption[] {
   return [...options, { code: null, name: "Не указано" }];
+}
+
+function foreignKey(code: number, name: string): ForeignKey {
+  return { code, name };
+}
+
+export async function getPptsByTestDateId(
+  testDateId: number,
+): Promise<TableData | null> {
+  const [testDateExists, rows, areas] = await Promise.all([
+    testDateExistsById(testDateId),
+    findAllPptsWithParticipantCountByTestDateId(testDateId),
+    findAllAreas(),
+  ]);
+
+  if (!testDateExists) return null;
+
+  return {
+    head: [
+      { cell: "Код ППТ", type: "number" },
+      { cell: "Название школы", type: "string" },
+      {
+        cell: "Округ школы",
+        type: areas.map((area) => foreignKey(area.code, area.name)),
+      },
+      { cell: "Код школы", type: "number" },
+      { cell: "Количество участников", type: "number" },
+    ],
+    body: rows.map((row) => ({
+      row: [
+        row.ppt_code,
+        row.ppt_name,
+        foreignKey(row.area_code, row.area_name),
+        row.school_code,
+        row.participant_count,
+      ],
+    })),
+  };
 }
 
 export async function getTestResultHead(): Promise<TableHeadCell[]> {

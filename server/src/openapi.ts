@@ -231,6 +231,26 @@ export const openApiDocument = {
         },
       },
     },
+    "/test-results/dates/{testDateId}/ppts": {
+      get: {
+        tags: ["Результаты"],
+        summary: "Получить все ППТ с количеством участников на выбранную дату",
+        description: "Возвращает весь справочник ППТ в формате TableData. Для каждого ППТ указывает количество участников в выбранную дату; если экзаменов не было, возвращает 0.",
+        parameters: [{
+          name: "testDateId",
+          in: "path",
+          required: true,
+          description: "ID даты из справочника test_dates",
+          schema: { type: "integer", minimum: 1 },
+        }],
+        responses: {
+          200: tableDataResponse,
+          400: { description: "Некорректный ID даты", content: jsonContent(schemaRef("ErrorResponse")) },
+          404: { description: "Дата экзамена не найдена", content: jsonContent(schemaRef("ErrorResponse")) },
+          500: { description: "Внутренняя ошибка", content: jsonContent(schemaRef("ErrorResponse")) },
+        },
+      },
+    },
     "/test-results/{id}": {
       put: {
         tags: ["Результаты"],
