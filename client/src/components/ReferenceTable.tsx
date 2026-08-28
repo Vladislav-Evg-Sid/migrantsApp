@@ -21,7 +21,7 @@ interface ReferencesTableProps {
   height?: string;
 }
 
-function handleTableName(name: RefTables): string {
+function handleTableName(name: RefTables): string | undefined {
   switch (name) {
     case "areas":
       return "Округа";

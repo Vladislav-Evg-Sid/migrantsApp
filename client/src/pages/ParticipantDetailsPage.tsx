@@ -133,7 +133,7 @@ export default function ParticipantDetailsPage() {
         }}
       >
         <Button
-          onClick={() => navigate("/participants")}
+          onClick={() => navigate(-1)}
           variant="contained"
           startIcon={<ArrowBack />}
           sx={{ borderRadius: 2, textTransform: "none" }}

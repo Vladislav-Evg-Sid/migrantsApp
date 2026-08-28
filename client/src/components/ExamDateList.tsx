@@ -105,7 +105,7 @@ export default function ExamDateList() {
                               <Button
                                 key={day.id}
                                 variant="outlined"
-                                onClick={() => navigate(`/exam-ppts/${day.id}`)}
+                                onClick={() => navigate(`/exams/${day.id}`)}
                                 sx={{
                                   minWidth: 0,
                                   py: 1.25,
