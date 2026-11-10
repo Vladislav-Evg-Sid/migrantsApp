@@ -20,6 +20,7 @@ COPY package.json package-lock.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 COPY --from=build /app/dist ./dist
 COPY reports ./reports
+COPY imports ./imports
 
 USER node
 EXPOSE 3000

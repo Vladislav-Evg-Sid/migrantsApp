@@ -8,6 +8,7 @@ import { referenceDataRouter } from "./api/reference-data.api.js";
 import { testResultsRouter } from "./api/test-results.api.js";
 import { openApiDocument } from "./openapi.js";
 import { reportsRouter } from "./api/reports.api.js";
+import { importsRouter } from "./api/imports.api.js";
 
 const app = express();
 const port = Number(process.env.PORT ?? 3000);
@@ -24,6 +25,7 @@ app.use("/api", referenceDataRouter);
 app.use("/api", participantsRouter);
 app.use("/api", testResultsRouter);
 app.use("/api", reportsRouter);
+app.use("/api", importsRouter);
 
 function hasErrorCode(error: unknown, code: string): boolean {
   return (

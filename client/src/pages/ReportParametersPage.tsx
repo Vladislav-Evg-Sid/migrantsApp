@@ -72,23 +72,15 @@ export default function ReportParametersPage() {
       <Paper sx={{ p: { xs: 2, md: 3 }, borderRadius: 3, backgroundColor: "#F3F3F3" }}>
         {loading ? <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}><CircularProgress size={24} /><Typography>Загрузка дат тестирования…</Typography></Stack> : (
           <Stack spacing={3}>
-            {!dates.length && !error && <Alert severity="info">В базе пока нет записей тестирований.</Alert>}
+            {!dates.length && !error && <Alert severity="info">Пока нет данных о тестированиях.</Alert>}
             <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
               <TextField label="Начало периода" type="date" value={startDate} onChange={event => { setStartDate(event.target.value); setSuccess(false); }} slotProps={{ inputLabel: { shrink: true } }} disabled={building || !dates.length} fullWidth />
               <TextField label="Конец периода" type="date" value={endDate} onChange={event => { setEndDate(event.target.value); setSuccess(false); }} slotProps={{ inputLabel: { shrink: true } }} disabled={building || !dates.length} fullWidth />
             </Stack>
             {startDate && endDate && !periodValid && <Alert severity="warning">Начало периода должно быть не позже конца.</Alert>}
-            <Box>
-              <FormControlLabel control={<Switch checked={recalculate} disabled={building} onChange={event => { setRecalculate(event.target.checked); setSuccess(false); }} />} label="Пересчитать кратность тестирования" />
-              <Typography variant="body2" color="text.secondary">
-                {reportKind === "summary"
-                  ? "При включении скачается ZIP с двумя Excel-таблицами: исходной и с пересчитанной кратностью. В пересчитанной таблице учитываются только завершённые тестирования за выбранный период."
-                  : "Кратность будет назначена заново по каждому участнику внутри периода. Неявки и записи без результата исключаются. Данные в базе не изменяются."}
-              </Typography>
-            </Box>
+            <FormControlLabel control={<Switch checked={recalculate} disabled={building} onChange={event => { setRecalculate(event.target.checked); setSuccess(false); }} />} label="Пересчитать кратность тестирования" />
             {reportKind === "statistics" && periodValid && <Box>
               <Typography variant="subtitle1">Даты построения таблиц</Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>Для каждой даты будут созданы отдельные листы. Накопительные показатели учитывают записи с начала периода по контрольную дату включительно.</Typography>
               <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
                 <Button size="small" disabled={building} onClick={() => setSelectedDates(null)}>Выбрать все</Button>
                 <Button size="small" disabled={building} onClick={() => setSelectedDates([])}>Снять выбор</Button>
@@ -98,11 +90,9 @@ export default function ReportParametersPage() {
                 {!available.length && <Typography variant="body2">Нет доступных дат в выбранном периоде.</Typography>}
               </Box>
             </Box>}
-            {reportKind === "analytical" && <Typography variant="body2" color="text.secondary">Справка строится за весь выбранный период. Ближайшее следующее тестирование для раздела 5 определяется по данным базы после конца периода.</Typography>}
-            {reportKind === "summary" && <Typography variant="body2" color="text.secondary">Одна строка на каждое тестирование. Сохраняются 24 столбца исходной таблицы, включая название школы. Оба столбца ID содержат текущий ID участника.</Typography>}
-            {periodValid && <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap" }}><Chip label={`Записей в периоде: ${total}`} />{reportKind === "statistics" && <Chip label={`Выбрано дат: ${chosen.length}`} />}</Stack>}
+            {reportKind === "statistics" && periodValid && <Chip label={`Выбрано дат: ${chosen.length}`} sx={{ alignSelf: "flex-start" }} />}
             {error && <Alert severity="error" action={!dates.length ? <Button onClick={() => { setError(""); setLoading(true); setReload(value => value + 1); }}>Повторить</Button> : undefined}>{error}</Alert>}
-            {success && <Alert severity="success">Отчёт сформирован и передан браузеру для скачивания.</Alert>}
+            {success && <Alert severity="success">Отчёт готов. Скачивание началось.</Alert>}
             <Button variant="contained" color="success" startIcon={building ? <CircularProgress size={18} color="inherit" /> : <Download />} disabled={loading || building || !periodValid || !total || (reportKind === "statistics" && !chosen.length)} onClick={() => void build()} sx={{ textTransform: "none", alignSelf: "flex-start" }}>
               {building ? "Формирование отчёта…" : reportKind === "summary" && recalculate ? "Скачать две таблицы" : reportKind === "analytical" ? "Скачать Word" : "Скачать Excel"}
             </Button>
