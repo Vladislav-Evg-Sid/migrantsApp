@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { Box } from "@mui/material";
 import "./App.css";
 
@@ -11,8 +11,10 @@ import ResponsiblesPage from "./pages/ResponsiblesPage";
 import ParticipantDetailsPage from "./pages/ParticipantDetailsPage";
 import ExamPptsPage from "./pages/ExamPptsPage";
 import ExamParticipantsPage from "./pages/ExamParticipants";
+import ReportParametersPage from "./pages/ReportParametersPage";
 
 function App() {
+  const location = useLocation();
   return (
     <Box
       sx={{
@@ -31,6 +33,7 @@ function App() {
       <Box sx={{ flex: 1, minWidth: 0 }}>
         <Routes>
           <Route path="/" element={<ReportsPage />} />
+          <Route path="/reports/:kind" element={<ReportParametersPage key={location.pathname} />} />
           <Route path="/references" element={<ReferencesPage />} />
           <Route path="/exams" element={<ExamDatePage />} />
           <Route path="/participants" element={<ParticipantsPage />} />

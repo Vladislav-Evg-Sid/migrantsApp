@@ -4,3 +4,7 @@ dist/
 *.log
 *.dump
 *.tsbuildinfo
+__pycache__/
+.report-checks/
+.report-checks-*/
+.venv/
