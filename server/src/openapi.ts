@@ -1,3 +1,5 @@
+import { reportPaths } from "./reports.openapi.js";
+
 const jsonContent = (schema: object) => ({
   "application/json": { schema },
 });
@@ -105,11 +107,13 @@ export const openApiDocument = {
   },
   servers: [{ url: "/api", description: "Текущий backend" }],
   tags: [
+    { name: "Отчёты", description: "Справка Word, статистика ИГ и сводная Excel из БД" },
     { name: "Участники", description: "Общая таблица и карточка участника" },
     { name: "Результаты", description: "Результаты тестирования" },
     { name: "Справочники", description: "Получение и изменение справочных данных" },
   ],
   paths: {
+    ...reportPaths,
     "/participants": {
       get: {
         tags: ["Участники"],

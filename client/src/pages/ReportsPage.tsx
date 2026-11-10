@@ -12,8 +12,10 @@ import iconText from "../assets/icon_text.png";
 import iconTable from "../assets/icon_table.png";
 import { type ReportPreview } from "../types/reports";
 import { getReports } from "../api/reports";
+import { useNavigate } from "react-router-dom";
 
 export default function ReportsPage() {
+  const navigate = useNavigate();
   const [reports, setReports] = useState<ReportPreview[]>([]);
 
   useEffect(() => {
@@ -32,7 +34,7 @@ export default function ReportsPage() {
       {reports.map((report) => (
         <Card
           key={report.id}
-          onClick={() => alert("Переход к отчёту пока не осуществлён")}
+          onClick={() => navigate(`/reports/${report.slug}`)}
           sx={{ maxWidth: 300, m: "0.5%" }}
         >
           <CardActionArea>
