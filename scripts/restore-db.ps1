@@ -8,7 +8,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 $projectRoot = Split-Path -Parent $PSScriptRoot
-$containerBackupPath = "/tmp/migrants_db.dump"
+$containerBackupPath = "/tmp/migrants-restore-$([Guid]::NewGuid().ToString('N')).dump"
 
 function Invoke-DockerCompose {
     param([Parameter(Mandatory)][string[]]$Arguments)
@@ -59,7 +59,7 @@ try {
         "exec", "-T", "postgres",
         "pg_restore", "-U", "migrants", "-d", "migrants_db",
         "--clean", "--if-exists", "--no-owner", "--no-privileges",
-        "--exit-on-error", $containerBackupPath
+        "--exit-on-error", "--single-transaction", $containerBackupPath
     )
 
     Write-Host "Database restored from: $resolvedInputPath"

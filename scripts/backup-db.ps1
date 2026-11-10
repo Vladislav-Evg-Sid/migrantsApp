@@ -1,11 +1,11 @@
 [CmdletBinding()]
 param(
-    [string]$OutputPath = ("database\backups\migrants_db-{0}.dump" -f (Get-Date -Format "yyyyMMdd-HHmmss"))
+    [string]$OutputPath = ("database\backups\migrants_db-{0}.dump" -f (Get-Date -Format "yyyyMMdd-HHmmss-fff"))
 )
 
 $ErrorActionPreference = "Stop"
 $projectRoot = Split-Path -Parent $PSScriptRoot
-$containerBackupPath = "/tmp/migrants_db.dump"
+$containerBackupPath = "/tmp/migrants-backup-$([Guid]::NewGuid().ToString('N')).dump"
 
 function Invoke-DockerCompose {
     param([Parameter(Mandatory)][string[]]$Arguments)
@@ -54,6 +54,9 @@ try {
     )
 
     $backup = Get-Item -LiteralPath $resolvedOutputPath
+    if ($backup.Length -eq 0) {
+        throw "The database backup file is empty."
+    }
     Write-Host "Backup created: $($backup.FullName)"
     Write-Host "Size: $([Math]::Round($backup.Length / 1MB, 2)) MB"
 } finally {

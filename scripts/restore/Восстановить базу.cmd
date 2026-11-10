@@ -24,7 +24,7 @@ echo.
 echo Restoring database...
 echo.
 
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0..\restore-db.ps1" -InputPath "%BACKUP_FILE%" -Force
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0..\restore-customer-db.ps1" -InputPath "%BACKUP_FILE%"
 if errorlevel 1 (
     echo.
     echo ERROR: restore failed.

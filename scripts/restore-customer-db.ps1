@@ -13,6 +13,8 @@ try {
     Ensure-DockerEngine
 
     $resolvedInputPath = (Resolve-Path -LiteralPath $InputPath -ErrorAction Stop).Path
+    Write-Host "Creating a safety backup before restoring..."
+    & (Join-Path $PSScriptRoot "backup-db.ps1")
     Write-Host "Restoring the database from: $resolvedInputPath"
 
     Invoke-Compose -Arguments @("stop", "client", "server")
