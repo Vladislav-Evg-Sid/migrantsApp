@@ -17,7 +17,7 @@ class ReportRules(unittest.TestCase):
             exam_id="1", participant_id="7200010101", area="Тест",surname="Тест",name="Тест",patronymic=None,
             birth_date="2015-01-01",citizenship="Кыргызстан",multiplicity="третий",attempt=3,
             school_code=1,school_name="Школа",grade=1,ppt_code=1,special=False,test_date="2026-01-01",
-            result="Зачет",status="Сдал",next_planned_date=None,confirmed_school_code=None,
+            result="Зачет",status="Сдал",next_planned_date=None,confirmed_school_name="Школа после гражданства",
             comment="=1+1",rcoi_note=None,ppt_name="ППТ",appeal_date=None,appeal_granted=None,appeal_present=None,
         ),1)
 
@@ -50,6 +50,7 @@ class ReportRules(unittest.TestCase):
         w = openpyxl.load_workbook(io.BytesIO(summary_workbook([self.record])),data_only=False)
         self.assertEqual(w.active.cell(2,20).value,"=1+1")
         self.assertEqual(w.active.cell(2,20).data_type,"s")
+        self.assertEqual(w.active.cell(2,19).value,"Школа после гражданства")
         w.close()
 
 

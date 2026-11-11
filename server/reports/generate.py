@@ -51,7 +51,7 @@ def from_db(row: dict, index: int) -> PersonRecord:
         row["surname"], row["name"], row["patronymic"], birth_date,
         row["citizenship"], row["multiplicity"], row["school_code"], row["grade"],
         row["ppt_code"], "да" if row["special"] else "нет", test_date, result,
-        row["status"], retest_date or row["next_planned_date"], row["confirmed_school_code"],
+        row["status"], retest_date or row["next_planned_date"], row["confirmed_school_name"],
         row["comment"], row["rcoi_note"], row["ppt_name"], row["school_name"], appeal or None,
     )
     return PersonRecord(
@@ -63,7 +63,7 @@ def from_db(row: dict, index: int) -> PersonRecord:
         grade=row["grade"], test_point_code=str(row["ppt_code"]),
         special_category="да" if row["special"] else "нет", test_date=test_date,
         pass_result=result, status=normalize_status(row["status"]), retest_date=retest_date,
-        school_after_citizenship=normalize_text(row["confirmed_school_code"]),
+        school_after_citizenship=normalize_text(row["confirmed_school_name"]),
         comment=normalize_text(row["comment"]), rc_comment=normalize_text(row["rcoi_note"]),
         test_point_name=normalize_text(row["ppt_name"]), appeal=appeal, source_row=values,
     )
