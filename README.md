@@ -43,7 +43,7 @@ docker compose version
 Клонируй в постоянную локальную папку. Сейчас изменения находятся в `feature/data_upload`:
 
 ```powershell
-git clone --branch feature/data_upload https://github.com/Vladislav-Evg-Sid/migrantsApp.git
+git clone https://github.com/Vladislav-Evg-Sid/migrantsApp.git
 cd migrantsApp
 & ".\Первый запуск.cmd"
 ```
