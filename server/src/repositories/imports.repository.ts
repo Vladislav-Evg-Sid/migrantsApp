@@ -87,13 +87,13 @@ export async function replaceSummary(database: Pool, rows: SummaryRow[]) {
     for (const row of sorted) {
       let appealId: number | null = null;
       if (row.appeal) {
-        const match = row.appeal.match(/^(\d{2})\.(\d{2})\.(\d{2}|\d{4})\s*\/\s*(да|нет|удовлетворена|не удовлетворена)\s*\/\s*(да|нет|в присутствии|без присутствия)$/i);
+        const match = row.appeal.match(/^(\d{2})\.(\d{2})\.(\d{2}|\d{4})\s*\/\s*(да|нет|удовлетворена|не удовлетворена|\?)\s*\/\s*(да|нет|в присутствии|без присутствия|\?)$/i);
         if (match) {
           const year = match[3].length === 2 ? `20${match[3]}` : match[3];
           const date = `${year}-${match[2]}-${match[1]}`;
           if (!Number.isNaN(Date.parse(date)) && new Date(date).toISOString().slice(0,10) === date) {
             const appeal = await client.query("INSERT INTO appeals(review_date,is_granted,is_appellant_present) VALUES($1,$2,$3) RETURNING id",
-              [date,["да","удовлетворена"].includes(match[4].toLowerCase()),["да","в присутствии"].includes(match[5].toLowerCase())]);
+              [date,match[4] === "?" ? null : ["да","удовлетворена"].includes(match[4].toLowerCase()),match[5] === "?" ? null : ["да","в присутствии"].includes(match[5].toLowerCase())]);
             appealId = appeal.rows[0].id;
           }
         }

@@ -36,10 +36,10 @@ def from_db(row: dict, index: int) -> PersonRecord:
     result = {"Зачет": "да", "Незачет": "нет", "Неявка": "неявка"}.get(row["result"])
     appeal = ""
     if row["appeal_date"]:
-        appeal = " / ".join([
+        appeal = "/".join([
             date.fromisoformat(row["appeal_date"]).strftime("%d.%m.%Y"),
-            "да" if row["appeal_granted"] else "нет",
-            "да" if row["appeal_present"] else "нет",
+            "?" if row["appeal_granted"] is None else ("да" if row["appeal_granted"] else "нет"),
+            "?" if row["appeal_present"] is None else ("да" if row["appeal_present"] else "нет"),
         ])
     birth_date = date.fromisoformat(row["birth_date"])
     test_date = date.fromisoformat(row["test_date"])
