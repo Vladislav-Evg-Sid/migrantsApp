@@ -52,7 +52,7 @@ def from_db(row: dict, index: int) -> PersonRecord:
         row["citizenship"], row["multiplicity"], row["school_code"], row["grade"],
         row["ppt_code"], "да" if row["special"] else "нет", test_date, result,
         row["status"], retest_date or row["next_planned_date"], row["confirmed_school_code"],
-        row["comment"], row["rcoi_note"], row["ppt_name"], appeal or None, row["school_name"],
+        row["comment"], row["rcoi_note"], row["ppt_name"], row["school_name"], appeal or None,
     )
     return PersonRecord(
         uid=row["participant_id"], internal_id=str(row["exam_id"]).zfill(20),
