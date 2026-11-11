@@ -97,7 +97,7 @@ export async function replaceSummary(database: Pool, rows: SummaryRow[]) {
             appealId = appeal.rows[0].id;
           }
         }
-        if (!appealId) await client.query("UPDATE participants SET rcoi_note=concat_ws(E'\\n',rcoi_note,$2::text) WHERE id=$1",[row.id,`Апелляция (${row.date}): ${row.appeal}`]);
+        // if (!appealId) await client.query("UPDATE participants SET rcoi_note=concat_ws(E'\\n',rcoi_note,$2::text) WHERE id=$1",[row.id,`Апелляция (${row.date}): ${row.appeal}`]); // TODO: Удалить
       }
       await client.query(`INSERT INTO test_results(participant_id,is_special_category,status_id,test_date_id,result,class,sending_school_code,test_attempt_number,appeal_id,testing_center_ppt_code)
         VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,

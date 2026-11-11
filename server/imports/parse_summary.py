@@ -94,7 +94,7 @@ def parse(data):
                     grade=grade, ppt=integer(values[12],"ППТ"), special=special == "да", date=day,
                     result=result_map[result], status=text(values[16]) or None, planned=planned,
                     confirmedSchool=text(values[18]) or None, comment=text(values[19]) or None,
-                    note=text(values[20]) or None, appeal=text(values[22]) or None))
+                    note=text(values[20]) or None, appeal=text(values[23]) or None))
             except ValueError as error:
                 issues.append(f"Строка {number}: {error}")
                 if len(issues) >= 30:
