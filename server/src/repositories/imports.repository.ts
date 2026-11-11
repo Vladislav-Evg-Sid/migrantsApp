@@ -13,7 +13,6 @@ export class ImportError extends Error {
 }
 
 const normalize = (value: string) => value.toLocaleLowerCase("ru").replaceAll("ё", "е").replace(/[^\p{L}\p{N}]/gu, "");
-const append = (value: string | null, extra: string) => value ? `${value}\n${extra}` : extra;
 
 export async function replaceSummary(database: Pool, rows: SummaryRow[]) {
   if (!rows.length) throw new ImportError(400, "В файле нет данных для загрузки");
@@ -71,18 +70,10 @@ export async function replaceSummary(database: Pool, rows: SummaryRow[]) {
     await client.query("DELETE FROM participants");
     await client.query("DELETE FROM appeals");
     for (const person of people.values()) {
-      let confirmed: number | null = null;
-      let comment = person.comment;
-      if (person.confirmedSchool) {
-        const value = person.confirmedSchool;
-        const exact = schools.filter(school => normalize(school.name) === normalize(value) || String(school.code) === value);
-        confirmed = exact.length === 1 ? exact[0].code : null;
-        if (!confirmed) comment = append(comment, `ОО после получения гражданства: ${value}`);
-      }
       const [year,month,day] = person.birth!.split("-").map(Number);
-      await client.query(`INSERT INTO participants(id,surname,name,patronymic,birth_year,birth_month,birth_day,nation_id,confirmed_school_code,next_planned_date,comment,rcoi_note)
+      await client.query(`INSERT INTO participants(id,surname,name,patronymic,birth_year,birth_month,birth_day,nation_id,confirmed_school_name,next_planned_date,comment,rcoi_note)
         VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
-        [person.id,person.surname,person.name,person.patronymic,year,month,day,nations.get(normalize(person.nation)),confirmed,person.planned,comment,person.note]);
+        [person.id,person.surname,person.name,person.patronymic,year,month,day,nations.get(normalize(person.nation)),person.confirmedSchool,person.planned,person.comment,person.note]);
     }
     for (const row of sorted) {
       let appealId: number | null = null;

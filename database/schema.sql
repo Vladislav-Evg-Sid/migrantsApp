@@ -72,7 +72,7 @@ CREATE TABLE participants (
     birth_month INTEGER NOT NULL,
     birth_year INTEGER NOT NULL,
     nation_id INTEGER NOT NULL REFERENCES nations(id),
-    confirmed_school_code INTEGER REFERENCES schools(code),
+    confirmed_school_name TEXT,
     next_planned_date TEXT,
     comment TEXT,
     rcoi_note TEXT

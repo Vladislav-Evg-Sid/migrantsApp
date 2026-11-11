@@ -42,7 +42,7 @@ export async function insertParticipantWithFirstExam(
     await client.query(
       `INSERT INTO participants (
          id, surname, name, patronymic, birth_day, birth_month, birth_year,
-         nation_id, confirmed_school_code, next_planned_date, comment, rcoi_note
+         nation_id, confirmed_school_name, next_planned_date, comment, rcoi_note
        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
       [
         participantId,
@@ -53,7 +53,7 @@ export async function insertParticipantWithFirstExam(
         input.birthMonth,
         input.birthYear,
         input.nationId,
-        input.confirmedSchoolCode,
+        input.confirmedSchoolName,
         input.nextPlannedDate,
         input.comment,
         input.rcoiNote,
@@ -102,7 +102,7 @@ export async function findParticipantsForTable(): Promise<ParticipantListRow[]> 
        p.birth_month,
        p.birth_year,
        p.nation_id,
-       p.confirmed_school_code,
+       p.confirmed_school_name,
        p.next_planned_date,
        p.comment,
        p.rcoi_note,
@@ -126,16 +126,14 @@ export async function findParticipantById(id: number): Promise<ParticipantDetail
        p.birth_month,
        p.birth_year,
        p.nation_id,
-       p.confirmed_school_code,
+       p.confirmed_school_name,
        p.next_planned_date,
        p.comment,
        p.rcoi_note,
-       n.name AS nation_name,
-       s.name AS confirmed_school_name
+       n.name AS nation_name
      FROM participants p
      JOIN nations n ON n.id = p.nation_id
-     LEFT JOIN schools s ON s.code = p.confirmed_school_code
-     WHERE p.id = $1`,
+      WHERE p.id = $1`,
     [id],
   );
 
@@ -164,7 +162,7 @@ export async function updateParticipantById(
          birth_month = $5,
          birth_year = $6,
          nation_id = $7,
-         confirmed_school_code = $8,
+         confirmed_school_name = $8,
          next_planned_date = $9,
          comment = $10,
          rcoi_note = $11
@@ -177,7 +175,7 @@ export async function updateParticipantById(
       input.birthMonth,
       input.birthYear,
       input.nationId,
-      input.confirmedSchoolCode,
+      input.confirmedSchoolName,
       input.nextPlannedDate,
       input.comment,
       input.rcoiNote,

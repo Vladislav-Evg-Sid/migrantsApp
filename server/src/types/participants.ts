@@ -8,7 +8,7 @@ export type ParticipantData = {
   patronymic: string | null;
   birthDate: string;
   nation: ForeignKey;
-  school: ForeignKey | null;
+  school: string | null;
   nextExamDate: string | null;
   schoolComment: string | null;
   rcoiNote: string | null;
@@ -23,7 +23,7 @@ export type CreateParticipantInput = {
   birthMonth: number;
   birthYear: number;
   nationId: number;
-  confirmedSchoolCode: number | null;
+  confirmedSchoolName: string | null;
   nextPlannedDate: string | null;
   comment: string | null;
   rcoiNote: string | null;

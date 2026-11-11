@@ -97,7 +97,7 @@ export type CreateParticipantInput = {
   birthMonth: number;
   birthYear: number;
   nationId: number;
-  confirmedSchoolCode: number | null;
+  confirmedSchoolName: string | null;
   nextPlannedDate: string | null;
   comment: string | null;
   rcoiNote: string | null;

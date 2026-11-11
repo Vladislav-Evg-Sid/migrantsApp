@@ -7,7 +7,7 @@ export interface ParticipantData {
   patronymic?: string;
   birthDate: string;
   nation: ForeignKey;
-  school?: ForeignKey;
+  school?: string;
   nextExamDate?: string;
   schoolComment?: string;
   rcoiNote?: string;

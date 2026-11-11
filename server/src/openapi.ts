@@ -498,7 +498,7 @@ export const openApiDocument = {
       },
       CreateParticipant: {
         type: "object",
-        required: ["surname", "name", "patronymic", "birthDay", "birthMonth", "birthYear", "nationId", "confirmedSchoolCode", "nextPlannedDate", "comment", "rcoiNote", "firstExam"],
+        required: ["surname", "name", "patronymic", "birthDay", "birthMonth", "birthYear", "nationId", "confirmedSchoolName", "nextPlannedDate", "comment", "rcoiNote", "firstExam"],
         properties: {
           surname: { type: "string", maxLength: 127 },
           name: { type: "string", maxLength: 127 },
@@ -507,7 +507,7 @@ export const openApiDocument = {
           birthMonth: { type: "integer", minimum: 1, maximum: 12 },
           birthYear: { type: "integer", minimum: 1900 },
           nationId: { type: "integer" },
-          confirmedSchoolCode: { type: "integer", nullable: true },
+          confirmedSchoolName: { type: "string", nullable: true },
           nextPlannedDate: { type: "string", nullable: true },
           comment: { type: "string", nullable: true },
           rcoiNote: { type: "string", nullable: true },
@@ -516,7 +516,7 @@ export const openApiDocument = {
       },
       UpdateParticipant: {
         type: "object",
-        required: ["surname", "name", "patronymic", "birthDay", "birthMonth", "birthYear", "nationId", "confirmedSchoolCode", "nextPlannedDate", "comment", "rcoiNote"],
+        required: ["surname", "name", "patronymic", "birthDay", "birthMonth", "birthYear", "nationId", "confirmedSchoolName", "nextPlannedDate", "comment", "rcoiNote"],
         properties: {
           surname: { type: "string", maxLength: 127 },
           name: { type: "string", maxLength: 127 },
@@ -525,7 +525,7 @@ export const openApiDocument = {
           birthMonth: { type: "integer", minimum: 1, maximum: 12 },
           birthYear: { type: "integer", minimum: 1900 },
           nationId: { type: "integer" },
-          confirmedSchoolCode: { type: "integer", nullable: true },
+          confirmedSchoolName: { type: "string", nullable: true },
           nextPlannedDate: { type: "string", nullable: true },
           comment: { type: "string", nullable: true },
           rcoiNote: { type: "string", nullable: true },
