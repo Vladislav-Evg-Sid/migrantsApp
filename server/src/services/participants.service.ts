@@ -152,9 +152,7 @@ export async function getParticipantDetails(id: number): Promise<ParticipantData
     patronymic: participant.patronymic,
     birthDate: formatDate(participant.birth_day, participant.birth_month, participant.birth_year),
     nation: foreignKey(participant.nation_id, participant.nation_name),
-    school: participant.confirmed_school_code && participant.confirmed_school_name
-      ? foreignKey(participant.confirmed_school_code, participant.confirmed_school_name)
-      : null,
+    school: participant.confirmed_school_name,
     nextExamDate: formatOptionalDate(participant.next_planned_date),
     schoolComment: participant.comment,
     rcoiNote: participant.rcoi_note,

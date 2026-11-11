@@ -12,6 +12,7 @@ import ParticipantDetailsPage from "./pages/ParticipantDetailsPage";
 import ExamPptsPage from "./pages/ExamPptsPage";
 import ExamParticipantsPage from "./pages/ExamParticipants";
 import ReportParametersPage from "./pages/ReportParametersPage";
+import DataImportPage from "./pages/DataImportPage";
 
 function App() {
   const location = useLocation();
@@ -38,6 +39,7 @@ function App() {
           <Route path="/exams" element={<ExamDatePage />} />
           <Route path="/participants" element={<ParticipantsPage />} />
           <Route path="/contacts" element={<ResponsiblesPage />} />
+          <Route path="/imports" element={<DataImportPage />} />
           <Route
             path="/participants/details/:id"
             element={<ParticipantDetailsPage />}

@@ -54,7 +54,7 @@ function Start-DockerDesktopProcess {
 
     foreach ($candidate in $candidates) {
         if (Test-Path -LiteralPath $candidate) {
-            Start-Process -FilePath $candidate
+            Start-Process -FilePath $candidate -WindowStyle Hidden
             return
         }
     }
@@ -107,7 +107,9 @@ function Wait-App {
     while ((Get-Date) -lt $deadline) {
         try {
             $response = Invoke-WebRequest -Uri $script:AppUrl -UseBasicParsing -TimeoutSec 5
-            if ($response.StatusCode -ge 200 -and $response.StatusCode -lt 400) {
+            $apiResponse = Invoke-WebRequest -Uri "$script:AppUrl/api/test-dates" -UseBasicParsing -TimeoutSec 5
+            if ($response.StatusCode -eq 200 -and $apiResponse.StatusCode -eq 200 -and
+                $apiResponse.Headers["Content-Type"] -match "application/json") {
                 return
             }
         } catch {

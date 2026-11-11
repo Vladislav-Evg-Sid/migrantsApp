@@ -12,7 +12,7 @@ export async function getReportSnapshot(): Promise<Record<string, unknown>[]> {
       r.testing_center_ppt_code AS ppt_code, r.is_special_category AS special,
       to_char(make_date(d.year,d.month,d.day),'YYYY-MM-DD') AS test_date,
       r.result::text, ps.name AS status, p.next_planned_date,
-      p.confirmed_school_code, p.comment, p.rcoi_note, ppt_school.name AS ppt_name,
+      p.confirmed_school_name, p.comment, p.rcoi_note, ppt_school.name AS ppt_name,
       to_char(ap.review_date,'YYYY-MM-DD') AS appeal_date,
       ap.is_granted AS appeal_granted, ap.is_appellant_present AS appeal_present
     FROM test_results r

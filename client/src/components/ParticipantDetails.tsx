@@ -25,7 +25,6 @@ import { parseExamResult } from "../services/dataInput";
 
 interface participantDetailsProps {
   nationVariants: ForeignKey[];
-  schoolVariants: ForeignKey[];
 }
 
 interface ChangedInputs {
@@ -56,7 +55,6 @@ const defaultInputStates: ChangedInputs = {
 
 export default function ParticipantDetails({
   nationVariants,
-  schoolVariants,
 }: participantDetailsProps) {
   const participantContext = useContext(ParticipantDataContext);
   if (participantContext === null) {
@@ -138,8 +136,8 @@ export default function ParticipantDetails({
         participantContext.participantDetails.birthDate.split("-")[0],
       ),
       nationId: participantContext.participantDetails.nation.code,
-      confirmedSchoolCode:
-        participantContext.participantDetails.school?.code ?? null,
+      confirmedSchoolName:
+        participantContext.participantDetails.school ?? null,
       nextPlannedDate:
         participantContext.participantDetails.nextExamDate ?? null,
       comment: participantContext.participantDetails.schoolComment ?? null,
@@ -292,7 +290,7 @@ export default function ParticipantDetails({
           <DetailElement
             name="Школа обучения"
             data={participantContext.participantDetails.school}
-            inputType={schoolVariants}
+            inputType="string"
             inputState={changedInputs.school}
             onChange={(newValue) => {
               handleChangeParticipantData("school", newValue);

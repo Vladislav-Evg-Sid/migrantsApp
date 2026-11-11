@@ -7,7 +7,7 @@ export type ParticipantListRow = {
   birth_month: number;
   birth_year: number;
   nation_id: number;
-  confirmed_school_code: number | null;
+  confirmed_school_name: string | null;
   next_planned_date: string | null;
   comment: string | null;
   rcoi_note: string | null;
@@ -23,12 +23,11 @@ export type ParticipantDetailsRow = {
   birth_month: number;
   birth_year: number;
   nation_id: number;
-  confirmed_school_code: number | null;
+  confirmed_school_name: string | null;
   next_planned_date: string | null;
   comment: string | null;
   rcoi_note: string | null;
   nation_name: string;
-  confirmed_school_name: string | null;
 };
 
 export type ParticipantExamRow = {

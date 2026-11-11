@@ -36,10 +36,10 @@ def from_db(row: dict, index: int) -> PersonRecord:
     result = {"Зачет": "да", "Незачет": "нет", "Неявка": "неявка"}.get(row["result"])
     appeal = ""
     if row["appeal_date"]:
-        appeal = " / ".join([
+        appeal = "/".join([
             date.fromisoformat(row["appeal_date"]).strftime("%d.%m.%Y"),
-            "да" if row["appeal_granted"] else "нет",
-            "да" if row["appeal_present"] else "нет",
+            "?" if row["appeal_granted"] is None else ("да" if row["appeal_granted"] else "нет"),
+            "?" if row["appeal_present"] is None else ("да" if row["appeal_present"] else "нет"),
         ])
     birth_date = date.fromisoformat(row["birth_date"])
     test_date = date.fromisoformat(row["test_date"])
@@ -51,8 +51,8 @@ def from_db(row: dict, index: int) -> PersonRecord:
         row["surname"], row["name"], row["patronymic"], birth_date,
         row["citizenship"], row["multiplicity"], row["school_code"], row["grade"],
         row["ppt_code"], "да" if row["special"] else "нет", test_date, result,
-        row["status"], retest_date or row["next_planned_date"], row["confirmed_school_code"],
-        row["comment"], row["rcoi_note"], row["ppt_name"], appeal or None, row["school_name"],
+        row["status"], retest_date or row["next_planned_date"], row["confirmed_school_name"],
+        row["comment"], row["rcoi_note"], row["ppt_name"], row["school_name"], appeal or None,
     )
     return PersonRecord(
         uid=row["participant_id"], internal_id=str(row["exam_id"]).zfill(20),
@@ -63,7 +63,7 @@ def from_db(row: dict, index: int) -> PersonRecord:
         grade=row["grade"], test_point_code=str(row["ppt_code"]),
         special_category="да" if row["special"] else "нет", test_date=test_date,
         pass_result=result, status=normalize_status(row["status"]), retest_date=retest_date,
-        school_after_citizenship=normalize_text(row["confirmed_school_code"]),
+        school_after_citizenship=normalize_text(row["confirmed_school_name"]),
         comment=normalize_text(row["comment"]), rc_comment=normalize_text(row["rcoi_note"]),
         test_point_name=normalize_text(row["ppt_name"]), appeal=appeal, source_row=values,
     )

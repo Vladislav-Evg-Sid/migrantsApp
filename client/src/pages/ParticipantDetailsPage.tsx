@@ -25,7 +25,6 @@ export default function ParticipantDetailsPage() {
     nation: { code: -1, name: "" },
     exams: { head: [], body: [] },
   });
-  const [schoolVariants, setSchoolVariants] = useState<ForeignKey[]>([]);
   const [nationVariants, setNationVariants] = useState<ForeignKey[]>([]);
   const [isCreating, setIsCreating] = useState<boolean>(false);
   const resetStateAfterCreate = useRef<() => void>(() => {});
@@ -56,15 +55,6 @@ export default function ParticipantDetailsPage() {
   }, [id]);
 
   useEffect(() => {
-    const fetchSchools = async () => {
-      const schools = await getReferenceTable("schools");
-      setSchoolVariants(
-        schools.body.map(({ row }) => ({
-          code: Number(row[0] ?? -1),
-          name: String(row[1] ?? ""),
-        })),
-      );
-    };
     const fetchNations = async () => {
       const schools = await getReferenceTable("nations");
       setNationVariants(
@@ -74,7 +64,6 @@ export default function ParticipantDetailsPage() {
         })),
       );
     };
-    fetchSchools();
     fetchNations();
   }, []);
 
@@ -192,7 +181,6 @@ export default function ParticipantDetailsPage() {
       >
         <ParticipantDetails
           nationVariants={nationVariants}
-          schoolVariants={schoolVariants}
         />
         <ParticipantExams
           participantID={participantID}
