@@ -21,6 +21,12 @@ export function mapParticipantsTable(
         type: nations.map((nation) => ({ code: nation.id, name: nation.name })),
         cell: "Национальность",
       },
+      { type: "string", cell: "Результат последнего экзамена" },
+      { type: "boolean", cell: "Специальная категория Минпрос 727" },
+      { type: "string", cell: "Кратность тестирования" },
+      { type: "string", cell: "МО последнего тестирования" },
+      { type: "date", cell: "Дата последнего тестирования" },
+      { type: "number", cell: "Класс" },
     ],
     body: rows.map((row) => ({
       row: [
@@ -30,6 +36,14 @@ export function mapParticipantsTable(
         row.patronymic,
         formatDate(row.birth_day, row.birth_month, row.birth_year),
         { code: row.nation_id, name: row.nation_name },
+        row.latest_result,
+        row.latest_special_category,
+        row.latest_multiplicity,
+        row.latest_area_name,
+        row.latest_test_day !== null && row.latest_test_month !== null && row.latest_test_year !== null
+          ? formatDate(row.latest_test_day, row.latest_test_month, row.latest_test_year)
+          : null,
+        row.latest_class,
       ],
     })),
   };

@@ -12,6 +12,14 @@ export type ParticipantListRow = {
   comment: string | null;
   rcoi_note: string | null;
   nation_name: string;
+  latest_result: string | null;
+  latest_special_category: boolean | null;
+  latest_multiplicity: string | null;
+  latest_area_name: string | null;
+  latest_test_day: number | null;
+  latest_test_month: number | null;
+  latest_test_year: number | null;
+  latest_class: number | null;
 };
 
 export type ParticipantDetailsRow = {

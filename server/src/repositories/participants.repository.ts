@@ -106,9 +106,32 @@ export async function findParticipantsForTable(): Promise<ParticipantListRow[]> 
        p.next_planned_date,
        p.comment,
        p.rcoi_note,
-       n.name AS nation_name
+       n.name AS nation_name,
+       latest.result AS latest_result,
+       latest.is_special_category AS latest_special_category,
+       latest.multiplicity AS latest_multiplicity,
+       latest.area_name AS latest_area_name,
+       latest.test_day AS latest_test_day,
+       latest.test_month AS latest_test_month,
+       latest.test_year AS latest_test_year,
+       latest.class AS latest_class
      FROM participants p
      JOIN nations n ON n.id = p.nation_id
+     LEFT JOIN LATERAL (
+       SELECT tr.result::text AS result, tr.is_special_category,
+         ta.name AS multiplicity, a.name AS area_name,
+         d.day AS test_day, d.month AS test_month, d.year AS test_year,
+         tr.class
+       FROM test_results tr
+       JOIN test_dates d ON d.id = tr.test_date_id
+       JOIN test_attempts ta ON ta.number = tr.test_attempt_number
+       JOIN ppts ppt ON ppt.code = tr.testing_center_ppt_code
+       JOIN schools ppt_school ON ppt_school.code = ppt.school_code
+       JOIN areas a ON a.code = ppt_school.area_code
+       WHERE tr.participant_id = p.id
+       ORDER BY d.year DESC, d.month DESC, d.day DESC, tr.id DESC
+       LIMIT 1
+     ) latest ON TRUE
      ORDER BY p.id`,
   );
 
