@@ -1,11 +1,9 @@
 import { Box, Button } from "@mui/material";
-import FilterRow from "../components/FilterRow";
-import { useEffect, useState } from "react";
-import { type CellFilter } from "../types/filters";
+import { useCallback, useEffect, useState } from "react";
 import DataTable from "../components/DataTable";
-import type { TableData } from "../types/tables";
-import { getParticipants } from "../api/participants";
-import { Bounce, ToastContainer } from "react-toastify";
+import type { TableBodyRowData, TableData } from "../types/tables";
+import { downloadParticipants, getParticipants } from "../api/participants";
+import { Bounce, toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 export default function ParticipantsPage() {
@@ -14,7 +12,17 @@ export default function ParticipantsPage() {
     head: [],
   });
 
+  const [visibleRows, setVisibleRows] = useState<TableBodyRowData[]>([]);
+  const handleVisibleRowsChange = useCallback((rows: TableBodyRowData[]) => setVisibleRows(rows), []);
   const navigate = useNavigate();
+
+  const downloadTable = async () => {
+    try {
+      await downloadParticipants(visibleRows.map(({ row }) => Number(row[0])));
+    } catch {
+      toast.error("Не удалось скачать таблицу участников");
+    }
+  };
 
   useEffect(() => {
     const fetchfilters = async () =>
@@ -53,6 +61,7 @@ export default function ParticipantsPage() {
       >
         <DataTable
           body={participantsData.body}
+          onVisibleRowsChange={handleVisibleRowsChange}
           head={participantsData.head}
           hideIdCol={false}
           name="participants"
@@ -66,6 +75,15 @@ export default function ParticipantsPage() {
           display: "flex",
         }}
       >
+        <Button
+          onClick={downloadTable}
+          disabled={!participantsData.head.length}
+          variant="contained"
+          color="success"
+          sx={{ textTransform: "none", mr: 1 }}
+        >
+          Скачать таблицу
+        </Button>
         <Button
           onClick={() => alert("Пока функция не готова")}
           variant="contained"

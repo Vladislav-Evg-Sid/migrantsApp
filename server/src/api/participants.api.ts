@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { exportParticipants } from "../services/participants-export.service.js";
 
 import {
   createParticipant,
@@ -13,6 +14,25 @@ export const participantsRouter = Router();
 
 participantsRouter.get("/participants", async (_request, response) => {
   response.json(await getParticipants());
+});
+
+participantsRouter.post("/participants/export", async (request, response) => {
+  const ids: unknown = request.body?.ids;
+  if (!Array.isArray(ids) || ids.length > 100_000 ||
+      !ids.every(id => Number.isSafeInteger(id) && id > 0)) {
+    response.status(400).json({ message: "Некорректный список участников" });
+    return;
+  }
+  try {
+    const workbook = await exportParticipants(ids as number[]);
+    response.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''%D0%A3%D1%87%D0%B0%D1%81%D1%82%D0%BD%D0%B8%D0%BA%D0%B8.xlsx");
+    response.setHeader("Cache-Control", "no-store");
+    response.send(workbook);
+  } catch (error) {
+    console.error("Participant export:", error);
+    response.status(500).json({ message: "Не удалось сформировать таблицу участников" });
+  }
 });
 
 participantsRouter.post("/participants", async (request, response) => {

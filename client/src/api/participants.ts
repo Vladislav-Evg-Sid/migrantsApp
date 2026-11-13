@@ -17,6 +17,24 @@ export async function getParticipants(): Promise<TableData> {
   return data;
 }
 
+export async function downloadParticipants(ids: number[]): Promise<void> {
+  const response = await fetch(`${baseApi}/participants/export`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ids }),
+  });
+  if (!response.ok) throw new Error(`Не удалось скачать таблицу: ${response.status}`);
+  const file = await response.blob();
+  const url = URL.createObjectURL(file);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "Участники.xlsx";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 60_000);
+}
+
 export async function getParticipantDetails(
   id: number,
 ): Promise<ParticipantData> {

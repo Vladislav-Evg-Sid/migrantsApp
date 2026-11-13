@@ -38,6 +38,7 @@ interface DataTableProps extends TableData {
   actionColumn?: "edit-delete" | "detail";
   navigateRoute?: string;
   fillAvailableHeight?: boolean;
+  onVisibleRowsChange?: (rows: TableBodyRowData[]) => void;
 }
 
 export default function DataTable({
@@ -53,6 +54,7 @@ export default function DataTable({
   actionColumn = "edit-delete",
   navigateRoute = "/",
   fillAvailableHeight = false,
+  onVisibleRowsChange,
 }: DataTableProps) {
   const isCreatingParticipant =
     useContext(ParticipantDataContext)?.isCreating ?? false;
@@ -64,7 +66,10 @@ export default function DataTable({
   const [deleteDialogIsOpen, setDeleteDialogIsOpen] = useState<boolean>(false);
   const [identifierRow, setIdentifierRow] = useState<TableCellData[]>([]);
 
-  useEffect(() => setViewTable(body), [body]);
+  useEffect(() => {
+    setViewTable(body);
+    onVisibleRowsChange?.(body);
+  }, [body, onVisibleRowsChange]);
 
   const navigate = useNavigate();
 
@@ -93,6 +98,7 @@ export default function DataTable({
       );
     }
     setViewTable(intermediateFilteredData);
+    onVisibleRowsChange?.(intermediateFilteredData);
   };
 
   const getdDeleteAlert = (): string => {
