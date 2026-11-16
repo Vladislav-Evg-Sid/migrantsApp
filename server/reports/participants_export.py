@@ -10,7 +10,7 @@ from openpyxl.utils import get_column_letter
 
 def main():
     payload = json.load(sys.stdin)
-    headers = payload["headers"]
+    headers = ["№ п/п", *payload["headers"]]
     rows = payload["rows"]
     workbook = Workbook()
     sheet = workbook.active
@@ -22,8 +22,8 @@ def main():
         cell.alignment = Alignment(wrap_text=True, vertical="center")
     sheet.row_dimensions[1].height = 45
     widths = [0] * len(headers)
-    for values in rows:
-        values = ["да" if value is True else "нет" if value is False else value for value in values]
+    for number, values in enumerate(rows, 1):
+        values = [number, *["да" if value is True else "нет" if value is False else value for value in values]]
         for index, value in enumerate(values):
             if value is not None:
                 widths[index] = max(widths[index], *(len(line) for line in str(value).splitlines()))

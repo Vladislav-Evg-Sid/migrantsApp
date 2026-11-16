@@ -1,4 +1,4 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import DataTable from "../components/DataTable";
 import type { TableBodyRowData, TableData } from "../types/tables";
@@ -13,12 +13,17 @@ export default function ParticipantsPage() {
   });
 
   const [visibleRows, setVisibleRows] = useState<TableBodyRowData[]>([]);
-  const handleVisibleRowsChange = useCallback((rows: TableBodyRowData[]) => setVisibleRows(rows), []);
+  const handleVisibleRowsChange = useCallback((rows: TableBodyRowData[]) => {
+    setVisibleRows(rows.map((row, i) => {
+      row.row[0] = i+1
+      return row
+    }))
+  }, []);
   const navigate = useNavigate();
 
   const downloadTable = async () => {
     try {
-      await downloadParticipants(visibleRows.map(({ row }) => Number(row[0])));
+      await downloadParticipants(visibleRows.map(({ row }) => Number(row[1])));
     } catch {
       toast.error("Не удалось скачать таблицу участников");
     }
@@ -26,7 +31,11 @@ export default function ParticipantsPage() {
 
   useEffect(() => {
     const fetchfilters = async () =>
-      setParticipantsData(await getParticipants());
+      {const loadedPartData = await getParticipants();
+      setParticipantsData({
+        head: [{type: "number", cell: "№ п/п"}, ...loadedPartData.head],
+        body: loadedPartData.body.map((row, i) => ({row: [i+1, ...row.row]})),
+      })}
     fetchfilters();
   }, []);
 
@@ -72,34 +81,45 @@ export default function ParticipantsPage() {
       </Box>
       <Box
         sx={{
+          width: "100%",
           display: "flex",
+          justifyContent: "space-between",
         }}
       >
-        <Button
-          onClick={downloadTable}
-          disabled={!participantsData.head.length}
-          variant="contained"
-          color="success"
-          sx={{ textTransform: "none", mr: 1 }}
+        <Typography>
+          Количество участников: {visibleRows.length}
+        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+          }}
         >
-          Скачать таблицу
-        </Button>
-        <Button
-          onClick={() => alert("Пока функция не готова")}
-          variant="contained"
-          color="success"
-          sx={{ textTransform: "none", mr: 1 }}
-        >
-          Загрузить из Excel
-        </Button>
-        <Button
-          onClick={() => navigate("/participants/details/-1")}
-          variant="contained"
-          color="success"
-          sx={{ textTransform: "none" }}
-        >
-          Добавить
-        </Button>
+          <Button
+            onClick={downloadTable}
+            disabled={!participantsData.head.length}
+            variant="contained"
+            color="success"
+            sx={{ textTransform: "none", mr: 1 }}
+          >
+            Скачать таблицу
+          </Button>
+          <Button
+            onClick={() => alert("Пока функция не готова")}
+            variant="contained"
+            color="success"
+            sx={{ textTransform: "none", mr: 1 }}
+          >
+            Загрузить из Excel
+          </Button>
+          <Button
+            onClick={() => navigate("/participants/details/-1")}
+            variant="contained"
+            color="success"
+            sx={{ textTransform: "none" }}
+          >
+            Добавить
+          </Button>
+        </Box>
       </Box>
     </Box>
   );
