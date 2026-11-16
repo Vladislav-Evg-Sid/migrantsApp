@@ -2,6 +2,7 @@
 import io
 import json
 import sys
+from datetime import datetime
 
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font, PatternFill
@@ -12,6 +13,7 @@ def main():
     payload = json.load(sys.stdin)
     headers = ["№ п/п", *payload["headers"]]
     rows = payload["rows"]
+    date_columns = [index + 1 for index in payload["dateColumns"]]
     workbook = Workbook()
     sheet = workbook.active
     sheet.title = "Участники"
@@ -27,7 +29,12 @@ def main():
         for index, value in enumerate(values):
             if value is not None:
                 widths[index] = max(widths[index], *(len(line) for line in str(value).splitlines()))
+        for index in date_columns:
+            if values[index]:
+                values[index] = datetime.strptime(values[index], "%d.%m.%Y").date()
         sheet.append(values)
+        for index in date_columns:
+            sheet.cell(sheet.max_row, index + 1).number_format = "DD.MM.YYYY"
         for cell in sheet[sheet.max_row]:
             if isinstance(cell.value, str):
                 cell.data_type = "s"

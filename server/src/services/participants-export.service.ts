@@ -8,6 +8,7 @@ export async function exportParticipants(ids: number[]): Promise<Buffer> {
   const table = await getParticipants();
   const byId = new Map(table.body.map(({ row }) => [Number(row[0]), row]));
   const headers = table.head.map(({ cell }) => String(cell));
+  const dateColumns = table.head.flatMap(({ type }, index) => type === "date" ? [index] : []);
   const rows = ids.flatMap(id => {
     const row = byId.get(id);
     return row ? [row.map(value => value && typeof value === "object" ? value.name : value)] : [];
@@ -35,6 +36,6 @@ export async function exportParticipants(ids: number[]): Promise<Buffer> {
       if (code === 0 && size > 0) resolve(Buffer.concat(chunks));
       else reject(new Error(`Не удалось сформировать таблицу: ${stderr}`));
     });
-    child.stdin.end(JSON.stringify({ headers, rows }));
+    child.stdin.end(JSON.stringify({ headers, rows, dateColumns }));
   });
 }
