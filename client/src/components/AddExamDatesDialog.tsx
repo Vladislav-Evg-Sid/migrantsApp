@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { createExamDate } from "../api/exams";
 import AddIcon from "@mui/icons-material/Add";
 import {
   Alert,
@@ -25,17 +26,24 @@ function formatDate(date: string) {
   return dateFormatter.format(new Date(year ?? 0, (month ?? 1) - 1, day ?? 1));
 }
 
-export default function AddExamDatesDialog() {
+interface AddExamDatesDialogProps {
+  onDatesAdded: () => void;
+}
+
+export default function AddExamDatesDialog({ onDatesAdded }: AddExamDatesDialogProps) {
   const [dialogIsOpen, setDialogIsOpen] = useState(false);
   const [currentDate, setCurrentDate] = useState("");
   const [selectedDates, setSelectedDates] = useState<string[]>([]);
   const [dateAlreadySelected, setDateAlreadySelected] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
 
   const closeDialog = () => {
     setDialogIsOpen(false);
     setCurrentDate("");
     setSelectedDates([]);
     setDateAlreadySelected(false);
+    setError("");
   };
 
   const addCurrentDate = () => {
@@ -51,15 +59,25 @@ export default function AddExamDatesDialog() {
     setDateAlreadySelected(false);
   };
 
-  const confirmDates = () => {
-    alert(
-      `Будут добавлены даты:\n${selectedDates
-        .map((date) => `• ${formatDate(date)}`)
-        .join("\n")}`,
-    );
-    closeDialog();
+  const confirmDates = async () => {
+    setSaving(true);
+    setError("");
+    let added = 0;
+    try {
+      for (const date of selectedDates) {
+        await createExamDate(date);
+        added++;
+      }
+      onDatesAdded();
+      closeDialog();
+    } catch (cause) {
+      if (added) onDatesAdded();
+      setSelectedDates((dates) => dates.slice(added));
+      setError(cause instanceof Error ? cause.message : "Не удалось добавить даты");
+    } finally {
+      setSaving(false);
+    }
   };
-
   return (
     <>
       <Button
@@ -71,7 +89,7 @@ export default function AddExamDatesDialog() {
         Добавить даты
       </Button>
 
-      <Dialog open={dialogIsOpen} onClose={closeDialog} fullWidth maxWidth="sm">
+      <Dialog open={dialogIsOpen} onClose={saving ? undefined : closeDialog} fullWidth maxWidth="sm">
         <DialogTitle sx={{ fontWeight: 700 }}>
           Добавление дат тестирований
         </DialogTitle>
@@ -79,6 +97,7 @@ export default function AddExamDatesDialog() {
           <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
             <TextField
               type="date"
+              disabled={saving}
               value={currentDate}
               onChange={(event) => {
                 setCurrentDate(event.target.value);
@@ -90,12 +109,14 @@ export default function AddExamDatesDialog() {
             <Button
               variant="outlined"
               onClick={addCurrentDate}
-              disabled={!currentDate}
+              disabled={!currentDate || saving}
               sx={{ flexShrink: 0, textTransform: "none" }}
             >
               Добавить
             </Button>
           </Stack>
+
+          {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
 
           {dateAlreadySelected && (
             <Alert severity="warning" sx={{ mt: 2 }}>
@@ -122,7 +143,7 @@ export default function AddExamDatesDialog() {
                   <Chip
                     key={date}
                     label={formatDate(date)}
-                    onDelete={() =>
+                    onDelete={saving ? undefined : () =>
                       setSelectedDates((dates) =>
                         dates.filter((selectedDate) => selectedDate !== date),
                       )
@@ -136,13 +157,13 @@ export default function AddExamDatesDialog() {
           </Box>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={closeDialog}>Отмена</Button>
+          <Button onClick={closeDialog} disabled={saving}>Отмена</Button>
           <Button
             variant="contained"
-            disabled={selectedDates.length === 0}
+            disabled={saving || selectedDates.length === 0}
             onClick={confirmDates}
           >
-            Сохранить
+            {saving ? "Сохранение…" : "Сохранить"}
           </Button>
         </DialogActions>
       </Dialog>

@@ -22,6 +22,16 @@ export async function getExamDates(): Promise<ExamDate> {
   return new Map(data.map(([year, month]) => [year, new Map(month)]));
 }
 
+export async function createExamDate(date: string): Promise<void> {
+  const [year, month, day] = date.split("-").map(Number);
+  const response = await fetch(`${baseApi}/test-dates`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ day, month, year }),
+  });
+  if (!response.ok) throw new Error(`Не удалось добавить дату ${date}: ${response.status}`);
+}
+
 export async function deleteExam(id: TableCellData) {
   const response = await fetch(`${baseApi}/test-results/${id}`, {
     method: "DELETE",
