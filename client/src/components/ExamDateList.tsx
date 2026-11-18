@@ -14,7 +14,7 @@ import { Month, type ExamDate } from "../types/exams";
 import { getExamDates } from "../api/exams";
 import { useNavigate } from "react-router-dom";
 
-export default function ExamDateList() {
+export default function ExamDateList({ refreshKey }: { refreshKey: number }) {
   const [examDates, setExamDates] = useState<ExamDate>(new Map());
   const navigate = useNavigate();
 
@@ -24,7 +24,7 @@ export default function ExamDateList() {
     };
 
     fetchExamDates();
-  }, []);
+  }, [refreshKey]);
   return (
     <Stack spacing={2}>
       {[...examDates.entries()]
