@@ -3,12 +3,15 @@ import unittest
 from dataclasses import replace
 from datetime import date
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "reports"))
 from generate import from_db, summary_workbook
 from migrant_reports.data_loader import SourceDataset
 from migrant_reports.models import MULTIPLICITY_ORDER
 from migrant_reports.calculations import build_repeat_by_date
+from migrant_reports.excel_builder import build_statistics_workbook
+from migrant_reports.word_builder import create_doc_report
 
 
 class ReportRules(unittest.TestCase):
@@ -51,6 +54,42 @@ class ReportRules(unittest.TestCase):
         self.assertEqual(w.active.cell(2,20).value,"=1+1")
         self.assertEqual(w.active.cell(2,20).data_type,"s")
         w.close()
+
+    def test_repeat_exports_include_each_completed_attempt(self):
+        import openpyxl
+        from docx import Document
+
+        start, end = date(2026, 3, 24), date(2026, 11, 9)
+        rows = [
+            replace(self.record, test_date=date(2026, 3, 23), multiplicity="первый"),
+            replace(self.record, test_date=start, multiplicity="второй", pass_result="нет"),
+            replace(self.record, test_date=date(2026, 6, 26), multiplicity="третий", pass_result="нет"),
+            replace(self.record, test_date=end, multiplicity="четвертый", pass_result="да"),
+            replace(self.record, test_date=end, multiplicity="пятый", pass_result="неявка"),
+            replace(self.record, test_date=end, multiplicity="шестой", pass_result=None),
+            replace(self.record, test_date=date(2026, 11, 10), multiplicity="седьмой"),
+        ]
+        source = SourceDataset(Path("db"), rows)
+        with TemporaryDirectory() as directory:
+            for recalculate, expected in [(False, (3, 1, 2)), (True, (2, 1, 1))]:
+                with self.subTest(recalculate=recalculate):
+                    dataset = source.filtered_by_period(start, end, recalculate_multiplicity=recalculate)
+                    doc_path, excel_path = Path(directory) / "report.docx", Path(directory) / "statistics.xlsx"
+                    create_doc_report(dataset, start, end, doc_path)
+                    build_statistics_workbook(dataset, [end], excel_path)
+                    document = Document(doc_path)
+                    for table_index, offset in [(5, 2), (6, 1)]:
+                        total = next([cell.text for cell in row.cells] for row in document.tables[table_index].rows[1:]
+                                     if any(cell.text == "Общий итог" for cell in row.cells))
+                        self.assertEqual(tuple(int(total[offset + i]) for i in (0, 1, 3)), expected)
+                    workbook = openpyxl.load_workbook(excel_path, data_only=True)
+                    total = next(row for row in workbook["повторно_весь период чел тест"].values if row[1] == "Общий итог")
+                    self.assertEqual(tuple(int(total[i] or 0) for i in (2, 3, 5)), expected)
+                    workbook.close()
+                    self.assertEqual(len(dataset.latest_children_to(end)), 1)
+                    self.assertEqual(dataset.latest_children_to(end)[0].pass_result, "да")
+                    self.assertTrue(any(f"Проведено {expected[0]} повторных тестирований у 1 участников" in p.text
+                                        for p in document.paragraphs))
 
 
 if __name__ == "__main__":

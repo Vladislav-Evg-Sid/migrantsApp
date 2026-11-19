@@ -301,7 +301,7 @@ def create_doc_report(
     citizenship_rows = build_flat_summary(children, lambda item: item.citizenship)
     mo_country_rows = build_hierarchical_summary(children, "mo", "citizenship")
     special_rows = build_special_summary(children)
-    repeated_only = dataset.repeated_attempts_to(end_date)
+    repeated_only = dataset.all_repeat_attempts_to(end_date)
     repeated_mo_rows = build_flat_summary(repeated_only, lambda item: item.mo)
     repeated_mo_country_rows = build_hierarchical_summary(repeated_only, "mo", "citizenship")
     all_attempts = dataset.attempts_to(end_date)
@@ -369,7 +369,7 @@ def create_doc_report(
     repeat_total, repeat_yes, repeat_no = aggregate_yes_no(repeated_only)
     repeat_top = top_non_total(repeated_mo_rows, 1)
     if repeat_top:
-        add_doc_paragraph(document, f"2.1. Повторное тестирование прошло в {len(repeated_mo_rows) - 1} МО (табл. 6). В нём приняли участие {repeat_total} человека, из которых {repeat_yes} участника ({percent_text(repeat_yes, repeat_total)}) успешно справились с тестированием и зачислены в общеобразовательные организации региона, {repeat_no} человека ({percent_text(repeat_no, repeat_total)}) показали недостаточный уровень владения русским языком. Большее количество участников, сдающих тестирование повторно, было в {mo_prepositional(repeat_top[0]['label'])} – {repeat_top[0]['total']} (из которых {repeat_top[0]['yes']} участника ({percent_text(repeat_top[0]['yes'], repeat_top[0]['total'])}) успешно справился с тестированием, {repeat_top[0]['no']} человек ({percent_text(repeat_top[0]['no'], repeat_top[0]['total'])}) показали недостаточный уровень владения русским языком).")
+        add_doc_paragraph(document, f"2.1. Повторное тестирование прошло в {len(repeated_mo_rows) - 1} МО (табл. 6). Проведено {repeat_total} повторных тестирований у {len({record.uid for record in repeated_only})} участников. Положительный результат получен в {repeat_yes} случаях ({percent_text(repeat_yes, repeat_total)}), отрицательный — в {repeat_no} случаях ({percent_text(repeat_no, repeat_total)}). В таблицах 6 и 7 учитываются все повторные попытки за выбранный период; один участник может учитываться несколько раз. Большее количество повторных тестирований было в {mo_prepositional(repeat_top[0]['label'])} – {repeat_top[0]['total']}, из них с положительным результатом – {repeat_top[0]['yes']}, с отрицательным – {repeat_top[0]['no']}.")
     add_doc_table(document, ["№ п/п", "Названия строк", "Общий итог", "Положительный результат", "%", "Отрицательный результат", "%"], rows_for_doc_numbered_yes_no(repeated_mo_rows), "Таблица 6.\nОбщая статистика в разрезе " + str(len(repeated_mo_rows) - 1) + " МО")
     add_doc_paragraph(document, f"2.2. Большее количество повторно сдававших было из {', '.join(top_repeat_countries)} (табл. 7).")
     add_doc_table(document, ["Названия строк", "Общий итог", "Положительный результат", "%", "Отрицательный результат", "%"], rows_for_doc_plain_yes_no(repeated_mo_country_rows), "Таблица 7.\nОбщая статистика повторно сдававших по гражданству и МО", grouped=True)

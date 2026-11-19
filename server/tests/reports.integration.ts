@@ -57,7 +57,7 @@ try {
           AND r.result IN ('Зачет','Незачет')
       ), latest AS (
         SELECT DISTINCT ON(participant_id) * FROM period ORDER BY participant_id,date DESC,id DESC
-      ), repeated AS (SELECT * FROM latest WHERE CASE WHEN $3 THEN calculated>1 ELSE test_attempt_number>1 END),
+      ), repeated AS (SELECT * FROM period WHERE CASE WHEN $3 THEN calculated>1 ELSE test_attempt_number>1 END),
       trajectory AS (SELECT * FROM latest WHERE lower(trim(coalesce(status,''))) != 'сдал')
       SELECT 'attempts' AS category,'' AS label, count(*)::int AS total,
         count(*) FILTER(WHERE result='Зачет')::int AS yes, count(*) FILTER(WHERE result='Незачет')::int AS no FROM period

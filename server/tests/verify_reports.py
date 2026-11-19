@@ -85,6 +85,10 @@ def verify(directory):
         child_sheet = next(s for s in workbook if s.title.startswith("весь период_дети") and suffix in s.title)
         total = next(row for row in child_sheet.iter_rows(min_row=2, values_only=True) if row[1] == "Общий итог")
         assert numbers(total, True) == [metric("children")[key] for key in ("total","yes","no")]
+        repeat_sheet = workbook["повторно_весь период чел тест"]
+        total = next(row for row in repeat_sheet.iter_rows(min_row=3, values_only=True) if row[1] == "Общий итог")
+        assert [int(total[index] or 0) for index in (2, 3, 5)] == [metric("repeat")[key] for key in ("total", "yes", "no")]
+        checks += 1
         # All output cells must contain saved values without Excel error markers.
         for sheet in workbook:
             for row in sheet:
